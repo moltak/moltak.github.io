@@ -7,10 +7,10 @@ relative_permalinks: false
 # Setup
 title:               엔갱 
 tagline:             '개발 흔적 남기기'
-description:         'A reserved <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that places the utmost gravity on content with a hidden drawer. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
+description:         '개발하면서 좋았던 해결 방법들이나 새롭게 배운것들 남김.'
 url:                 https://moltak.github.io
 baseurl:             ''
-paginate:            5
+paginate:            10
 
 # About/contact
 author:
@@ -19,8 +19,9 @@ author:
   email:             moltak@gmail.com
 
 # Custom vars
-version:             1.0.0
+version:             0.0.1
 
 google_analytics:    ''
 
-plugins: ['jekyll-paginate']
+plugins:
+  - jekyll-paginate
