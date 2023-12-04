@@ -1,7 +1,7 @@
 ---
 layout: wiki
 title:
-summary:
+summary: AWS Copliot은 ECS에서 사용할 인스턴스를 쉽게 생성,배포,변경하게 해주는 CLI 툴이다. 
 date: 2023-08-21 15:24:20 +0900
 updated: 2023-08-21 15:37:36 +0900
 tag:
