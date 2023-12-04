@@ -1,7 +1,7 @@
 ---
 layout  : wiki
 title   : Vimwiki를 배우다
-summary : 
+summary : Vimwiki를 배우다
 date    : 2022-11-09 22:42:15 +0900
 updated : 2022-11-15 22:25:40 +0900
 tag     : vim
