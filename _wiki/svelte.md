@@ -1,7 +1,7 @@
 ---
 layout: wiki
 title: Svelte 튜토리얼
-summary:
+summary: Svelte 해보기
 date: 2023-01-20 21:26:15 +0900
 updated: 2023-01-20 21:52:31 +0900
 tag: svelte
