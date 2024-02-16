@@ -1,9 +1,9 @@
 ---
 layout  : wiki
-title   : 
+title   : vimwiki 사용기
 summary : 
 date    : 2024-02-16 14:34:42 +0900
-updated : 2024-02-16 15:37:48 +0900
+updated : 2024-02-16 15:44:22 +0900
 tag     : 
 toc     : true
 public  : true
