@@ -1,5 +1,5 @@
 # Site settings
-title: Engeng
+title: kh wiki
 url: "https://code-toolbox.com"
 baseurl: ""
 description: >
@@ -7,7 +7,7 @@ description: >
 
 # My information
 email: moltak@gmail.com
-author: Engeng
+author: kh
 github_username: moltak
 comment-support: utterances
 
