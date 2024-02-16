@@ -3,7 +3,7 @@ layout: wiki
 title:
 summary: AWS Copliot은 ECS에서 사용할 인스턴스를 쉽게 생성,배포,변경하게 해주는 CLI 툴이다. 
 date: 2023-08-21 15:24:20 +0900
-updated: 2023-08-21 15:37:36 +0900
+updated: 2024-02-16 14:23:29 +0900
 tag:
 toc: true
 public: true
@@ -11,8 +11,9 @@ parent:
 latex: false
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
+
 
 # [AWS Copilot CLI](https://aws.github.io/copilot-cli/)
 

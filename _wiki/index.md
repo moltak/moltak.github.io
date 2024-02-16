@@ -24,7 +24,6 @@ regenerate: true
     - [[/code/clojure/기본문법]]
 - [[/work]]
   - [[/work/2022]]
-  - [[asdasd]]
 
 ---
 
