@@ -10,7 +10,7 @@ regenerate: true
 ## wiki items
 
 - [[vim]]
-  - [[VimWiki사용기]]
+  - [[vimwiki_usage]]
 - [[언어]]
   - [[Clojure]]
 - [[독서]]
