@@ -3,7 +3,7 @@ layout: wiki
 title:
 summary:
 date: 2022-11-15 22:22:34 +0900
-updated: 2024-02-16 14:13:36 +0900
+updated: 2024-02-16 14:15:01 +0900
 tag:
 toc: true
 public: true
@@ -20,6 +20,7 @@ latex: false
 :messages # 메세지 확인
 :history # 내 커멘드 확인
 :xmark # 현재 편집중인 md 파일를 브라우저에서 열기
+\ww # vimwiki index로 이동
 ```
 
 # CMD+S를 사용하고 싶다
