@@ -26,6 +26,7 @@ regenerate: true
 - [[/work]]
   - [[/work/2022]]
 - [[arc-browser]]
+- [[jekyll]]
 
 ---
 
