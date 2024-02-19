@@ -3,7 +3,7 @@ layout: wiki
 title:
 summary:
 date: 2022-11-15 22:22:34 +0900
-updated: 2024-02-16 14:29:15 +0900
+updated: 2024-02-19 12:42:01 +0900
 tag:
 toc: true
 public: true
@@ -51,3 +51,20 @@ gcc
 gc
 gcap
 ```
+
+# keybinding 확인하기
+vimwiki, coc, ultisnips를 세팅하고 보니 markdown에서 tab이 원하는대로 작동하지 않는 문제를 발견
+
+coc의 키 binding에 보면 아래와 같이 해결하는 방법이 가이드되어있다.
+
+```
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+```
+위 커맨드를 입력해보면 아래 이미지와 같이 겹치는 키가 보인다.
+<img width="697" alt="image" src="https://github.com/moltak/moltak.github.io/assets/1638639/ecae46f5-0f9f-446e-a43e-b388f3ad55df">
+
+이를 해결하기 위해 위에 적힌 것 처럼, ultisnips, vimwiki의 키 바인딩을 확인하고, 겹치는 것을 없애주면 된다.
+
+[ultisnips](https://github.com/moltak/dotfiles/blob/b1bec91b4296622b03f2d4ba2e0aedbbdfed9427/nvim/vim-include/set-ultisnips.vim#L6)
+[vimwiki](https://github.com/moltak/dotfiles/blob/b1bec91b4296622b03f2d4ba2e0aedbbdfed9427/nvim/vim-include/set-vimwiki.vim#L22)

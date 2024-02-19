@@ -11,6 +11,7 @@ regenerate: true
 
 - [[vim]]
   - [[vimwiki_usage]]
+  - [[viminit]]
 - [[언어]]
   - [[Clojure]]
 - [[독서]]
