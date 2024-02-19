@@ -1,9 +1,9 @@
 ---
 layout  : wiki
 title   : 지킬 학습
-summary : 기계인간님의 테마를 변경하자!
+summary : 기계인간님의 테마 변경 시도
 date    : 2024-02-18 17:07:51 +0900
-updated : 2024-02-18 17:42:59 +0900
+updated : 2024-02-19 10:33:12 +0900
 tag     : 
 toc     : true
 public  : true
@@ -11,24 +11,38 @@ parent  :
 latex   : false
 resource: 4886C368-6CB9-47E2-AC11-ABB7DF2A1B49
 ---
+
 * TOC
 {:toc}
 
-# 지킬 테마를 변경하고 싶어서 학습하는 지킬
-johngrib.github.io/
+ 지킬 테마를 변경하고 싶어서 학습하는 지킬
+ 
+## raw tag 를 사용하자
+이 문서를 작성하며 liquid 문법을 사용하면서 문제가 발생했다. 예제 코드를 작성하면서 liquid tag를 써야했는데, 그런 경우 liquid compiler가 에러를 반환한다. 내 예제 코드에 정의되지 않은 변수가 추가된건데. 그걸 해결하기 위해 아래처럼 raw tag를 이용한다.
+
+<img width="144" alt="image" src="https://github.com/moltak/moltak.github.io/assets/1638639/9f162986-fb14-4df8-9178-4f64ffa06db2">
+
+
 
 ## Liquid
 https://jekyllrb.com/docs/step-by-step/02-liquid/
 
 ### Objects
+{% raw %}
 ```
 Objects tell Liquid to output predefined variables as content on a page. Use double curly braces for objects: {{ and }}.
 
 For example, {{ page.title }} displays the page.title variable.
 ```
+{% endraw %}
+
+{% raw %}
 변수를 출력하게 해주는 객체. duble culry braces `{{}}` 사용
+{% endraw %}
+
 
 ### Tags
+{% raw %}
 ```
 Tags define the logic and control flow for templates. Use curly braces and percent signs for tags: {% and %}.
 
@@ -40,9 +54,14 @@ For example:
   </div>
 {% endif %}
 ```
+{% endraw %}
+
+{% raw %}
 로직과 컨트를 제어하는 태그. `{%`와 `%}`로 감싸진다.
+{% endraw %}
 
 ### Filters
+{% raw %}
 ```
 Filters change the output of a Liquid object. They are used within an output and are separated by a |.
 
@@ -50,6 +69,7 @@ For example:
 
 {{ "hi" | capitalize }}
 ```
+{% endraw %}
 filter는 liquid object output을 변경한다. `|`로 구분된다.
 
 ### Front Matter
@@ -65,6 +85,7 @@ html 앞부분에 `---`로 시작하는 아래 내용을 추가한다.
 
 실제론 이렇게 보인다.
 
+{% raw %}
 ```html
 ---
 ---
@@ -79,5 +100,6 @@ html 앞부분에 `---`로 시작하는 아래 내용을 추가한다.
   </body>
 </html>
 ```
+{% endraw %}
 
 

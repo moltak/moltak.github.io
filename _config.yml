@@ -60,5 +60,3 @@ timezone: "Asia/Seoul"
 kramdown:
     smart_quotes: ["apos", "apos", "quot", "quot"]
 
-theme: no-style-please
-
