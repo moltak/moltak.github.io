@@ -3,7 +3,7 @@ layout  : wiki
 title   : classic
 summary : 요새 잘듣는거
 date    : 2024-02-21 12:40:15 +0900
-updated : 2024-02-23 12:12:20 +0900
+updated : 2024-02-23 12:29:54 +0900
 tag     : classic, music
 toc     : true
 public  : true
@@ -20,5 +20,4 @@ resource: 7096BA5D-51D0-4E3D-827E-FB3CEFABF589
 
 이렇게 내용을 남겨보며 Op.9를 여러번 들어봤다. 예전부터 녹턴은 너무 많이 들어서 익숙했는데, 여전히 좋다.
 
-[Youtube 쇼팽 녹턴 Op.9 No.2](https://www.youtube.com/watch?v=tTGEo3scnq8)
-
+[![Youtube 쇼팽 녹턴 Op.9 No.2](https://img.youtube.com/vi/tTGEo3scnq8/0.jpg)](https://www.youtube.com/watch?v=tTGEo3scnq8)
