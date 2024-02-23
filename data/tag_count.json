@@ -1,11 +1,23 @@
 [
  {
+  "name": "classic",
+  "size": 1
+ },
+ {
+  "name": "classic,",
+  "size": 1
+ },
+ {
   "name": "Clojure",
   "size": 1
  },
  {
   "name": "clojure",
   "size": 2
+ },
+ {
+  "name": "github,raycast",
+  "size": 1
  },
  {
   "name": "integrat",
@@ -21,6 +33,14 @@
  },
  {
   "name": "multiplexer",
+  "size": 1
+ },
+ {
+  "name": "music",
+  "size": 1
+ },
+ {
+  "name": "music,",
   "size": 1
  },
  {
