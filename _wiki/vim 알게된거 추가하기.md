@@ -1,9 +1,9 @@
 ---
 layout:  post
-title:
+title:   vim 알게된거 추가하기
 summary:
 date:    2022-11-15 22:22:34 +0900
-updated: 2024-08-10 18:03:18 +0900
+updated: 2024-08-10 18:19:34 +0900
 tag:     vim
 toc:     true
 public:  true

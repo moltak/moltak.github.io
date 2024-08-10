@@ -1,5 +1,4 @@
 [
- "code/clojure",
- "code/clojure/http",
- "code/clojure/기본문법"
+ "clojure web server",
+ "clojure 기본문법"
 ]

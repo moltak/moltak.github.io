@@ -2,14 +2,14 @@
 layout: postindex
 title: wiki
 toc: true
-public: true
+public: false
 comment: false
 regenerate: true
 ---
 
 ## wiki items
 
-- [[vim]]
+- [[vim 알게된거 추가하기]]
   - [[viminit]]
   - [[vimwiki]]
 - [[독서]]
@@ -17,8 +17,8 @@ regenerate: true
 - [[인프라]]
   - [[AWS Copilot]]
 - [[code]]
-    - [[clojure/http]]
-    - [[clojure/기본문법]]
+    - [[clojure web server]]
+    - [[clojure 기본문법]]
 - [[work]]
   - [[work/2022]]
 - [[arc-browser]]
