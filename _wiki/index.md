@@ -10,17 +10,12 @@ regenerate: true
 ## wiki items
 
 - [[vim]]
-  - [[vimwiki_usage]]
   - [[viminit]]
-- [[언어]]
-  - [[Clojure]]
 - [[독서]]
   - [[역행자]]
 - [[인프라]]
   - [[AWS Copilot]]
 - [[/code]]
-  - [[/code/graphql]]
-  - [[/code/tmux]]
   - [[/code/clojure]]
     - [[/code/clojure/http]]
     - [[/code/clojure/기본문법]]
