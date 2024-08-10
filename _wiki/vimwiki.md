@@ -3,8 +3,8 @@ layout  : post
 title   : 빔위키 써보자
 summary : 
 date    : 2024-08-10 17:36:34 +0900
-updated : 2024-08-10 17:55:18 +0900
-tag     : vim,vimwiki
+updated : 2024-08-10 18:01:28 +0900
+tag     : [[vim]]
 toc     : true
 public  : true
 parent  : 
