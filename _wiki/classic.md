@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : classic
 summary : 요새 잘듣는거
 date    : 2024-02-21 12:40:15 +0900

@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : vimwiki 사용기
 summary : 
 date    : 2024-02-16 14:34:42 +0900

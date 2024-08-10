@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : tmux 
 summary : 이제 가까워지고 싶은
 date    : 2022-11-15 15:25:11 +0900

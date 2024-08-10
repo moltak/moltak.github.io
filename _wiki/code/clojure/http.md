@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : clojure web server
 summary : clojure에서 서버 구축하기
 date    : 2022-11-15 21:59:24 +0900

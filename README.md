@@ -102,7 +102,7 @@ latex   : false
 
 ```markdown
 ---
-layout  : wiki
+layout  : post
 title   : 제목을 적습니다
 date    : 2022-10-08 11:23:00 +0900
 updated : 2022-10-08 11:23:00 +0900

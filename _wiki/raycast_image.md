@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : raycast extension 만들기
 summary : wiki에 사용할 이미지 쉽게 업로드하기 
 date    : 2024-02-19 13:20:58 +0900

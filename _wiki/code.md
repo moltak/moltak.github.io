@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : 
 summary : 
 date    : 2022-11-17 09:17:19 +0900

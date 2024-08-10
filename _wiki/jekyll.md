@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : 지킬 학습
 summary : 기계인간님의 테마 변경 시도
 date    : 2024-02-18 17:07:51 +0900

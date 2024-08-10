@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : Vimwiki를 배우다
 summary : Vimwiki를 배우다
 date    : 2022-11-09 22:42:15 +0900

@@ -1,5 +1,5 @@
 ---
-layout: wikiindex
+layout: postindex
 title: wiki
 toc: true
 public: true

@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : vim을 다시 세팅하자
 summary : 기계인간님의 세팅에서 벗어나기 
 date    : 2024-02-19 10:34:26 +0900

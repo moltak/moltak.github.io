@@ -1,5 +1,5 @@
 ---
-layout: wiki
+layout: post
 title: Svelte 튜토리얼
 summary: Svelte 해보기
 date: 2023-01-20 21:26:15 +0900

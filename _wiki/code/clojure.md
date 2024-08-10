@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : Clojure
 summary : Clojure 정리
 date    : 2022-11-09 22:33:23 +0900

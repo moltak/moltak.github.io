@@ -1,5 +1,5 @@
 ---
-layout  : wiki
+layout  : post
 title   : Arc 브라우저를 사용하고 있다
 summary : 
 date    : 2024-02-16 15:51:49 +0900
