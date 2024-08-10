@@ -30,9 +30,9 @@ paginate_path: "/blog/page:num/"
 
 # Collections
 collections:
-    wiki:
-        output: true
-        permalink: /:collection/:path/
+  wiki:
+    output: true
+    permalink: /:collection/:path/
 
 # Comment Service
 disqus:
@@ -60,3 +60,4 @@ timezone: "Asia/Seoul"
 kramdown:
     smart_quotes: ["apos", "apos", "quot", "quot"]
 
+theme: minima
