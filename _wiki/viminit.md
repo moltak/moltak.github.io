@@ -3,8 +3,8 @@ layout  : post
 title   : vim을 다시 세팅하자
 summary : 기계인간님의 세팅에서 벗어나기 
 date    : 2024-02-19 10:34:26 +0900
-updated : 2024-02-19 12:30:21 +0900
-tag     : 
+updated : 2024-08-10 18:02:39 +0900
+tag     : vim
 toc     : true
 public  : true
 parent  : [[vim]]

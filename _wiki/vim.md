@@ -1,14 +1,14 @@
 ---
-layout: post
+layout:  post
 title:
 summary:
-date: 2022-11-15 22:22:34 +0900
-updated: 2024-02-19 12:42:01 +0900
-tag:
-toc: true
-public: true
+date:    2022-11-15 22:22:34 +0900
+updated: 2024-08-10 18:03:18 +0900
+tag:     vim
+toc:     true
+public:  true
 parent:
-latex: false
+latex:   false
 ---
 
 * TOC
