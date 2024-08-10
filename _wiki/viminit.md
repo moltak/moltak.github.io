@@ -3,11 +3,11 @@ layout  : post
 title   : vim을 다시 세팅하자
 summary : 기계인간님의 세팅에서 벗어나기 
 date    : 2024-02-19 10:34:26 +0900
-updated : 2024-08-10 18:02:39 +0900
+updated : 2024-08-10 18:05:23 +0900
 tag     : vim
 toc     : true
 public  : true
-parent  : [[vim]]
+parent  : vim
 latex   : false
 resource: B6DD30B9-51FE-49D0-AEA1-FD30DE6829C2
 ---

@@ -8,9 +8,13 @@ layout: default
   {%- endif -%}
 
   {{ content }}
+
+  <p>
+    <a href="https://github.com/vimwiki/vimwiki?tab=readme-ov-file#key-bindings">vimwiki</a> + <a href="https://jekyllrb.com/">jekyll</a> + <a href="https://pages.github.com/">github pages</a>
+  </p>
   
   {%- if site.wiki.size > 0 -%}
-    <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
+    <h2 class="post-list-heading">{{ page.list_title | default: "글" }}</h2>
     <ul class="post-list">
       {%- assign published_posts = site.wiki | where: 'public', true %}
       {%- assign sorted_posts = published_posts | sort: 'updated' %}
