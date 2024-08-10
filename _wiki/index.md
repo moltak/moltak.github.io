@@ -11,6 +11,7 @@ regenerate: true
 
 - [[vim]]
   - [[viminit]]
+  - [[vimwiki]]
 - [[독서]]
   - [[역행자]]
 - [[인프라]]
