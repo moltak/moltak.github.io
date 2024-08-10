@@ -1,9 +1,5 @@
 [
  {
-  "name": "classic",
-  "size": 1
- },
- {
   "name": "classic,",
   "size": 1
  },
@@ -32,15 +28,7 @@
   "size": 1
  },
  {
-  "name": "multiplexer",
-  "size": 1
- },
- {
   "name": "music",
-  "size": 1
- },
- {
-  "name": "music,",
   "size": 1
  },
  {
@@ -56,14 +44,6 @@
   "size": 1
  },
  {
-  "name": "terminal",
-  "size": 1
- },
- {
-  "name": "tmux",
-  "size": 1
- },
- {
   "name": "Typescript",
   "size": 1
  },
@@ -72,15 +52,7 @@
   "size": 1
  },
  {
-  "name": "경제적자유,",
-  "size": 1
- },
- {
-  "name": "린,lean",
-  "size": 1
- },
- {
-  "name": "클루지",
+  "name": "vim,vimwiki",
   "size": 1
  }
 ]

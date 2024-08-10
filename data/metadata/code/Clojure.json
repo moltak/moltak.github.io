@@ -1,1 +1,9 @@
-{"type":"wiki","title":"Clojure","summary":"Clojure 정리","parent":"code","url":"/wiki/code/clojure","updated":"2022-11-17 09:20:47 +0900","children":[]}
+{
+ "type": "wiki",
+ "title": "Clojure",
+ "summary": "Clojure 정리",
+ "parent": "code",
+ "url": "/wiki/code/clojure",
+ "updated": "2022-11-17 09:20:47 +0900",
+ "children": []
+}

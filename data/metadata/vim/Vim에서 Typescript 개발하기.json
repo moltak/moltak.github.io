@@ -1,1 +1,9 @@
-{"type":"wiki","title":"Vim에서 Typescript 개발하기","summary":"Vim을 배운 후 처음으로 혼자 환경 세팅 해보기","parent":"vim","url":"/wiki/vim/Vim에서 Typescript 개발하기","updated":"2022-11-15 22:20:07 +0900","children":[]}
+{
+ "type": "wiki",
+ "title": "Vim에서 Typescript 개발하기",
+ "summary": "Vim을 배운 후 처음으로 혼자 환경 세팅 해보기",
+ "parent": "vim",
+ "url": "/wiki/vim/Vim에서 Typescript 개발하기",
+ "updated": "2022-11-15 22:20:07 +0900",
+ "children": []
+}
