@@ -12,7 +12,8 @@ layout: default
   {%- if site.wiki.size > 0 -%}
     <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
     <ul class="post-list">
-      {%- assign sorted_posts = site.wiki | sort: 'updated' %}
+      {%- assign published_posts = site.wiki | where: 'public', true %}
+      {%- assign sorted_posts = published_posts | sort: 'updated' %}
       {%- assign reversed_sorted_posts = sorted_posts | reverse %}
       {%- for post in reversed_sorted_posts -%}
       <li>
