@@ -1,39 +1,30 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# github에 올린 user-images를 자동으로 다운로드합니다.
+# 1. blog 디렉토리에서 https://ik.imagekit.io/ 내용을 포함하는 모든 파일 목록 만들기
+echo "Searching for files containing 'https://ik.imagekit.io/'..."
+file_list=$(grep -rl 'https://ik.imagekit.io/' ./_wiki)
 
-NUM=1855714
 
-CHANGE_LIST=`git diff --exit-code --cached --name-only --diff-filter=ACM -- '*.md'`
+# 2. 위 파일 목록에서 https://ik.imagekit.io/ 파일을 읽어와 asset/images 에 다운로드
+echo "Downloading images to asset/images..."
+mkdir -p ./assets/images
 
-SUCCESS_COUNT=0
-FAIL_COUNT=0
-for CHANGED_FILE in $CHANGE_LIST; do
-    echo $CHANGED_FILE
-    DIR_NAME=`echo $CHANGED_FILE | sed -E 's,^.+/([^\.]+)\.md$,\1,'`
+IFS=$'\n'
 
-    mkdir -p ./post-img/$DIR_NAME
-    URI_LIST=`ag "https://user-images\.githubuser.*?\/$NUM\/.*?(png|jpg|gif)" -o $CHANGED_FILE`
-
-    for URI in $URI_LIST; do
-        FILE_NAME=`echo $URI | sed 's,^.*/,,'`
-        echo "TARGET: $URI"
-        curl -s $URI > ./post-img/$DIR_NAME/$FILE_NAME
-
-        if [ "$?" == "0" ]; then
-            echo "DOWNLOAD SUCCESS: $FILE_NAME"
-            sed -i '' -E 's, *https://.*('"$FILE_NAME"') *, /post-img/'$DIR_NAME'/\1 ,g' $CHANGED_FILE
-
-            git add post-img/$DIR_NAME/$FILE_NAME
-
-            SUCCESS_COUNT=$((SUCCESS_COUNT+1))
-        else
-            echo "DOWNLOAD FAIL: $FILE_NAME"
-            rm -f ./post-img/$DIR_NAME/$FILE_NAME
-            FAIL_COUNT=$((FAIL_COUNT+1))
-        fi
-    done
-    git add $CHANGED_FILE
+for file in $file_list; 
+do
+  # Extract URLs from the file
+  urls=$(grep -o 'https://ik\.imagekit\.io/[a-zA-Z0-9_/.\-]*' "$file")
+  
+  for url in $urls;
+  do
+    # Get the file name from the URL
+    filename=$(basename "$url")
+    
+    # Download the file
+    curl -s "$url" -o "./assets/images/$filename"
+    
+    # 3. https://ik.imagekit.io/ 를 asset/images 로 링크 변경
+    sed -i '' "s|$url|/assets/images/$filename|g" "$file"
+  done
 done
-
-printf "Success: %d, Fail: %d\n" $SUCCESS_COUNT $FAIL_COUNT
