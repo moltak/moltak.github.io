@@ -22,7 +22,6 @@ regenerate: true
 - [[work]]
   - [[work/2022]]
   - [[work/2024]]
-- [[jekyll]]
 - [[make_raycast_extension]]
 - [[음악]]
   - [[classic]]
