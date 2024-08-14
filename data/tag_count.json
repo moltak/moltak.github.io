@@ -4,35 +4,11 @@
   "size": 1
  },
  {
-  "name": "clojure",
-  "size": 2
- },
- {
   "name": "github,raycast",
   "size": 1
  },
  {
-  "name": "integrat",
-  "size": 1
- },
- {
-  "name": "lacinia",
-  "size": 1
- },
- {
-  "name": "leiningen",
-  "size": 1
- },
- {
   "name": "music",
-  "size": 1
- },
- {
-  "name": "reitit",
-  "size": 1
- },
- {
-  "name": "ring",
   "size": 1
  },
  {
@@ -45,6 +21,6 @@
  },
  {
   "name": "vim",
-  "size": 4
+  "size": 3
  }
 ]

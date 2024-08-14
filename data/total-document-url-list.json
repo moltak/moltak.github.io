@@ -1,8 +1,5 @@
 [
- "/wiki/AWS Copilot",
  "/wiki/classic",
- "/wiki/clojure web server",
- "/wiki/clojure 기본문법",
  "/wiki/jekyll",
  "/wiki/postgresql",
  "/wiki/raycast_image",
@@ -10,7 +7,6 @@
  "/wiki/vim 알게된거 추가하기",
  "/wiki/vim/Vimwiki를 배우다",
  "/wiki/vim/Vim에서 Typescript 개발하기",
- "/wiki/viminit",
  "/wiki/vimwiki",
- "/wiki/work/2022"
+ "/wiki/work/2024"
 ]

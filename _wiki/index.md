@@ -9,7 +9,7 @@ regenerate: true
 
 ## wiki items
 
-- [[vim 알게된거 추가하기]]
+- [[learn_vim]]
   - [[viminit]]
   - [[vimwiki]]
 - [[독서]]
@@ -21,11 +21,15 @@ regenerate: true
     - [[clojure 기본문법]]
 - [[work]]
   - [[work/2022]]
-- [[arc-browser]]
+  - [[work/2024]]
 - [[jekyll]]
-- [[raycast_image]]
+- [[make_raycast_extension]]
 - [[음악]]
   - [[classic]]
+- 일기
+  - [[2024]]
+- learning
+  - [[svelte]]
 
 ---
 

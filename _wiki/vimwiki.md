@@ -1,9 +1,9 @@
 ---
 layout  : post
-title   : vimwiki 써보자
+title   : vimwiki
 summary : 
 date    : 2024-08-10 17:36:34 +0900
-updated : 2024-08-14 21:43:27 +0900
+updated : 2024-08-14 22:07:51 +0900
 tag     : vim
 toc     : true
 public  : true
@@ -43,6 +43,6 @@ resource: 96F2F82F-CC8B-4FD3-B02E-01EBFB9B09E8
 #### 4. 파일 다운로드
 지금은 raycast의 extension을 이용해서 이미지를 업로드하고 링크를 가져오고 있다. 그런데 무료로 사용하기엔 용량 제한도 있어서 계속 사용하기엔 좀 찝찝하다. 
 기계인간님의 코드를 따라해서 나도 [image download]({{ site.github }}/blob/master/tool/save-images.sh)를 만들었다. 
-이제 이미지를 다운로드 받고 저장하므로 나도 이미지 파일을 잃어버리지 않게 되었다.
+이제 이미지를 다운로드 받고 저장하므로 이미지 파일을 잃어버리지 않게 되었다.
 
 이제 좀 더 편하게 글을 써보자!

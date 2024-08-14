@@ -3,10 +3,10 @@ layout  : post
 title   : clojure 기본 문법
 summary : clojure 시작하기를 읽으며 만든 나를 위한 cheatsheet
 date    : 2022-11-15 22:03:35 +0900
-updated : 2024-08-10 18:16:28 +0900
+updated : 2024-08-14 21:58:08 +0900
 tag     : clojure leiningen
 toc     : true
-public  : true
+public  : false
 parent  : 
 latex   : false
 ---

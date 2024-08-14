@@ -3,10 +3,10 @@ layout  : post
 title   : clojure web server
 summary : clojure에서 서버 구축하기
 date    : 2022-11-15 21:59:24 +0900
-updated : 2024-08-10 18:04:21 +0900
+updated : 2024-08-14 21:58:04 +0900
 tag     : clojure lacinia ring reitit integrat
 toc     : true
-public  : true
+public  : false
 parent  : 
 latex   : false
 ---

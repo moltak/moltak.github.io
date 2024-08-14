@@ -1,9 +1,9 @@
 ---
 layout  : post
-title   : 
+title   : pg 기록
 summary : 
 date    : 2024-03-06 09:25:53 +0900
-updated : 2024-03-06 09:32:25 +0900
+updated : 2024-08-14 22:00:12 +0900
 tag     : 
 toc     : true
 public  : true

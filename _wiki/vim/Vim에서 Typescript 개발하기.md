@@ -3,10 +3,10 @@ layout  : post
 title   : Vim에서 Typescript 개발하기
 summary : Vim을 배운 후 처음으로 혼자 환경 세팅 해보기
 date    : 2022-11-10 22:36:47 +0900
-updated : 2022-11-15 22:20:07 +0900
+updated : 2024-08-14 22:06:22 +0900
 tag     : Typescript
 toc     : true
-public  : true
+public  : false
 parent  : [[/vim]]
 latex   : false
 ---

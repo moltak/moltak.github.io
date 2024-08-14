@@ -1,9 +1,9 @@
 ---
 layout  : post
-title   : 지킬 학습
+title   : jekyll
 summary : 기계인간님의 테마 변경 시도
 date    : 2024-02-18 17:07:51 +0900
-updated : 2024-02-23 12:58:42 +0900
+updated : 2024-08-14 22:06:38 +0900
 tag     : 
 toc     : true
 public  : true

@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Svelte 튜토리얼
-summary: Svelte 해보기
+title: svelte
+summary: svelte 해보기
 date: 2023-01-20 21:26:15 +0900
-updated: 2023-01-20 21:52:31 +0900
+updated: 2024-08-14 22:07:16 +0900
 tag: svelte
 toc: true
 public: true
@@ -11,8 +11,9 @@ parent:
 latex: false
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
+
 
 # Svelte 해보기
 
