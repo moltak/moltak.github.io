@@ -50,6 +50,7 @@ google_analytics:
 google_adsense:
   client: ca-pub-3675948545737694
 
+github: "https://github.com/moltak/moltak.github.io"
 blame: "https://github.com/moltak/moltak.github.io/blame/master/_wiki"
 edit: "https://github.com/moltak/moltak.github.io/edit/master/_wiki"
 issue: "https://github.com/moltak/moltak.github.io/issues/new"
