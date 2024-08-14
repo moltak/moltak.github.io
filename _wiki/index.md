@@ -30,6 +30,7 @@ regenerate: true
   - [[2024]]
 - learning
   - [[svelte]]
+  - [[jekyll]]
 
 ---
 
