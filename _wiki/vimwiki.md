@@ -3,7 +3,7 @@ layout  : post
 title   : vimwiki
 summary : 
 date    : 2024-08-10 17:36:34 +0900
-updated : 2024-08-14 22:15:55 +0900
+updated : 2024-08-16 13:19:12 +0900
 tag     : vim
 toc     : true
 public  : true
@@ -43,6 +43,8 @@ vimwiki에만 집중하도록 설정을 많이 삭제했고 시간을 내서 많
 지금은 raycast의 extension을 이용해서 이미지를 업로드하고 링크를 가져오고 있다. 그런데 무료로 사용하기엔 용량 제한도 있어서 계속 사용하기엔 좀 찝찝하다. 
 기계인간님의 코드를 따라해서 나도 [image download]({{ site.github }}/blob/master/tool/save-images.sh)를 만들었다. 
 이제 이미지를 다운로드 받고 저장하므로 이미지 파일을 잃어버리지 않게 되었다.
+ 
+> [[간단한 이미지 업로드]] 를 통해 쉽게 이미지를 업로드할 수 있다.
 
 
 #### 5. 랜덤으로 포스트 열기
