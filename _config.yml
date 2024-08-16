@@ -2,14 +2,10 @@
 title: 기억보조용 위키
 url: "https://wiki.code-toolbox.com"
 baseurl: ""
-description: >
-    배운것들 적기
+description: ""
 
-# My information
-email: moltak@gmail.com
-author: kh
-github_username: moltak
-comment-support: utterances
+email: ""
+author: ""
 
 # Build settings
 plugins:
@@ -34,15 +30,8 @@ collections:
     output: true
     permalink: /:collection/:path/
 
-# Comment Service
 disqus:
-  id: moltak
   shortname: wiki-code-toolbox
-utterances:
-  repo: moltak/moltak.github.io
-  issue-term: url
-  label: Comment
-  branch: master
 
 google_analytics:
   ua: UA-110224147-1
@@ -51,9 +40,6 @@ google_adsense:
   client: ca-pub-3675948545737694
 
 github: "https://github.com/moltak/moltak.github.io"
-blame: "https://github.com/moltak/moltak.github.io/blame/master/_wiki"
-edit: "https://github.com/moltak/moltak.github.io/edit/master/_wiki"
-issue: "https://github.com/moltak/moltak.github.io/issues/new"
 
 timezone: "Asia/Seoul"
 
