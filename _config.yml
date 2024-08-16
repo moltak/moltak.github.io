@@ -37,7 +37,7 @@ collections:
 # Comment Service
 disqus:
   id: moltak
-  shortname: moltak 
+  shortname: wiki-code-toolbox
 utterances:
   repo: moltak/moltak.github.io
   issue-term: url
