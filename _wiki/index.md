@@ -30,7 +30,7 @@ regenerate: true
 - learning
   - [[svelte]]
   - [[jekyll]]
-- [[간단한 이미지 업로드]]
+- [[포스팅할 때 쉽게 이미지 업로드하기]]
 
 ---
 
