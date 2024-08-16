@@ -1,0 +1,26 @@
+---
+layout: default
+title: Random
+permalink: /random/
+public: true
+---
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch('/sitemap.xml')
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, "application/xml");
+
+        const urls = Array.from(xmlDoc.getElementsByTagName("loc")).map(loc => loc.textContent);
+
+        const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+
+        window.location.href = randomUrl;
+      })
+      .catch(error => {
+        console.error('Error fetching sitemap:', error);
+      });
+  });
+</script>

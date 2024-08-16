@@ -1,0 +1,46 @@
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    // 전체 페이지의 텍스트 노드를 탐색하여 [[content]] 패턴을 찾기 위한 함수
+    function replaceContentWithLink(node) {
+      // 텍스트 노드인지 확인
+      if (node.nodeType === Node.TEXT_NODE) {
+        // 정규식을 사용하여 [[content]] 패턴을 검색
+        const regex = /\[\[([^\]]+)\]\]/g;
+        let match;
+        let lastIndex = 0;
+        const fragments = [];
+
+        // 패턴이 여러 번 나타날 수 있으므로 while 루프를 사용
+        while ((match = regex.exec(node.textContent)) !== null) {
+          // 매치 이전의 텍스트와 매치된 부분을 추가
+          fragments.push(document.createTextNode(node.textContent.slice(lastIndex, match.index)));
+          lastIndex = regex.lastIndex;
+
+          // a 태그를 생성하여 링크로 변환
+          const anchor = document.createElement("a");
+          anchor.href = `/wiki/${match[1]}`; // 여기서 [[content]]의 내용을 href로 사용
+          anchor.textContent = match[1]; // 링크의 텍스트도 동일하게 설정
+
+          fragments.push(anchor);
+        }
+
+        // 마지막 매치 이후의 텍스트를 추가
+        fragments.push(document.createTextNode(node.textContent.slice(lastIndex)));
+
+        // 현재 텍스트 노드를 부모에서 제거하고, 변환된 노드를 삽입
+        const parent = node.parentNode;
+        fragments.forEach(fragment => {
+          parent.insertBefore(fragment, node);
+        });
+        parent.removeChild(node);
+      }
+      // 텍스트 노드가 아닌 경우, 자식 노드에 대해 재귀적으로 탐색
+      else {
+        node.childNodes.forEach(replaceContentWithLink);
+      }
+    }
+
+    // body 내부의 모든 텍스트 노드에 대해 작업을 수행
+    replaceContentWithLink(document.body);
+  });
+</script>
