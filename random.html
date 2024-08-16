@@ -13,7 +13,11 @@ public: true
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data, "application/xml");
 
-        const urls = Array.from(xmlDoc.getElementsByTagName("loc")).map(loc => loc.textContent);
+        const urls = Array.from(xmlDoc.getElementsByTagName("loc"))
+          .filter(i => !i.textContent.includes('tag'))
+          .filter(i => !i.textContent.includes('blog'))
+          .filter(i => !i.textContent.includes('wiki/index'))
+          .map(i=> i.textContent);
 
         const randomUrl = urls[Math.floor(Math.random() * urls.length)];
 
