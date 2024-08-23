@@ -32,6 +32,7 @@ regenerate: true
   - [[jekyll]]
 - [[포스팅할 때 쉽게 이미지 업로드하기]]
 - [[기억에 남는 글]]
+- [[Notion 2 Jekyll]]
 
 ---
 
