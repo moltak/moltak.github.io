@@ -2,6 +2,7 @@ _site
 .sass-cache
 .jekyll-metadata
 tags.*
+tags
 *.swp
 Gemfile.lock
 /node_modules
