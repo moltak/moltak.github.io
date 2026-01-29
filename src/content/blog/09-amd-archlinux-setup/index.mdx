@@ -1,0 +1,141 @@
+---
+title: "AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기"
+description: "102만원짜리 레노버 Yoga Slim7 14AKP10에 아치리눅스를 설치하고, Suspend·한글입력·스피커 문제를 해결한 과정을 정리했다."
+date: "2026/01/07"
+---
+
+## 개요
+
+맥북프로 14가 너무 무거워서 (1.5kg) 맥북에어 M5를 사려고 기다리고 있었는데, 엄청난 가성비의 레노버 랩탑이 있어서 일단 결제했다.
+
+### 가성비 대박!
+
+- **가격**: 102만원
+- **제품명**: 레노버 요가 Slim7 14AKP10
+- **CPU**: AMD 라이젠 AI7 350 - 8core 16thread
+- **RAM**: LPDDR5x 32GB 7500MHz
+- **SSD**: 500GB
+- **Display**: 2880x1800, OLED, 120Hz
+- **Speaker**: Dolby Atmos, Realtek ALC287
+- **무게**: 1.19kg
+- **OS**: Windows11 Home 포함
+
+OLED, Dolby, 32GB, Windows까지 어떻게 100만원이 되는지 참 신기하다. 이거 애플에서 나오면 바로 300만원은 할거 같음… 암튼 윈도우에서 테스트해보니 스피커, 디스플레이 너무 훌륭해서 개발 머신으로 쓰면 딱 좋겠다 싶어 아치리눅스를 설치했다.
+
+그런데 절전모드와 Speaker가 제대로 지원되지 않아 (ACPI와 Dolby 드라이버는 리눅스에서 제대로 지원 안됨) 좀 세팅해야하는 부분들이 있는데, 그걸 해결하는 과정을 적어본다.
+
+## 해결해야할거 1순위: Suspend
+
+suspend가 안된다… 요새 신형 노트북은 s2idle(S0ix, 마소의 Modern Standby)만 지원하기 때문이다. s3가 지원되야하는데… 이 랩탑은 BIOS에도 없다. suspend 하면 화면이 안깨어나는 문제가 있다.
+
+### 자주 쓰는 디버깅 명령어 (journalctl, dmesg)
+
+```bash
+# 가장 최근 부팅의 로그만 보기
+journalctl -b
+# 이전 부팅
+journalctl -b -1
+
+# 실시간으로 로그 따라가기
+journalctl -f
+
+# 특정 시간 이후
+journalctl --since "10 min ago"
+
+# 특정 서비스만
+journalctl -u nginx.service
+
+# 커널 메시지 (시간 표시)
+dmesg -T
+
+# 실시간으로 따라가기
+dmesg -w
+
+# 에러와 경고만
+dmesg --level=err,warn
+```
+
+### S3 (Suspend to RAM) vs s2idle 문제
+
+최신 노트북들은 Windows의 "Modern Standby"를 위해 전통적인 ACPI S3를 비활성화하고 s2idle만 지원한다.
+
+```bash
+cat /sys/power/mem_sleep
+# [s2idle] 이렇게 출력됨 -> Modern Standby를 지원하는 중
+```
+
+> **s2idle = Suspend to idle = S0ix**
+>
+> Intel은 [S0ix](https://www.intel.com/content/www/us/en/docs/vtune-profiler/user-guide/2023-0/s0ix-states.html), Microsoft는 [Modern Standby](https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby), 커널은 [S2Idle](https://docs.kernel.org/admin-guide/pm/sleep-states.html#suspend-to-idle)이라고 부른다. S3를 대체하도록 설계되었으며, 동일한 에너지 절약에 훨씬 빠른 웨이크업을 제공한다.
+
+### 시도 1. amdgpu-fix 스크립트 (동작 안함)
+
+```bash
+sudo vim /usr/lib/systemd/system-sleep/amdgpu-fix
+
+#!/bin/sh
+case $1 in
+  pre)
+    # suspend 전
+    ;;
+  post)
+    # resume 후 - amdgpu 강제 리셋
+    echo 1 > /sys/bus/pci/devices/*/reset 2>/dev/null || true
+    ;;
+esac
+
+sudo chmod +x /usr/lib/systemd/system-sleep/amdgpu-fix
+```
+
+### 시도 2. systemd-boot 수정 (해결!)
+
+> ⚠️ `amdgpu.dc=0` 추가 후 부팅 안됨 — 이건 하지 말 것
+
+> ✅ entries 설정에 `amd_iommu=off` 추가 후 suspend 동작!
+> (iommu = I/O Memory Management Unit)
+
+```bash
+# 현재 엔트리 확인
+ls /boot/loader/entries/
+
+# 기본 엔트리 편집
+sudo nano /boot/loader/entries/arch.conf
+
+# options 줄에 amd_iommu=off 추가
+options root=UUID=xxx-xxx rw quiet amd_iommu=off
+
+# 재부팅 후 확인
+cat /proc/cmdline
+# amd_iommu=off 들어갔는지 확인
+
+systemctl suspend
+# 깨워보기
+```
+
+### 추가: s3로 변경 시도
+
+s2idle 대신 s3(Suspend to RAM)로 변경하는게 나을수도 있겠다 싶어 시도했다.
+
+```bash
+echo deep | sudo tee /sys/power/mem_sleep
+```
+
+하지만 `cat /sys/power/mem_sleep` 결과 s2idle만 출력된다. BIOS에서 S3 옵션이 없으면 강제 전환이 불가능하다. s2idle 상태에서도 배터리 소모가 거의 없어서 여기서 마무리.
+
+## 해결해야할거 2순위: 한글 입력
+
+nimf로 먼저 시도했는데, Arch 최신버전에선 설치 스크립트가 동작 안한다. Wayland 환경에서 nimf가 제대로 동작하지 않는 문제도 있었다. Gnome이 Wayland만 지원하는데 다른 세팅된 DM이 없어서 예전부터 잘 쓰던 **fcitx**로 변경 → Wayland에서 잘 된다.
+
+한글키 매핑이 안돼서 `input-remapper-gtk` 설치 후 key remapping으로 해결!
+
+## 해결해야할거 3순위: Speaker - Dolby Atmos
+
+이 랩탑은 Realtek ALC287 사운드 칩을 사용한다. 이 칩은 리눅스에서 제대로 지원이 안되는데, 정확히는 pin 0x17이 활성화가 안된다. 이 랩탑의 스피커는 좌우 2개씩 4개가 있어서 일반 스피커 설정으론 안됨.
+
+> Realtek ALC287 linux로 검색하면 관련 내용이 많이 나온다.
+
+**HDAJackRetask**로 결국 해결. 별의별 것 다 시도하다가 이 앱을 설치하고 pin 0x17을 설정하니 소리 잘 나온다.
+
+## 후기
+
+아직도 좀 문제가 있지만 많이 해결됐다. 소리도 나름 잘나오고 suspend도 잘 된다. sway, swaylock, waybar를 이용해 화면을 잘 구성했고, 가볍게 실행할 수 있는 환경이다. 지금도 슬랙, 노션, zen, claude 등 여러가지 실행해놨는데 메모리는 9GB 정도 사용 중.
