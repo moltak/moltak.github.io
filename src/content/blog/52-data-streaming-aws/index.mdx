@@ -1,0 +1,59 @@
+---
+title: "DataStreaming Process with AWS"
+description: "AWS Kinesis Firehose, S3, Kinesis Analytics를 이용한 데이터 스트리밍 파이프라인 구축기와 배치 vs 실시간 처리 회고"
+date: "Feb 02 2021"
+---
+
+# 데이터 흐름
+
+```
+Log Sources → Kinesis Firehose → S3 (DataLake)
+                                      |
+                          Kinesis Analytics (SQL로 데이터 변환)
+                                      |              | → Kinesis Datastream → Datawarehouse
+                          Data Transform   (Python Code로 데이터 변환)
+```
+
+# 각각의 구성요소
+
+## Data Lake
+
+1. RAW 데이터를 저장하는 곳
+2. 구성: Firehose + S3
+3. AWS S3: Object Data Storage
+
+![S3 Object Data](./s3-object-data.png)
+
+   1. Object Data 라는 것은 파일 데이터 + Metadata + Globally Unique Identifier 로 이루어져 있음
+
+4. AWS Firehose: 데이터를 AWS Infra에 저장하거나 변환하는 스트림 서비스 중 하나
+
+## ETL
+
+1. Lambda
+   1. 복잡한 데이터 일때 사용. Pandas를 사용
+2. AWS Analytics
+   1. SQL을 이용해 코드를 변환할 수 있음.
+
+```sql
+CREATE OR REPLACE STREAM "DESTINATION_SQL_STREAM" (
+  ticker_symbol VARCHAR(4),
+  sector VARCHAR(12),
+  change REAL,
+  price REAL
+);
+
+CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "DESTINATION_SQL_STREAM"
+SELECT STREAM ticker_symbol, sector, change, price
+FROM "SOURCE_SQL_STREAM_001"
+WHERE sector SIMILAR TO '%TECH%';
+```
+
+## 여기까지 소감
+
+1. 사실은 Spark Streaming 혹은 Airflow 로 프로젝트를 진행하고 싶었음. 하지만 Spark 뉴비라서 S3와 Integration 하는 부분이나 일반적인 로직을 짜는데 너무 애를 먹었음. Airflow는 실시간 처리용은 아니라서 탈락
+2. Apache 의 다른 선택지도 있었지만 시간을 더 소비할 수 없었음. 안전하게 AWS Services 를 이용하기로 함.
+3. 실시간 처리와 배치 처리는 비슷하면서도 달랐음
+   1. 배치 처리가 결과를 더 빠르게 뽑아 낼 수 있었음. 디버깅도 매우 쉬웠다. 다만 단점은 실시간이 아니라는 것..
+   2. 실시간 처리는 좀 더 힘들었음. AWS Lambda를 사용했기 때문에 인터페이스에 강력이 구속됨. 그걸 맞추지 못할 시 계속 실패 발생. 결과를 보는것도 불편함.
+4. 다음에 한다면 배치 처리로 하는게 나을것 같음.

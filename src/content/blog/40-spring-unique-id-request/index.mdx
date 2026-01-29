@@ -1,0 +1,85 @@
+---
+title: "Spring Boot unique ID per request"
+description: "MDC를 이용해 Request 단위로 고유 ID를 생성하고 로그를 추적하는 방법"
+date: "Oct 25 2020"
+---
+
+## 들어가며
+
+백엔드 서버 개발을 하다 보면 Request 단위로 문제를 추적해야하는 경우가 되게 많다. 예를들어 A라는 유저가 글 저장하는 로직이 실패 했을 때, 어떤 과정을 거쳤을지 상상해보자.
+
+1. 로그인
+2. 글쓰기 버튼 클릭
+3. 글을 씀
+4. 저장하기
+
+이렇게 4 단계를 잘 거쳤으면 아마 저장이 잘 됐을것이다. 하지만 이상하게 저장이 되지 않았고 그걸 시간의 역순으로 찾아 가보는 거다. 그럴려면 최소 세가지 정보가 필요한데, 첫번째로는 유저의 unique id, 두번째로는 request의 unique id 마지막으론 timestamp이다.
+
+이 세가지 정보가 있으면 유저를 특정해내고 유저의 리퀘스트를 특정해내고 이어서 시간순으로 정렬을 할 수 있다.
+
+## MDC (Mapped Diagnostic Context)
+
+Java 진영에서 많이 사용하는 Logback과 Log4j는 MDC라는 것을 제공한다. 간단히 이야기하면 스레드에 종속된 Log context이다. Spring Boot은 request 별로 thread를 생성하여 요청을 처리하는데 이때 MDC가 존재하게 되고 여기에 추적하고 싶은 값들을 넣어 로그를 출력할 수 있게 된다.
+
+### MDC 사용하기
+
+```kotlin
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+class Slf4jMDCFilter : OncePerRequestFilter() {
+    private val headerToken: String = "X-Header-Token"
+    private val mdcTokenKey: String = "Slf4jMDCFilter.UUID"
+    private val requestHeader: String? = null
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        try {
+            val token: String = if (!isEmpty(requestHeader) && !isEmpty(request.getHeader(requestHeader))) {
+                request.getHeader(requestHeader)
+            } else {
+                UUID.randomUUID().toString().toUpperCase()
+            }
+
+            MDC.put(mdcTokenKey, token)
+
+            if (!isEmpty(headerToken)) {
+                response.addHeader(headerToken, token)
+            }
+            filterChain.doFilter(request, response)
+        } finally {
+            MDC.remove(mdcTokenKey)
+        }
+    }
+
+    private fun isEmpty(string: String?): Boolean {
+        return string?.isEmpty() ?: true
+    }
+}
+```
+
+Filter 로직을 보면 token을 생성해 MDC에 put 하는것을 볼 수 있다.
+
+### MDC 출력하기
+
+[logback의 매뉴얼](http://logback.qos.ch/manual/layouts.html)을 참고하자. MDC 섹션을 보면 `%X`와 key 값을 이용해 MDC에 저장한 값을 출력할 수 있다. 다음과 같이 `application.yml`에 세팅해주자.
+
+```yaml
+logging:
+  pattern:
+    console: "%clr(%-5p)|%d|%X{Slf4jMDCFilter.UUID}|%c{1}|%m%ex%n"
+```
+
+`%X{Slf4jMDCFilter.UUID}`가 바로 MDC에 저장한 값을 출력하는 로직이다.
+
+## 마치며
+
+이렇게 MDC를 이용해 `Unique Id per request`를 생성해냈다. 여기에 더해 각자 로직에서 중요한 정보들을 몇개 더 추가한다면 유저별로 로그를 시간대별로 분류해서 볼 수 있게 된다.
+
+## References
+
+- [Spring Boot: Setting a unique ID per request](https://medium.com/@d.lopez.j/spring-boot-setting-a-unique-id-per-request-dd648efef2b)
+- [Improved Java Logging with Mapped Diagnostic Context (MDC)](https://www.baeldung.com/mdc-in-log4j-2-logback)
+- [Logback Chapter 6: Layouts](http://logback.qos.ch/manual/layouts.html)

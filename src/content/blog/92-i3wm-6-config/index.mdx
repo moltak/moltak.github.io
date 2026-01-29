@@ -1,0 +1,318 @@
+---
+title: "i3wm 6 - 내 설정 config file"
+description: "i3wm, i3status, i3exit 설정 파일 전체 공유"
+date: "Oct 20 2020"
+---
+
+## .config/i3/config
+
+```bash
+#Needed for i3-gaps
+#hide_edge_borders both
+for_window [class="^.*"] border pixel 2
+gaps inner 10
+gaps outer 5
+
+# set modifier
+set $mod Mod4
+set $super Mod4
+set $alt Mod1
+set $term --no-startup-id i3-sensible-terminal
+
+# set font
+font pango: Noto Sans 8
+
+# Use Mouse+$super to drag floating windows to their wanted position
+floating_modifier $super
+
+#autostart
+exec --no-startup-id xsettingsd &
+exec --no-startup-id compton -b
+exec_always --no-startup-id xrandr --output HDMI-0 --auto --left-of DVI-D-0
+exec_always --no-startup-id xrandr --output DVI-D-0 --auto --right-of HDMI-0
+exec_always --no-startup-id hsetroot -center wallpaper/1329201.jpg
+exec_always --no-startup-id fcitx
+exec_always --no-startup-id copyq
+
+# auto suspend
+exec_always xautolock \
+	-time 5 -locker fuzzy_lock -notify 20 -notifier 'xset dpms force off' \
+	-time 10 -locker "i3exit suspend" &
+
+#change volume
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
+bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
+bindsym XF86AudioMute exec amixer -D pulse set Master 1+ toggle
+
+# music control
+bindsym XF86AudioNext exec mpc next
+bindsym XF86AudioPrev exec mpc prev
+bindsym XF86AudioPlay exec mpc toggle
+bindsym XF86AudioStop exec mpc stop
+
+# kill focused window
+bindsym $super+c kill
+bindsym $alt+F4 kill
+
+# change focus
+bindsym $super+h focus left
+bindsym $super+j focus down
+bindsym $super+k focus up
+bindsym $super+l focus right
+
+# move focused window
+bindsym $super+Shift+h move left
+bindsym $super+Shift+j move down
+bindsym $super+Shift+k move up
+bindsym $super+Shift+l move right
+
+#bindsym $super+Control+v split v
+bindsym $super+t split toggle
+# manipulating layout
+bindsym $Super+Shift+t layout toggle stacking splith splitv
+
+# enter fullscreen mode for the focused container
+bindsym $super+f fullscreen toggle
+
+# change container layout split
+bindsym $super+s layout toggle split
+
+# toggle tiling / floating
+bindsym $super+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $super+Shift+space focus mode_toggle
+
+# switch to workspace
+bindsym $super+Control+h workspace next
+bindsym $super+Control+l workspace prev
+
+# move focused container to workspace
+bindsym $super+Shift+1 move container to workspace 1
+bindsym $super+Shift+2 move container to workspace 2
+bindsym $super+Shift+3 move container to workspace 3
+bindsym $super+Shift+4 move container to workspace 4
+bindsym $super+Shift+5 move container to workspace 5
+bindsym $super+Shift+6 move container to workspace 6
+bindsym $super+Shift+7 move container to workspace 7
+bindsym $super+Shift+8 move container to workspace 8
+bindsym $super+Shift+9 move container to workspace 9
+bindsym $super+Shift+10 move container to workspace 10
+
+# switch to workspace
+bindsym $super+1 workspace 1
+bindsym $super+2 workspace 2
+bindsym $super+3 workspace 3
+bindsym $super+4 workspace 4
+bindsym $super+5 workspace 5
+bindsym $super+6 workspace 6
+bindsym $super+7 workspace 7
+bindsym $super+8 workspace 8
+bindsym $super+9 workspace 9
+bindsym $super+0 workspace 10
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        bindsym h resize shrink width 5 px or 5 ppt
+        bindsym j resize grow height 5 px or 5 ppt
+        bindsym k resize shrink height 5 px or 5 ppt
+        bindsym l resize grow width 5 px or 5 ppt
+        bindsym Return mode "default"
+}
+bindsym $super+r mode "resize"
+
+# mode_system suspend, reboot
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $super+Pause mode "$mode_system"
+
+# panel
+bar {
+        colors {
+        background #2f343f
+        statusline #2f343f
+        separator #4b5262
+
+        # colour of border, background, and text
+        focused_workspace       #2f343f #bf616a #d8dee8
+        active_workspace        #2f343f #2f343f #d8dee8
+        inactive_workspace      #2f343f #2f343f #d8dee8
+        urgent_workspacei       #2f343f #ebcb8b #2f343f
+    }
+        status_command i3status
+}
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $super+Shift+r restart
+
+# exit i3
+bindsym $super+q exec "i3-nagbar -t warning -m 'Really, exit?' -b 'Yes' 'i3-msg exit'"
+
+# common apps keybinds
+bindsym Print exec scrot 'Cheese_%a-%d%b%y_%H.%M.png' -e 'viewnior ~/$f'
+bindsym $super+Shift+Control+l exec i3lock -t -i ~/wallpaper/i3lock-1.png
+bindsym $super+Control+Delete exec gnome-system-monitor
+bindsym $super+Control+i exec idea;workspace 1;focus
+bindsym $super+Control+f exec firefox;workspace 2;focus
+bindsym $super+Control+c exec google-chrome;workspace 2;focus
+bindsym $super+Control+n exec usr/local/bin/lotion/Lotion/lotion;workspace 4;focus
+bindsym $super+Control+s exec slack;workspace 6;
+bindsym $super+Control+t exec "/opt/Tandem/tandem %U";workspace 6;
+bindsym $super+Control+y exec "google-chrome --app-id=cinhimbnkkaeohfgghhklpknlkffjgod";
+bindsym $super+Control+a exec $term -e pulsemixer
+bindsym $super+Control+b exec $term -e htop
+bindsym $super+Control+4 exec shutter --select
+
+bindsym $super+Return exec i3-sensible-terminal
+bindsym $super+Shift+d exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Noto Sans:size=8'"
+bindsym $super+d exec rofi -lines 12 -padding 18 -width 60 -location 0 -show drun -sidebar-mode -columns 3 -font 'Noto Sans 8'
+bindsym $Alt+Tab exec rofi -lines 12 -padding 18 -width 60 -show window -sidebar-mode -columns 3 -font 'Noto Sans 8'
+bindsym $super+e exec nautilus
+
+# window rules, you can find the window class using xprop
+assign [class=idea] 1
+assign [class=Firefox|google-chrome] 2
+assign [class=usr/local/bin/lotion/Lotion/lotion] 4
+for_window [class=Audacious] floating enable
+for_window [class=URxvt|Firefox|Geany|Evince|Soffice|libreoffice*|mpv|Ghb|Xfburn|Gimp*|Inkscape|Vlc|Lxappearance|Audacity] focus
+for_window [class=Xfburn|GParted|System-config-printer.py|Lxtask|Pavucontrol|Exo-helper*|Lxrandr|Arandr] focus
+for_window [class=copyq|shutter] floating enable resize set 640 480
+for_window [title="YouTube Music"] floating enable; resize set 1300 1000
+
+# colour of border, background, text, indicator, and child_border
+client.focused              #bf616a #2f343f #d8dee8 #bf616a #d8dee8
+client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.unfocused            #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.urgent               #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.placeholder          #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.background           #2f343f
+
+# assign workspaces to screens
+workspace 1 output HDMI-0
+workspace 3 output HDMI-0
+workspace 5 output HDMI-0
+workspace 7 output HDMI-0
+workspace 9 output HDMI-0
+workspace 2 output DVI-D-0
+workspace 4 output DVI-D-0
+workspace 6 output DVI-D-0
+workspace 8 output DVI-D-0
+workspace 10 output DVI-D-0
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# Show the sup-mail scratchpad window, if any.
+bindsym $mode+s [title="^Sup ::"] scratchpad show
+```
+
+## .config/i3status/config
+
+```bash
+general {
+        output_format = "i3bar"
+        colors = false
+        markup = pango
+        interval = 5
+        color_good = '#2f343f'
+        color_degraded = '#ebcb8b'
+        color_bad = '#ba5e57'
+}
+
+order += "load"
+order += "cpu_temperature 0"
+order += "memory"
+order += "disk /home/engeng"
+order += "disk /"
+order += "wireless wlp37s0"
+order += "volume master"
+order += "tztime local"
+
+load {
+        format = "<span background='#f59335'> %1min Load </span>"
+}
+
+cpu_temperature 0 {
+        format = "<span background='#bf616a'>  %degrees C </span>"
+        path = "/sys/class/thermal/thermal_zone0/temp"
+}
+
+memory {
+        format = "<span background='#FFEF00'> %available Free </span>"
+}
+
+disk "/" {
+        format = "<span background='#fec7cd'>  %free Free </span>"
+}
+
+disk "/home/engeng" {
+        format = "<span background='#a1d569'>  %free Free </span>"
+}
+
+wireless wlp37s0 {
+        format_up = "<span background='#b48ead'> %essid (%quality %bitrate) </span>"
+        format_down = "<span background='#b48ead'>  Disconnected </span>"
+}
+
+volume master {
+        format = "<span background='#ebcb8b'> %volume </span>"
+        format_muted = "<span background='#ebcb8b'> Muted </span>"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
+
+tztime local {
+        format = "<span background='#81a1c1'> %time </span>"
+        format_time = " %a %-d %b %H:%M"
+}
+```
+
+## i3exit
+
+```bash
+#!/bin/sh
+lock() {
+  i3lock -d -t -i ~/wallpaper/i3lock-1.png
+}
+
+case "$1" in
+    lock)
+        lock
+        ;;
+    logout)
+        i3-msg exit
+        ;;
+    suspend)
+        lock && systemctl suspend
+        ;;
+    hibernate)
+        lock && systemctl hibernate
+        ;;
+    reboot)
+        systemctl reboot
+        ;;
+    shutdown)
+        systemctl poweroff
+        ;;
+    *)
+        echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|shutdown}"
+        exit 2
+esac
+
+exit 0
+```

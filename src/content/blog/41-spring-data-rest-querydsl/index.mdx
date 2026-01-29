@@ -1,0 +1,112 @@
+---
+title: "Spring Data Rest, Querydsl Web Support"
+description: "Spring Data Rest와 Querydsl Web Support로 자동 검색 API 만들기"
+date: "Apr 04 2021"
+---
+
+## 들어가며
+
+Spring Data Rest를 사용하면 갖고 있는 Entity들에 대해 CRUD operations을 RESTful Interface로 웹에 공개할 수 있다. 예를들어 users라는 Entity가 있을 때, Spring Data Rest 설정으로 아래와 같은 결과를 얻을 수 있다.
+
+```json
+{
+  "_links" : {
+    "users" : {
+      "href" : "http://localhost:8080/users{?page,size,sort}",
+      "templated" : true
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/profile"
+    }
+  }
+}
+```
+
+### search
+
+하지만 search는 따로 구현해줘야하는데, 아래와 같은 코드를 사용할 수 있다.
+
+```java
+public interface UserRepository extends UserRepository<User, Integer>{
+    @RestResource(path="searchByName", rel="searchByName")
+    User findByName(@Param("name") String name);
+}
+```
+
+조금 아쉬운 부분은 검색하고 싶은 필드가 많다면, 모두 수작업으로 필드를 추가해야한다는 것이다.
+
+## Querydsl Web Support
+
+내 케이스의 경우 여러개의 Entity에 모든 Field가 검색 가능해야했다. 이를 해결하는 방법으로 [Querydsl Web Support](https://www.baeldung.com/rest-api-search-querydsl-web-in-spring-data-jpa)를 고려할 수 있다.
+
+### build.gradle
+
+```java
+plugins {
+    id "org.jetbrains.kotlin.kapt" version '1.2.71'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.71'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    kapt "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+}
+```
+
+### GenericModelRepository
+
+```java
+class GenericModelRepository<T, ID : Serializable?, S : EntityPath<T>?> :
+    QuerydslJpaRepository<T, ID>,
+    QuerydslBinderCustomizer<S> {
+
+    constructor(
+        entityInformation: JpaEntityInformation<T, ID>,
+        entityManager: EntityManager
+    ) : this(entityInformation, entityManager, SimpleEntityPathResolver.INSTANCE)
+
+    constructor(
+        entityInformation: JpaEntityInformation<T, ID>,
+        entityManager: EntityManager,
+        resolver: EntityPathResolver
+    ) : super(entityInformation, entityManager, resolver)
+
+    override fun customize(bindings: QuerydslBindings, t: S) {
+        bindings
+            .bind(String::class.java)
+            .first<StringPath> { path, value -> path.equalsIgnoreCase(value) }
+    }
+}
+```
+
+여러개의 Repository가 있기 때문에 GenericModelRepository를 만들어 customize를 한번에 해결할 수 있다.
+
+### UserRepository
+
+```java
+@RepositoryRestResource(collectionResourceRel = "users", path = "users")
+interface UserRepository :
+    PagingAndSortingRepository<UserEntity, Int>,
+    QuerydslPredicateExecutor<UserEntity>,
+    QuerydslBinderCustomizer<QUserEntity> {}
+```
+
+## 마치며
+
+위와같이 작업을 마치면 다음과 같은 API들을 사용할 수 있게된다.
+
+```
+{BASE_URL}/users?id=1
+{BASE_URL}/users?email=example@email.com
+
+기타 등등.. 모든 field에 대해 검색이 가능해짐.
+```
+
+## References
+
+- [Introduction to Spring Data REST](https://www.baeldung.com/spring-data-rest-intro)
+- [Spring Data REST Reference Guide](https://docs.spring.io/spring-data/rest/docs/current/reference/html/)
+- [REST Query Language with Querydsl Web Support](https://www.baeldung.com/rest-api-search-querydsl-web-in-spring-data-jpa)

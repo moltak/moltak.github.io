@@ -1,0 +1,44 @@
+---
+title: "Kafka 설치하고 실행하기"
+description: "Kafka 다운로드부터 메세지 송수신까지 간단하게 따라하는 퀵스타트 가이드"
+date: "Oct 09 2020"
+draft: false
+---
+
+# Reference
+
+[https://kafka.apache.org/quickstart](https://kafka.apache.org/quickstart)
+
+# 간단 설명
+
+kafka는 distributed event streaming platform으로 pub/sub 기능과, 영구적인 스토리지, 이벤트 스트리밍 processing을 지원하고 하루에 1조의 이벤트를 처리할 수 있다. alternative로는 Pulsar와 RabbitMQ가 있고 요새는 Kafka를 대부분 사용하고 있는것 같다. stackoverflow도 매우 활성화 되어있으며 여러 언어를 지원한다. (2020/10/09 현재 17개)
+
+이 글은 kafka 를 다운, 설치, 실행, 메세지 송수신을 해보기 위한 글이다. 사실 매우 간단하므로 아래 코드를 천천히 따라하면 메세지가 오가는 것을 볼 수 있을 것이다.
+
+# 다운 → 메세지 전송 → 받기
+
+```bash
+wget http://mirror.navercorp.com/apache/kafka/2.6.0/kafka_2.13-2.6.0.
+
+tar -xzf kafka_2.13-2.6.0.tgz
+
+cd kafka_2.13-2.6.0
+
+# Start the ZooKeeper service
+# Note: Soon, ZooKeeper will no longer be required by Apache Kafka.
+# ZooKeeper is a centralized service for maintaining configuration information,
+# naming, providing distributed synchronization, and providing group services
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start the Kafka broker service
+bin/kafka-server-start.sh config/server.properties
+
+# create a topic
+bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
+
+# write some topic
+bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+
+# read the events
+bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+```

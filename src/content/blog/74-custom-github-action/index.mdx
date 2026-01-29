@@ -1,0 +1,76 @@
+---
+title: "Custom Github Action 개발하기"
+description: "커밋 메세지에 [배포조심] 표시를 감지하는 Custom Github Action을 만드는 과정"
+date: "Feb 17 2022"
+---
+
+## 시작
+
+회사에서 A, B 팀이 함께 코드를 Prod에 배포해야하는 기능이 있었다. 이 기능은 A팀과 B팀에 모두에게 파일 하나를 수정하는 간단한 일이었지만 사용자가 자주 지나다니는 곳을 업데이트하는 꽤 중요한 일이었다. dev에서 테스트를 마치고 Prod에 배포하는 때가 왔는데, A팀에선 티켓에 파묻혀 일하던 중 위에서 언급한 커밋을 잊고 배포를 진행했다. 제품의 어떤 부분이 좀 이상하게 동작한다는걸 직원이 찾았고 10분만에 해결하긴 했지만 아찔한 순간이었다.
+
+위와같은 일은 종종 벌어지고. 문제를 방지하기 위한 방법은 여럿이 있다. 나는 좀 더 개발자 친화적인 방법을 생각해봤고 **commit 메세지에 어떤 표시**를 남겨두어 PR, deploy 할 때 미리 알 수 있게 하는 방법을 고민해봤다.
+
+다음과 같은 방법을 생각했다.
+
+1. 개발자는 "중요"한 커밋에 표시를 남김. **\[배포조심\]** 정도면 될것 같다.
+2. Github Action으로 배포하려고 할 때, **\[배포조심\]**이 포함되어 있는 커밋이 있는지 확인한다.
+3. **\[배포조심\]**이 포함되어 있다면 사용자에게 한번 더 확인 받은 후 배포를 진행한다.
+
+위와같은 목표를 달성하기 위해 찾아본 action가 있었다.
+
+## 후보
+
+1. [https://github.com/GsActions/commit-message-checker](https://github.com/GsActions/commit-message-checker)
+   - commit 메세지를 확인하고 error를 발생시킨다.
+   - error가 발생할 경우 다음 스텝으로 넘어갈 수 없음
+2. [https://github.com/Khan/pull-request-comment-trigger](https://github.com/Khan/pull-request-comment-trigger)
+   - pr의 메세지와 코멘트를 보고 reaction을 유도함
+   - reaction이 있을 때, 다음 행동으로 이어질 수 있음
+3. [https://github.com/tim-actions/commit-message-checker-with-regex](https://github.com/tim-actions/commit-message-checker-with-regex)
+   - pr에서 커밋 메세지를 확인하고 에러 발생
+   - 첫번째와 거의 흡사함.
+
+찾아보면 더 다양한 후보가 있겠지만 마켓플레이스에서 30분정도 뒤지다가 이정도면 나와 인연이 없는 것 같고 그냥 만들기로 했다...
+
+## 설계
+
+내가 원하는 기능을 위에 적었지만 더 간략하게 표시하면 다음과 같다.
+
+1. **\[배포조심\]** 커밋 감지
+   - **\[배포조심\]** 있을 때 reaction 생성. 👍 👎
+   - 👍 누르면 그 다음 액션 시작
+   - 👎 누르면 종료
+   - \[배포조심\] 없으면 그 다음 액션 시작
+2. \[배포조심\]은 원하는 문자열로 넣게 하자.
+
+## 배끼기
+
+위에 후보군 중에 commit-message-checker와 pull-request-comment-trigger를 합치면 될것 같다.
+
+근데 먼저 개발환경 부터 좀 알아보자.
+
+### 개발환경 세팅
+
+#### 1. Github Actions 로컬 개발 환경 구성하기
+
+[Github Actions 로컬 개발 환경 구성하기](https://blog.burt.pe.kr/posts/skyfe79-blog.contents-980082002-post-26/) 글을 먼저 참고 해보자.
+
+Github Action은 로컬에 테스트환경이 없으면 겁나 push 하면서 테스트를 해야한다. 나는 계속 이렇게 했는데 너무 힘들더라. 그리고 누군가는 답을 찾아냈다. 일단 시키는대로 한다.
+
+- [이 커밋](https://github.com/moltak/git-commit-message-check-and-then/commit/2eb64311d66ae8cf8da761169c234eb74e003fed)에 완료된 로컬 환경 세팅이 포함되어 있다.
+- .env 파일을 만들고 `GITHUB_TOKEN=ghp_............` 을 넣어라
+- run.sh 를 실행하면 build 후에 github action을 실행한다.
+
+#### 2. 나만의 GitHub Actions 만들기
+
+[나만의 GitHub Actions 만들기](https://velog.io/@adam2/%EB%82%98%EB%A7%8C%EC%9D%98-GitHub-Actions-%EB%A7%8C%EB%93%A4%EA%B8%B0JS%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC) 여길 보고 대략적인 문법을 파악해보자.
+
+아래와 같은 순서로 커스텀 깃헙 액션을 만들 수 있다.
+
+1. action.yml 에서 인터페이스 정리
+
+## References
+
+- [Github Actions 로컬 개발 환경 구성하기](https://blog.burt.pe.kr/posts/skyfe79-blog.contents-980082002-post-26/)
+- [나만의 GitHub Actions 만들기(JS를 이용하여)](https://velog.io/@adam2/%EB%82%98%EB%A7%8C%EC%9D%98-GitHub-Actions-%EB%A7%8C%EB%93%A4%EA%B8%B0JS%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC)
+- [(Github official) creating a javascript action](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)

@@ -1,0 +1,66 @@
+---
+title: "Enzyme test"
+description: "React Enzyme 테스트 시도 기록"
+date: "Nov 12 2019"
+---
+
+테스트를 제대로 작동시키는덴 실패했지만...... 일단 기록 남김.
+
+아래 사이트를 참고했고 다음과 같은 방법으로 테스트를 진행하려함.
+
+- https://github.com/airbnb/enzyme/blob/081554e6295164ac88023823e352d06be9fa4e23/packages/enzyme-test-suite/test/shared/hooks/useState.jsx
+- https://dev.to/theactualgivens/testing-react-hook-state-changes-2oga
+- https://itnext.io/testing-components-built-using-react-hooks-with-jest-enzyme-edb87d703756
+- https://velog.io/@velopert/react-testing-with-enzyme
+
+Enzyme.configure 을 호출 해주고 mount를 이용해서 컴포넌트 full-rendering을 할 수 있다. useHistory를 사용하기 위해 `<MemoryRouter>`로 감싸줘야한다. 하지만 이렇게해도 state를 사용하는 방법을 잘 모르겠더라..
+
+그래서 방법을 바꿔 viewmodel을 만들어 동작을 테스트해보려한다.
+
+```typescript
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import Enzyme, { shallow, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+import TemplateComponent from './TemplateComponent';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+describe('TemplateComonentTest', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(
+      <MemoryRouter>
+        <TemplateComponent />
+      </MemoryRouter>
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('7문제 이상 선택되면 PageContainerComponet의 instace가 2개가 되야함.', () => {
+    wrapper.setState([[], []]);
+
+    wrapper.setState([
+      { id: 0, content: '0^0', height: 30 },
+      { id: 1, content: '1^1', height: 30 },
+      { id: 2, content: '2^2', height: 30 },
+      { id: 3, content: '3^3', height: 30 },
+      { id: 4, content: '4^4', height: 30 },
+      { id: 5, content: '5^5', height: 30 },
+      { id: 6, content: '6^6', height: 30 },
+      { id: 7, content: '7^7', height: 30 },
+      { id: 8, content: '8^9', height: 30 },
+      { id: 9, content: '9^9', height: 30 }
+    ]);
+
+    wrapper.setState([]);
+
+    expect(wrapper.state().length).toEqual(3);
+  });
+});
+```

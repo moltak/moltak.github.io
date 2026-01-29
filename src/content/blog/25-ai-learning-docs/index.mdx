@@ -1,0 +1,71 @@
+---
+title: "AI 학습 요새 가장 많이 봐야하는 문서"
+description: "AI/ML 학습 일지 — 프로젝트, 용어 정리, 학습 방향"
+date: "Aug 09 2025"
+draft: false
+---
+
+## AI 공부
+
+매일 조금씩이라도 공부해서 정보를 남기자. 이 페이지 들어온지도 오래됐네. 그냥 시간 순으로 뭘 했는지라도 적어보자
+
+### 2025/08/16
+
+- LLM API를 사용해서 [파슬리베이 상담 챗봇을](https://parsley-bay.com/) 만듬
+  - 기획 - 프론트 - 백엔드 - LLM API 연동까지 총 3-4시간 사용
+  - Coding Agent들이 아직도 OpenAI의 Responses API를 제대로 못씀
+    - 엄청나게 가이드해야 했다. 담부턴 완성된 코드를 컨텍스트로 넣어줘야겠음.
+
+### 2025/08/13
+
+- 북클럽 발표자료 만듬
+  - 자료를 만들며 내 학습방향, 목표에 대해 정리
+  - OpenAI 연구원급 개발자가 될수는 없음. 투자비(시간)이 몇년 단위 필요
+  - ChatGPT 사용할줄 아는 사람이 0, OpenAI 연구원이 1 이라면 0.5가 목표
+    - 새로운 알고리즘, 모델을 만들진 못하더라도 기존 알고리즘과 모델에 숙달되고 finetuning 할 수 있을 정도면 됨
+
+### 2025/08/12
+
+#### AI 프로젝트
+
+1. 회사 기안 자료 타당성 검토 프로젝트 - LLM, RAG - 6월부터 시작했고 거의 완료 중
+2. speaker-voice-recognition
+   1. 여러 사람이 대화하는 음성 파일에서 원하는 사람의 발화만 추출하기
+   2. 여러 시도를 했음 - pyannote segmentation, audio 를 사용
+   3. 벡터를 만들고 classification 을 하면 되겠다
+      - 근데 내 16g mac mini에선 segmentation이 넘 느림
+   4. google colab 결제 - a100으로 시도
+      - diarization이 50초 만에 끝났다
+      - 내 맥미니에선 50분동안 결과가 안나왔음
+
+## AI 관련 단어
+
+- GPT - Generative Pre-trained Transformer (생성형 미리 학습된 트랜스포머) - 텍스트 생성에 초점
+- BERT - Bidirectional Encoder Representations from Transformer (언어이해, 질의 응답, 텍스트 분류 등, 문맥을 파악하는 중점)
+- 증류, pruning, MoE, 오토리그레시브, 트랜스포머 모델, RLHF
+- ASL (AI Safety Level), CBRN(화생방핵)
+- 기계적 해석가능성 (Mechanical Interpretability)
+- LLM 그루밍
+
+### 기본 용어
+
+- 샘플/특성(feature), 독립변수 x, 종속변수 y, 가중치, 편향
+- 비용 함수(cost function) = 손실 함수(loss function) = 오차 함수(error function) = 목적 함수(objective function)
+- Linear Regression — 평균제곱오차가 작은 거 찾기
+- Logistic Regression — Binary Classification
+- 활성화 함수: 시그모이드, 소프트맥스, ReLU, Leaky ReLU, Step Function
+- CBOW(Continuous Bag of Words), 스킵그램(Skip-gram)
+- TensorFlow, PyTorch, Hugging Face, scikit-learn
+
+### 트랜스포머 계열
+
+- GPT-계열 (Auto-regressive 트랜스포머 모델)
+- BERT-계열 (Auto-encoding 트랜스포머 모델)
+- BART/T5-계열 (Sequence-to-sequence 트랜스포머 모델)
+
+## 참고자료
+
+- [Hugging Face LLM Course](https://huggingface.co/learn/llm-course/ko/chapter1/5)
+- [NN-SVG](http://alexlenail.me/NN-SVG/index.html)
+- [10가지 프로젝트로 끝내는 트랜스포머 활용 가이드 with 파이토치](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=357906730)
+- [Do it! BERT와 GPT로 배우는 자연어 처리](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=283859570)

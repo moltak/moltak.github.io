@@ -1,0 +1,146 @@
+---
+title: "Retool - Repeatables with user interactions"
+description: "Retool Repeatables를 동적으로 제어하고 사용자 인터랙션을 처리하는 방법"
+date: "Dec 27 2025"
+---
+
+## 개요
+
+retool의 Repeatables를 동적으로 제어하는 방법을 살펴본다. 할때마다 좀 헷갈려서 정리를 해놔야… 좀 쉽게 할거 같다.
+
+## 방법
+
+### Retool Approach
+
+Repeatables에서 각 아이템의 component에 접근하고 싶을 때, `Enable instance values`를 체크한다.
+
+위 체크 박스를 활성화 했다면 아래와 같이 `instanceValues`를 통해 data에 접근할 수 있게된다.
+
+```javascript
+const formData = gridView1.instanceValues
+
+console.log('formData: ', formData)
+
+const selected = formData
+  .filter(i => i.checkbox1)
+  .map(i => i.primaryKey)
+  .join(', ')
+
+console.log(selected)
+
+return selected
+```
+
+기억해야할 점은 key의 값은 `formDataKey`와 매핑된다. 출력된 `formData`의 키가 `checkBox`로 표기된 것은 `Form data key`에 적어둔 것과 같은것을 알 수 있다.
+
+아래 두 함수를 써서 instance 값을 초기화할 수 있다.
+
+```bash
+gridView1.clearInstanceValues()
+gridView1.resetInstanceValues()
+```
+
+### 예제: check box
+
+checkbox가 채워진 값만 가져오는 예제를 아래에서 봐보자. 먼저 transformer를 만들고 아래와 같이 코드를 작성한다.
+
+```javascript
+// transformer
+const formData = {{ gridView1.instanceValues }}
+
+return formData.
+  filter(i => i.checkBox)
+  .map(i => i.primaryKey)
+  .join(', ')
+```
+
+그 후 js query를 만들어 아래처럼 transformer의 값을 가져오게 한다.
+
+```javascript
+// query1
+const values = transformer1.value
+
+console.log('values: ', values)
+
+return values
+```
+
+checkbox의 inspector에서 이벤트를 연결한다.
+
+이렇게 하면 이전 동작의 결과를 가져오게된다. 그렇다고 아래처럼 변경하면 values는 항상 undefined가 된다… 뭐지?
+
+```javascript
+// query1 -> gridView1.instanceValues를 직접 가져오게 변경
+const values = gridView1.instanceValues
+
+console.log('values: ', values) // values는 항상 undefined
+
+return values
+```
+
+여기서 함정이 있는게, 출력되는 값과 state에 저장되는 시점에 차이가 발생한다.
+
+### My Approach
+
+내 방법은 훨씬 복잡한데 제대로 동작한다. 나는 3개의 파일이 필요하다.
+
+#### 1. init demo data js
+
+```javascript
+// init demo data - Run this query on page load 활성화 할 것
+const demoData = [
+  {
+    title: "Fluffy",
+    selected: false
+  },
+  {
+    title: 'Whiskers',
+    selected: false
+  },
+  {
+    title: 'Fido',
+    selected: false
+  }
+]
+
+variable1.setValue(demoData)
+
+return demoData
+```
+
+#### 2. variable1
+
+empty array로 설정
+
+#### 3. change query js
+
+```javascript
+const changeSelected = (i, checkBox) => {
+  if (i.title === checkBox.formDataKey) {
+    return {
+      title: i.title,
+      selected: checkBox.value
+    }
+  }
+
+  return i
+}
+
+variable1.setValue(
+  variable1.value.map(i => changeSelected(i, checkbox1))
+)
+
+console.log(JSON.stringify(variable1.value, null, 2))
+
+return variable1.value
+```
+
+#### 4. event handler 설정
+
+formData 키를 demoData에서 설정해준 title을 정확히 설정해야함.
+
+이렇게 하면 variable1 state에 제대로 값이 저장된다.
+
+## 참고자료
+
+- [Build custom views using repeatable components | Retool Docs](https://docs.retool.com/apps/guides/layout-structure/repeatables#aggregate-form-components)

@@ -1,0 +1,74 @@
+---
+title: "Tailwindcss 101 - 학습곡선 평탄화"
+description: "백엔드 개발자의 Tailwind CSS 입문 세미나 - 컨셉, 문법, flex 기본"
+date: "Aug 09 2025"
+---
+
+# 개요
+
+백엔드 개발에 더 익숙한 저는 css에 학습과 사용에 대해 어려움을 겪었습니다. 약 5년전 마지막으로 했던 FE 프로젝트에서 css를 사용하며 느꼈던 막막함과 어려움은 아직도 기억에 남아있습니다. 지금은 LLM이 있어 훨씬 접근이 쉽지만 학습량과 전문 Frontend의 노하우를 배우기는 여전히 너무 어렵습니다. 로직을 잘 작성할 수 있는 저는 FE의 서비스로직은 문제가 되지 않지만 CSS는 너무 어렵습니다.
+
+하지만 tailwindcss는 바로 도움이 되더군요. 물론 학습커브가 있지만 일관된 규칙을 갖고 있고 css를 그냥 쓰는 것 보단 더 빠른 효과를 얻을 수 있기때문에 저와같은 배경을 가진 사람이 사용하기 좋다고 생각합니다.
+
+이 세미나에선 tailwindcss의 컨셉을 설명하고 tailwindcss의 일관된 규칙에 대해 이야기합니다. 처음에 계단 처럼 약간의 높은 턱이 있지만 그 턱을 넘으면 평평하다는 느낌을 받았습니다. 이 세미나는 턱을 조금 넘어보는걸 목표로합니다.
+
+tailwindcss는 modern web 개발을 위한 모든 기능을 제공하지만 내용이 너무 많으므로 이 세미나에선 기본 컨셉, 문법, flex와 함께 제가 문서 보는 방법을 함께 설명합니다.
+
+# Taliwindcss 컨셉
+
+## 1. mobile first
+
+- 작은 화면을 먼저 타게팅
+- 다양한 미디어 쿼리를 지원함 (sm, md, lg, xl, 2xl)
+- 미디어 쿼리를 사용하지 않았을 땐, 모든 화면에 동일하게 적용
+- 만약 `sm:w-32` 같이 미디어 쿼리를 사용했다면 화면 사이즈가 sm이 넘었을 때 `w-32`가 적용됩니다.
+- breakpoint prefix: [Responsive design - Core concepts](https://tailwindcss.com/docs/responsive-design)
+- [demo](https://tailwindcss.com/)
+
+## 2. class naming
+
+엄격한 클래스 네이밍 설계
+
+- **[padding](https://tailwindcss.com/docs/padding)**
+  - `p-40`, `pt-40`, `pb-40`, `pr-40`, `pl-40`, `ps-40`, `pe-40`, `px-40`, `py-40`
+  - t,b,r,l,s,e,x,y 에 집중 해서 보세요
+  - [Adding horizontal padding](https://tailwindcss.com/docs/padding#adding-horizontal-padding)
+- **[margin](https://tailwindcss.com/docs/margin)**
+  - `m-40`, `mt-40`, `mb-40`, `mr-40`, `ml-40`, `ms-40`, `me-40`
+- **[width](https://tailwindcss.com/docs/width)**
+  - `w-40`, `w-sm`, `w-md`, `w-lg`, `w-xl`, `w-2xl`, `w-3xl`, `w-1/3`, `w-9/10`
+- **[height](https://tailwindcss.com/docs/height)**
+  - `h-40`, `h-screen`, `h-max`, `h-1/3`, `h-9/10`
+- **size**
+  - `size-40`, `size-full`, `size-max`
+- **[hover, focus](https://tailwindcss.com/docs/hover-focus-and-other-states#hover-focus-and-active)**
+  - `<button class="hover:bg-gray-100 size-40 pt-40 bg-sky-300/10">button</button>`
+  - `hover:bg-gray-100`, `focus:bg-red-100`
+- **[color](https://tailwindcss.com/docs/colors)**
+  - `bg-sky-500`, `text-sky-500`, `bg-sky-500/10`
+
+## 3. container
+
+- **[flex](https://tailwindcss.com/docs/flex)**
+  - flex - 자식 dom을 순서대로 렌더링 - 1차원
+  - WEB은 flex를 정~말 많이 씀
+
+# 저도 초보라 더 자세한건 모름 ㅋ 대신 문서를 보는 법을 알려드림
+
+1. 메인 페이지에 좋은 내용이 많다!
+   - [Tailwind CSS](https://tailwindcss.com/)
+   - 가볍게 일단 한번 보기
+
+2. [CORE CONCEPTS](https://tailwindcss.com/docs/styling-with-utility-classes)에 기본적인 내용이 다 있으니 여러번 보기
+   - 특히 `Styling with utility classes`, `Hover, focus, and other states`, `Responsive design`, `Colors`가 내용이 참 좋더군요.
+
+3. 근데 여전히 우린 초보라 뭐 만들때 어려움. 특히 오브젝트를 배치하거나 스타일링을 줄땐 여전히 어렵더군요.
+   - 이런 경우 LLM에게 그냥 묻자.
+   - 그리고 LLM이 사용한 class 들을 tailwindcss 에서 다시 찾아서 자세히 보세요. LLM이 추가한것 중 필요없는건 지우시고
+   - tailwindcss 페이지에서 command+k 누르면 빠르게 문서를 찾을 수 있어요.
+   - 모든 페이지엔 contents 가 있어요. 샘플도 많으니 같이 보세요.
+
+4. 어느정도 익히면 [shadcn](https://ui.shadcn.com/)을 같이 써보세요
+   - shadcn은 tailwindcss"만" 사용해서 컴포넌트를 만들었어요
+   - 설치하면 컴포넌트가 우리 코드로 들어옴. 그리고 모두 tailwindcss이기때문에 편하게 수정 가능
+   - [building blocks](https://ui.shadcn.com/blocks)들도 미리 준비되어 있음

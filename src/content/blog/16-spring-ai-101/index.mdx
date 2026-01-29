@@ -1,0 +1,206 @@
+---
+title: "Spring AI 101"
+description: "Spring AI로 여러 LLM을 통합 인터페이스로 사용하기 — 설치부터 채팅 구현까지"
+date: "Dec 26 2025"
+draft: false
+---
+
+## 개요
+
+OpenAI, Claude, Gemini 등 여러 모델들의 api 응답이 미묘하게 다르기때문에 하나씩 맞추려다 보면 오류가 자주 발생한다. input 포멧도 다르고 output 포멧도 다르다보니 하나하나 맞추기가 조금 번거롭다.
+
+또한 openai는 conversation, thread api를 사용해서 chatting history를 자동으로 저장할 수 있지만 다른 AI는 그런게 없으며 history 저장 기능이 없으면 대화 맥락을 이어가기 위해 추가 코드가 필요하다.
+
+이걸 다 따로 구현할수도 있으나, 굳이 그렇게 하지않고 [Spring AI](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_chat_memory)를 사용해서 한번에 처리하려 한다.
+
+> 주의: 현재 Spring AI는 [Spring Boot 3.4, 3.5를 지원함](https://docs.spring.io/spring-ai/reference/getting-started.html)
+
+현재 1.1.2가 최신버전이고 2.0.0-SNAPSHOT 까지 있는 상태. 다만 2.0.0-SNAPSHOT도 SpringBoot 3.5까지 서포트되는 버전이라 좀 애매한 감이 있다
+
+### 설치
+
+설치도 상당히 애매한데, 문서가 양이 많고 페이지마다 내용이 약간 달라서 인스톨부터 혼란을 겪었다. [Spring Intializer](https://start.spring.io/)를 통해 디펜던시를 확인했고 설치했다.
+
+```kotlin
+extra["springAiVersion"] = "1.1.2"
+
+dependencies {
+  implementation("org.springframework.ai:spring-ai-starter-model-openai")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+  }
+}
+```
+
+## 구조
+
+Spring AI는 아래와 같이 AI를 호출하는 두개의 통합된 API를 제공한다. ChatClient API와 ChatModel API가 그것인데, ChatClient API가 더 많은 기능을 제공한다.
+
+### Chat Client API
+
+1. Chat Client API는 모델을 직접 사용하면서 다양한 기능을 제공한다
+   1. 특히 Advisors를 제공하는데, RAG, Memory등 다양한 기능을 함께 제공하므로 상당히 쓸만하다.
+   2. 채팅같은 다소 복잡한 플로우가 필요하다면 Chat Client API를 사용하는게 나아보인다.
+
+```java
+// 예제 코드. MessageChatMemory 를 확인할 수 있다.
+ChatClient.builder(chatModel)
+    .build()
+    .prompt()
+    .advisors(
+        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+        QuestionAnswerAdvisor.builder(vectorStore).build()
+    )
+    .user(userText)
+    .call()
+    .content();
+```
+
+### Chat Model API
+
+1. LLM을 다루는데 통합된 기능을 제공한다.
+   1. OpenAI, Gemini, Claude를 같은 인터페이스를 통해 접근할 수 있으므로 엄청난 편리함을 제공한다.
+      1. LLM 모델마다 인터페이스가 미묘하게 달라 직접 LLM의 API를 통합하면 어려움을 겪게 되는 경우가 많다. 이때 ChatModel API가 매우 도움이 된다.
+   2. Tool Calling, ETL 등도 제공되므로 요약등 단순한 플로우에 사용하기 좋아보인다.
+
+## 설치 및 초기화
+
+1. build.gradle
+
+```kotlin
+extra["springAiVersion"] = "1.0.0"
+
+dependencies {
+  implementation("org.springframework.ai:spring-ai-starter-model-openai")
+}
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+  }
+}
+```
+
+2. application yaml 설정
+
+```yaml
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-5-mini-2025-08-07
+```
+
+3. 초기화 및 사용 — spring autoconfiguration을 이용해서 아래와 같이 간단히 사용 가능
+
+```java
+public class AiChatController {
+
+  private final ChatModel chatModel;
+  private final ChatClient.Builder chatClientBuilder;
+
+  private String sendViaChatClient() {
+    // ChatClient 초기화
+    val client = chatClientBuilder.build();
+    return client.prompt().user("안녕!").call().content();
+  }
+
+  private String sendViaChatModel() {
+    // ChatModel 초기화
+    val options = OpenAiChatOptions.builder()
+        .model("gpt-5-mini-2025-08-07")
+        .temperature(1.0)
+        .build();
+    val res = this.chatModel.call(new Prompt("안녕!", options));
+    return res.getResult().getOutput().getText();
+  }
+}
+```
+
+## 채팅 구현
+
+ChatMemory를 사용해서 유저의 이전 대화를 기억하도록 구현했다. 이전 메세지에서 내 이름은 kh라고 알려줬고 기억하는지 테스트해봤다.
+
+채팅을 기억하는 방법은 ChatMemory, ChatHistory 두개가 있다. ChatMemory는 대화의 맥락을 기억하는것. ChatHistory는 전체 대화를 기억하는 건데, Spring AI는 ChatMemory를 지원한다. ChatHistory는 Spring AI의 관심사는 아니라서 직접 구현해야함
+
+> [Chat Memory, Chat History 차이점](https://docs.spring.io/spring-ai/reference/api/chat-memory.html#_memory_in_chat_client)
+> - **Chat Memory**. The information that a large-language model retains and uses to maintain contextual awareness throughout a conversation.
+> - **Chat History**. The entire conversation history, including all messages exchanged between the user and the model.
+
+> ChatHistory — If you need to maintain a complete record of all the messages exchanged, you should consider using a different approach, such as relying on Spring Data for efficient storage and retrieval of the complete chat history.
+
+나는 아래와 같이 ChatMemory코드를 작성했고 기대한대로 동작하는걸 확인
+
+```java
+public class AiChatController {
+
+  private final ChatClient chatClient;
+
+  public AiChatController(ChatClient.Builder chatClientBuilder, ChatMemoryRepository chatMemoryRepository) {
+    val chatMemory = MessageWindowChatMemory.builder().chatMemoryRepository(chatMemoryRepository)
+        .build();
+
+    this.chatClient = ChatClient.builder(chatModel)
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+        .defaultOptions(ChatOptions.builder()
+            .temperature(1.0)
+            .build())
+        .build();
+  }
+
+  @PostMapping
+  public ChatMessage sendChatMessage(
+      @PathVariable("id") String chatId,
+      @RequestBody ChatRequestBody body
+  ) {
+    val res = sendViaChatClient(chatId, body.message);
+    return Factory.createChatMessage("assistant", res);
+  }
+
+  private String sendViaChatClient(String chatId, String message) {
+    return this.chatClient.prompt()
+        .user(message)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chatId))
+        .call()
+        .content();
+  }
+
+  record ChatRequestBody(String message) {
+
+  }
+
+}
+```
+
+## 버그
+
+1. Spring AI 1.1.2를 사용하면 openai call을 못하고 아래와 같이 extra_body 에러가 발생했다. 모델을 4.1, 5, 5.1로 여러개 바꿔서 테스트해봤지만 성공하지 못했음.
+   - Spring AI 1.0.0에선 버그가 없어서 1.1.2대신 1.0.0을 사용중이다
+
+```
+Resolved [org.springframework.ai.retry.NonTransientAiException:
+HTTP 400 - {"error": {"message": "Unrecognized request argument supplied: extra_body",
+"type": "invalid_request_error", "param": null, "code": null}}]
+```
+
+## 후기
+
+- Spring Boot 4.0.0 지원 안됨
+  - spring configuration을 사용할 수 있으므로 spring에 익숙하면 편한데, 최신버전(1.1.2)에 버그가 있고 2.0.0-SNAPSHOT도 Spring Boot 4.0을 지원하지 않으니 좀 애매하다.
+- 초기 설정이 좀 어려움
+  - 또한 초기 설정에 대한 문서가 헷갈리기도 하고 될듯 될듯 잘 안되던 약간의 삽질도 있었다. 기능이 많아 너무 좋은데 그만큼 또 많은 기능이 필요하지 않을수도 있어서. 사용하기에 좀 망설여진다.
+- 문서화
+  - 문서가 양이 많은데, 양에 비해 완성도가 높은 느낌이 아니다. 이리저리 왔다갔다 하면서 봐야해서 좀 어려웠음
+- 전체적으로 적응까지 시간이 필요했다
+
+## 관련자료
+
+- [Getting Started :: Spring AI Reference](https://docs.spring.io/spring-ai/reference/getting-started.html)
+- [Chat Client API :: Spring AI Reference](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_chat_memory)

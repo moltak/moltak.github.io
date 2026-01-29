@@ -1,0 +1,36 @@
+---
+title: "xargs"
+description: "리눅스 xargs 명령어 사용법 정리"
+date: "Apr 20 2019"
+---
+
+```bash
+# 사용 예 1
+echo 1 2 3 4 | xargs echo
+# 이 코드는 1 2 3 4 argument를 xargs 를 이용해서 다시 echo에게 전달하는 명령어
+
+find ./ -name ".bak" | xargs -0 -I file rm file
+# -0은 file 이름에 space가 들어가있을 때 이를 take cares 해줌
+#    (아래 섹션 참조 Dealing file names with blank spaces and newline)
+# -I file 은 find에서 넘어온 결과들을 "file" 이라는 변수로 치환.
+```
+
+자주 찾게 되는 패턴!
+
+```bash
+ls -p | grep -v / | xargs -I file cat file
+```
+
+### Dealing file names with blank spaces and newline
+
+> The following will work incorrectly if there are any filenames containing newlines or spaces (it will find out all .mp3 file located in current directory and play them using mplayer):
+>
+> `$ find . -iname "*.mp3" -print | xargs mplayer`
+>
+> To get rid of this problem use -0 option:
+>
+> `$ find . -iname "*.mp3" -print0 | xargs -0 -I mp3file mplayer mp3file`
+>
+> To find out all *.c file located in 100s of subdirectories and move them to another directory called ~/old.src, use:
+>
+> `$ find /path/to/dir -iname "*.c" -print0 | xargs -0 -I file mv file ~/old.src`

@@ -1,0 +1,60 @@
+---
+title: "Retool - Custom Component 생성"
+description: "Retool에서 React custom component를 빌드하고 배포하는 방법"
+date: "Dec 27 2025"
+---
+
+## 개요
+
+retool에 react component를 iframe으로 추가해서 custom component를 추가할 수 있었다. (옛날에 3.100 얼마쯤까지?) 근데 비교적 최근 방식이 완전히 바뀌어 이젠 build 후 내 retool 앱에 임포트하도록 변경되었다. 나는 예전 방법도 편했던거 같은데, 서로 장단점이 존재해서 빨리 적응하는게 나아보인다.
+
+retool에서 되게 쉽게 사용할 수 있도록 만들어놔서 난이도는 그렇게 높지 않다.
+
+## 방법
+
+아래 방법을 천천히 따라하다보면 금방 할 수 있다.
+
+1. clone retool custom component template library
+   ```bash
+   git clone https://github.com/tryretool/custom-component-collection-template new-custom-component
+   ```
+2. `npm install`
+   - npm 20 lts 이상 사용해야함
+3. login to retool
+   ```bash
+   npx retool-ccl login
+   ```
+4. create a component library
+   ```bash
+   npx retool-ccl init
+   ```
+5. start dev mode
+   ```bash
+   npx retool-ccl dev
+   ```
+6. deploy component
+   ```bash
+   npx retool-ccl deploy
+   ```
+
+이정도만 해도 쉽게 사용할 수 있다. 다만 내 기준 헷갈리는 부분이 있어 그 부분만 더 살펴본다.
+
+## 헷갈렸던 부분
+
+### retool의 이벤트를 react에 전달
+
+내가 만든건 chat custom component다. 메세지를 LLM에게 보내고 받은 메세지를 출력하는 전형적인 chatting을 구현한 것이다.
+
+여기서 어려웠던 부분은 event handlers에 어떤 이벤트를 띄워야 하는지가 어려웠는데, 나는 `Retool.useEventCallback({ name: 'click' })`를 정의한 후 retool에서 실행해야하는 함수를 넘겨줬더니 단순하게 끝났다.
+
+`sendMessage`가 호출되면 retool에 정의해둔 함수가 호출된다. 그리고 우리가 원하는 동작을 실행 가능하다.
+
+### 채팅을 계속 유지하는 방법
+
+이것 또한 어려웠다. custom component는 retool의 상태(state)를 직접 바꿀 수 없다. retool → custom component 한방향 바인딩만 지원한다. (이게 당연함)
+
+그래서 채팅 로딩화면이나 채팅 글을 계속 유지하려면 다음과 같이 해야한다. `chat_history`, `chat_loading`을 모두 retool의 variable로 만들어 관리하고 그 값을 사용해서 custom component가 직접 그려야한다.
+
+## 참고자료
+
+- [Build custom React components | Retool Docs](https://docs.retool.com/apps/guides/custom/custom-component-libraries/)

@@ -1,0 +1,39 @@
+---
+title: "[AWS] AI/ML Immersion Day - Amazon Personalize"
+description: "AWS AI/ML 웨비나에서 배운 Amazon Personalize 추천 엔진 정리"
+date: "Sep 09 2021"
+---
+
+## Webinar 제목
+
+[AWS] AI/ML Webinar - Amazon Personalize
+
+## 내용 정리
+
+### Chapter 1
+
+아래와 같은 데이터들이 필요한데, 사용자의 User events/interactions만 추가하면 추천 모델을 개발할 수 있음.
+
+Data를 CSV 형태로 저장하고, 위와같은 csv를 사용할 때 데이터 타입이 숫자인지 스트링인지 타입을 모르기 때문에 schema를 작성해서 csv와 schema를 같이 만들어 입력한다.
+
+처음 추천엔진을 실행하려면 어느정도의 데이터가 있어야 한다.
+
+아래와 같은 추천 Recipe를 제공함. 하나의 Recipe를 사용하는게 아니라, User-Item Interactions가 있을 때, 위의 방법을 조합해서 사용할 수 있음.
+
+추천이 효과가 있는지 없는지 판단하고 싶을 때, Coverage와 Relevance(관련도)로 평가를 하는것보단 Serendipity(비슷한 의미의 Surprise)를 함께 평가하는게 정말 중요함.
+
+Serendipity를 추가하면 시계만 나오는게 아니라 `스포츠를 좋아하니 스포츠 용품을 추천` 하는게 Serendipity 이다. 추천에선 상당히 중요한 지표임.
+
+## 활용방법
+
+AWS Step Functions를 사용해 자동화를 해야함. DAG 형태로 작업을 표현할 수 있음.
+
+실시간으로 적용하려면 Event Tracker가 Amazon Personalize 안에 있는데, 거기에 이벤트를 보내서 실시간성을 확보할 수 있음.
+
+서버에서 Kinesis에 데이터를 보내고 Lambda를 이용해 Personalize의 Event Tracker에 데이터를 보낼 수 있음.
+
+쓸모없는 데이터를 Filter out 하고 싶을 때, 두가지의 방식이 있음. Training에 사용할 데이터를 제거하거나, 추천 결과에서 제외할 수 있음.
+
+사용자에게 동일한 추천 결과를 제공할때는 Batch를 사용하면 됨.
+
+Serendipity를 측정하기 위해선 A/B 테스트를 해서 비교해야한다.

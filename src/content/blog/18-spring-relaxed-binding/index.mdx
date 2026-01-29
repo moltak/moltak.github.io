@@ -1,0 +1,61 @@
+---
+title: "Spring Relaxed Binding"
+description: "Spring Boot의 Relaxed Binding으로 yaml letter case 삽질 없이 설정하기"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 이 글을 작성한 이유
+
+Relaxed Binding에 대한 내용을 모른 상태에서 multi datasource에 대한 문제를 해결하려고 DataSource 설정방법에 대해 학습을 했던 적이 있다. 이때, 굉장히 헷갈렸던 부분은 참고자료마다 yaml 의 letter case가 다른 부분이었다. Relaxed Binding에 대한 지식의 부재로 서로 다른 letter case에 대한 테스트가 필요했고 이 경험은 Spring Boot를 사용하며 겪었던 경험 중 가장 최악의 경험 중 하나였다.
+
+이 글을 읽으면 나와 같이 여러 letter case에 대해 테스트를 해보지 않아도 되므로 편하게 Spring Boot 설정을 추가할 수 있을 것이다.
+
+## Spring Boot의 Relaxed Binding 이해하기
+
+Spring Boot의 Relaxed Binding은 애플리케이션의 설정을 훨씬 더 유연하고 개발자 친화적으로 만들어주는 기능이다. 이 기능은 설정 값의 이름과 해당 필드 간의 정확한 일치를 요구하지 않고 다양한 letter case 규칙을 허용한다.
+
+## Relaxed Binding 특징
+
+**Relaxed Binding**은 여러 가지 방법으로 구성 속성을 필드에 바인딩할 수 있게 한다. 예를 들어, 다음과 같은 다양한 letter case를 사용할 수 있다.
+
+1. 케밥 케이스(kebab-case): `my-property-name`
+2. 카멜 케이스(camelCase): `myPropertyName`
+3. 스네이크 케이스(snake_case): `my_property_name`
+4. 대문자 언더스코어(CAPITALIZED_UNDERSCORE): `MY_PROPERTY_NAME`
+5. 점 표기법(Dot notation): `my.property.name`
+
+이러한 다양한 형식을 사용할 수 있기 때문에, 구성 속성 파일에서 사용할 수 있는 네이밍 옵션이 넓어져 개발자가 선호하는 스타일을 선택할 수 있다.
+
+### 예시
+
+다음과 같이 datasource 세팅이 있다고 가정해보자
+
+```yaml
+head:
+  datasource:
+    url: ${HEAD_JDBC_URL}
+    username: ${HEAD_USERNAME}
+    password: ${HEAD_PASSWORD}
+    hikari:
+    # 아래 4개 어떤 letter case를 선택해도 HikariProperties.maximumPoolSize 바인딩 가능
+      maximum-pool-size: 100
+      # maximumPoolSize: 100
+      # maximum_pool_size: 100
+      # MAIXMUM_POOL_SIZE: 100
+```
+
+이 설정은 다음과 같이 바인딩 할 수 있다.
+
+```java
+@ConfigurationProperties(prefix = "head.datasource.hikari")
+public class HikariProperties {
+	private int maximumPoolSize;
+}
+```
+
+## 참고자료
+
+- [Spring Boot External Config - Relaxed Binding](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding)
+- [Understanding Relaxed Binding in Spring Boot: Flexibility Meets Configuration](https://www.hungrycoders.com/blog/understanding-relaxed-binding-in-spring-boot)
+- [설정 가능한 Spring Boot Properties](https://docs.spring.io/spring-boot/appendix/application-properties/index.html)

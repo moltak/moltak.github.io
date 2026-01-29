@@ -1,0 +1,40 @@
+---
+title: "Kafka 3. 자주쓰는 명령어"
+description: "Kafka에서 자주 사용하는 토픽, 프로듀서, 컨슈머, 컨슈머 그룹 관련 명령어 모음"
+date: "Aug 31 2021"
+draft: false
+---
+
+# 이어지는 글
+
+이 글은 Kafka 시리즈의 세 번째 글입니다.
+
+# 명령어들
+
+외운 커맨드도 몇개 있는데, 잘 안외워져서 일단 저장해둠.
+
+```bash
+# 토픽 생성
+kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic Topic-A
+
+# 토픽 상태 보기
+kafka-topics.sh --describe --bootstrap-server localhost:9092 --topic Topic-A
+
+# 토픽 파티션 수 변경 - 파티션은 늘릴수만 있고 줄일 수 없음.
+kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic Topic-A --partitions 2
+
+# 프로듀서 생성
+kafka-console-producer.sh --broker-list localhost:9092 --topic Topic-A
+
+# 컨슈머 생성
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic Topic-A --group my_pc # --from-beginning
+
+# 토픽 리스트
+kafka-topics.sh --list --bootstrap-server localhost:9092
+
+# 컨슈머 그룹 목록
+kafka-consumer-groups.sh  --bootstrap-server localhost:9092 --list
+
+# 컨슈머 그룹 설명
+kafka-consumer-groups.sh  --bootstrap-server localhost:9092 --group GROUP_NAME --describe
+```

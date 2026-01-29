@@ -1,0 +1,48 @@
+---
+title: "Elastic Beanstalk 배포 때, S3 엑세스하기"
+description: "EB 배포 시 S3에서 파일을 가져오기 위한 service role 설정과 .ebextensions 설정 방법"
+date: "Dec 05 2020"
+---
+
+나는 EB를 상당히 좋아하는 편인데, 팀 규모의 프로젝트에서는 당연히 CI-CD를 사용하지만 혼자 할 때는 간편하게 하는 것을 좋아한다. EB는 이런 내 요구에 딱 잘 맞는데, eb deploy를 이용해 쉽게 local에서 배포할 수 있기 때문이다.
+
+이번에는 EB에 와탭을 적용하기위해 S3와의 연동 + command가 필요했고 그 부분에 대해 글을 남긴다.
+
+순서는 다음과 같다.
+
+1. EB service role 설정
+2. .ebextensions/\{NAME\}.config 설정
+3. eb deploy
+
+## EB service role 설정
+
+### EB
+
+[**EB - 권한 - 서비스 역할**](https://docs.aws.amazon.com/ko_kr/elasticbeanstalk/latest/dg/concepts-roles-service.html)
+
+EB는 service role과 ec2 role을 갖고 있는데, aws의 다른 서비스를 호출할 때는 service role이 사용된다. 해당되는 서비스 롤에 `S3 Role`을 추가하자. full access를 줘도 좋고 해당 S3 bucket에만 엑세스 할 수 있는 권한을 줘도 좋다.
+
+### S3
+
+`http`로 접근하는 public 권한을 차단하고 `s3://` 의 접근만 허용.
+
+![S3 권한 설정](./s3-permission.png)
+
+## .ebextensions/\{NAME\}.config 설정
+
+아래와 같은 명령어를 입력. 자세한건 [**여기**](https://docs.aws.amazon.com/ko_kr/elasticbeanstalk/latest/dg/customize-containers-ec2.html#linux-commands)를 참조.
+
+cwd는 working directory를 설정. `command: |` 는 연속된 명령어를 사용하기 위한 포멧
+
+```yaml
+commands:
+  command block:
+    cwd: /home/ec2-user
+    command: |
+        aws s3 cp s3://whatap-agent/whatap.zip .
+        unzip -o whatap.zip
+```
+
+## eb deploy
+
+`eb deploy` 로 배포하고 `eb-activity.log`를 보면 command 명령어가 잘 실행되는 것을 볼 수 있다.

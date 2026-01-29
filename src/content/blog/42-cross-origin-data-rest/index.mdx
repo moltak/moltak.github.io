@@ -1,0 +1,78 @@
+---
+title: "Cross Origin For Data Rest"
+description: "Spring Data Rest에서 CORS를 설정하는 3가지 방법"
+date: "Apr 05 2021"
+---
+
+## 들어가며
+
+CORS 설정을 하는 방법은 크게 3가지가 있다.
+
+## 1. Controller method CORS configuration
+
+Controller 마다 CORS를 설정하는 방법이다.
+
+```kotlin
+@CrossOrigin(origins = "http://domain2.com", maxAge = 3600)
+@RestController
+@RequestMapping("/account")
+public class AccountController {
+
+    @GetMapping("/{id}")
+    public Account retrieve(@PathVariable Long id) {
+        // ...
+    }
+
+    @DeleteMapping("/{id}")
+    public void remove(@PathVariable Long id) {
+        // ...
+    }
+}
+```
+
+## 2. Global CORS configuration
+
+가장 편한 방법으로 CORS Config을 만드는 방법이다.
+
+```kotlin
+@Configuration
+class CorsConfig : WebMvcConfigurer {
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry
+            .addMapping("/**")
+            .allowedOrigins("http://domain2.com")
+            .allowedMethods("*")
+            .maxAge(3600)
+    }
+}
+```
+
+## 3. CorsFilter
+
+Spring Data Rest 2.5 이하에서 CORS를 설정할 때 사용해야하는 방법이다.
+
+```kotlin
+@Configuration
+public class MyConfiguration {
+
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://domain1.com");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
+}
+```
+
+## References
+
+- [Spring Data REST and CORS](https://stackoverflow.com/questions/31724994/spring-data-rest-and-cors)
+- [What's New in Spring Data Release Ingalls](https://spring.io/blog/2017/01/30/what-s-new-in-spring-data-release-ingalls)
+- [CORS support in Spring Framework](https://spring.io/blog/2015/06/08/cors-support-in-spring-framework#filter-based-cors-support)

@@ -1,0 +1,66 @@
+---
+title: "크립토 좀비 4-6"
+description: "크립토 좀비 튜토리얼 4-6장 정리 - ERC-20, ERC-721, SafeMath, Infura"
+date: "Feb 02 2022"
+---
+
+# ERC-20
+
+토큰과 같이 나눠질 수 있는 프로토콜. 아래와 같이 몇 함수들을 구현해놓음.
+
+```solidity
+transfer(address _to, uint256 _value)
+balanceOf(address _owner)
+mapping(address => uint256) balances
+```
+
+# ERC-721 (NFT)
+
+좀비를 0.237개 보낼 수 없음. ERC-20은 좀비 0.237개를 보낼 수 있음. 이것처럼 쪼갤 수 없는 토큰 표준이 721임. 아래와 같은 구현 목록이 있음
+
+```solidity
+contract ERC721 {
+  event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
+  event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
+
+  function balanceOf(address _owner) public view returns (uint256 _balance);
+  function ownerOf(uint256 _tokenId) public view returns (address _owner);
+  function transfer(address _to, uint256 _tokenId) public;
+  function approve(address _to, uint256 _tokenId) public;
+  function takeOwnership(uint256 _tokenId) public;
+}
+```
+
+# SafeMath
+
+[OpenZeppelin](https://docs.openzeppelin.com/contracts/4.x/) 이라는 곳에서 여러 solidity library를 배포해놓음. 그중 overflow를 막을 수 있는 library가 있는데 다음과 같이 사용할 수 있음.
+
+```solidity
+import "./safemath.sol";
+
+contract TestContract {
+  using SafeMath for uint256;
+  using SafeMath32 for uint32;
+  using SafeMath16 for uint16;
+}
+```
+
+# natspec (주석 포맷)
+
+아래와 같은 포멧
+
+```solidity
+/// @title
+///
+///
+```
+
+# Infura
+
+[https://infura.io/](https://infura.io/)
+
+> Infura는 빠른 읽기를 위한 캐시 계층을 포함하는 다수의 이더리움 노드를 운영하는 서비스이네. 접근을 위한 API를 무료로 사용할 수 있지. Infura를 프로바이더로 사용하면, 자네만의 이더리움을 설치하고 계속 유지할 필요 없이 이더리움 블록체인과 메세지를 확실히 주고받을 수 있네.
+
+# ABI(Application Binary Interface)
+
+> 기본적으로 JSON 형태로 자네 컨트랙트의 메소드를 표현하는 것이지. 자네 컨트랙트가 이해할 수 있도록 하려면 Web3.js가 어떤 형태로 함수 호출을 해야 하는지 알려주는 것이지.

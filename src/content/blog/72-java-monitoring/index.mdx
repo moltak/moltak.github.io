@@ -1,0 +1,110 @@
+---
+title: "Java - 모니터링"
+description: "jstat, JProfiler, Eclipse JVM Monitor를 활용한 Java JVM 모니터링과 Memory Leak 분석"
+date: "Nov 03 2020"
+---
+
+eggbun의 dev 서버의 heap 이 자꾸 죽고 있어서 왜 그런지 분석해보려는데 jstat를 이용해야 정확히 분석을 할 수 있다는 것을 알았다. 하지만 jstat는 나는 처음 보는 것이라서 조금 학습이 필요하다. 이걸 정확히 알게되면 앞으로 많은 부분이 편해질거 같다...
+
+- [JVM 정보를 cloud watch 에 저장하는 방법](https://docs.aws.amazon.com/ko_kr/sdk-for-java/v1/developer-guide/generating-sdk-metrics.html)
+- [JStatD를 실행하려고 참고한 문서](https://dzone.com/articles/visualvm-monitoring-remote-jvm)
+
+1. JStatD
+2. 위 링크에 있는 jstatd.all.policy 내용
+
+```
+grant codebase "file:/usr/lib/jvm/default-java/lib/tools.jar" {
+  permission java.security.AllPermission;
+};
+```
+
+1. 실행방법
+2. `sudo jstatd -J-Djava.security.policy=jstatd.all.policy -p 2020`
+   - 근데 접속이 안되는 중 -_-
+
+---
+
+## jstat command
+
+- [Garbage Collection 모니터링하는 방법 by Naver](https://d2.naver.com/helloworld/6043)
+- [Java Garbage Collection by Naver](https://d2.naver.com/helloworld/1329)
+- [jstat oracle document](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html)
+- [에그번에서 사용중인 JVM -> Cloud Watch Metric 방법](http://johnhunsley.blogspot.com/2016/03/custom-cloudwatch-tomcat-jvm-metrics.html)
+  -> 위 글은 JAVA6 기준이라서 parameter의 개수가 다름. JAVA8 부터 Permanent Space가 Metaspace와 CCS로 나눠졌음
+
+`jstat -gcutil ${ps_number} 1000` ← 1초마다 ps_number의 정보를 보여줌.
+
+## Permanent Generation, Meta Generation
+
+JStat를 사용해서 JVM 메모리를 관찰하다보면 인터넷에 떠도는 예제들과 내가 직접 실행해본 결과에서 보이는 항목이 다르다. 인터넷의 예제에서는 항상 Permanet Area가 나오는데, 내가 실행했던 곳에서는 Permanent대신 Metasapce, CCS가 나온다. 왜 결과가 다를까?
+
+[What is the difference between PermGen and Metaspace?](https://stackoverflow.com/questions/27131165/what-is-the-difference-between-permgen-and-metaspace) 를 보면 Permanent space는 고정되어있는 사이즈라고 한다. JVM이 시작될때 사용되는 클래스 정보가 저장되는 영역인데, class dynamic loading 을 사용할 수 없다는 것이다. 이 때, Meta space가 사용되며 meta space는 크기가 변할 수 있는 영역이며 dynamic loading을 지원할 수 있게된다.
+
+[Metaspace in java 8](http://java-latte.blogspot.com/2014/03/metaspace-in-java-8.html)를 보면 permanent space가 meta space, ccs 로 나뉜것에 대한 정보를 읽어볼 수 있음.
+
+## Memory Leak
+
+에그번 Dev vertx서버가 응답을 주지 못하는 상황이 자주 발생한다. 원인은 어떤 순간이 되면 FullGC의 횟수가 엄청나게 증가하게 되는 것이다. FullGC는 Old 영역이 많이 찼을 때 발생하는 GC인데 에그번 DEV 서버의 문제는 FullGC 후 Old 영역이 비워지지 않는다는 것이다.
+
+Old영역 부족 -> FullGC 수행 -> 가정(FullGC 실패 혹은 메모리 Release 안됨) -> Old 영역 부족 -> ... 반복
+
+좀 검색을 해보니 Memory Leak이 발생했을 때 에그번 Dev와 같은 문제가 발생할 수 있다는 것을 알게되었다.
+
+> Memory Leak이 단지 OOME만을 일으키는 것은 아니다. Memory Leak이 발생하면 JAVA Heap 공간의 여유 공간이 잘 확보되지 않기 때문에 계속적인 Garbage Collection이 발생한다. 불행 중 다행으로 OOME가 발생하지 않더라도 계속적인 GC 작업에 의해 성능이 저하된다. 따라서 GC Dump를 분석할 때 Memory Leak의 발생 가능성이 있는지 검토해야 한다.
+>
+> From [hello world](http://lyb1495.tistory.com/6)
+
+## JProfiler 사용해보기
+
+JProfiler 를 Remote (측정하고 싶은 VM이 있는 곳)로 연결해서 vm instance의 상태를 측정할 수 있다. [참고 사이트](https://www.jvmhost.com/articles/connect-remote-jvm-jprofiler/)에 보면 자세히 나와있는데 아주 간단하므로 여기서는 요약만한다.
+
+### Remote 설정
+
+JProfiler 를 다운로드 하고 압축을 해제한다. 보통은 linux 서버를 사용할것이므로 [JProfiler 다운로드 사이트](https://www.ej-technologies.com/download/jprofiler/files)에서 linux버전 .tar.gz를 받고 압축을 푼다. 그 후
+
+```
+sudo ./jprofiler/bin/jpenable
+```
+
+명령어로 실행하고 port를 기억해놓는다. service로 실행되므로 jpenable을 실행한 후 terminal을 닫아도 된다.
+
+### Viewer 설정
+
+JProfiler를 다운로드 하고 new session -> remote 설정을 한다. 그러면 바로 JVM 상태를 볼 수 있다.
+
+JProfiler 되게 좋은거 같은데 400달러가 넘는다 -_-
+
+Memory Leak 참고: [Helloworld](http://lyb1495.tistory.com/6)
+
+## Eclipse JVM monitor
+
+Eclipse 를 이용해서 monitoring 하는것이 가능하다. [JVM Monitor](http://www.jvmmonitor.org/doc/index.html)를 이용하면 되는데, eclipse 를 설치하고 market place에서 다운로드하면 된다.
+
+그 후 window -> perspective -> other -> java monitor ([Getting Started](http://www.jvmmonitor.org/doc/index.html)에서 확인 가능)에서 JVM monitor window를 열 수 있으며 바로 monitoring 이 가능하다.
+
+Remote로도 설정이 가능하며 아래 argument와 함께 프로그램을 시작해야한다. (아직 안해봄..)
+
+- `-Dcom.sun.management.jmxremote.port=9876`
+- `-Dcom.sun.management.jmxremote.ssl=false`
+- `-Dcom.sun.management.jmxremote.authenticate=false`
+- `-Dcom.sun.management.jmxremote`
+
+[VisualVM: Monitoring Remote JVM Over SSH (JMX Or Not)](https://dzone.com/articles/visualvm-monitoring-remote-jvm) 이 문서의 JMX 설정에도 비슷한 말이 나온다. SOCKS proxy를 이용해서 SSH 인증을 통해 데이터를 가져올 수 있다.
+
+## 부하 테스트
+
+Jmeter
+
+## JVM Heap Dump 만들기
+
+오랜만에 eggbun-vertx-dev 가 또 멈췄다. 한 3일만인가.. 그래서 언능 heap dump를 만들었다.
+
+```bash
+jmap -dump:format=b,file={file name}.hprof {pid}
+```
+
+jmap으로 파일을 덤프하고 나중에 분석할 수 있다. 이것도 Eclipse 를 이용해서 분석할 수 있는데 market place에서 "Memory Analyzer"를 설치하면 된다.
+
+그 후 file -> open file 하면 분석기가 열린다. 자세한 설명은 아래 링크를 보면 된다.
+
+[JVM Heap Dump Analyze](https://dzone.com/articles/java-heap-dump-analyzer-1)

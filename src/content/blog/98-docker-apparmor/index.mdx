@@ -1,0 +1,78 @@
+---
+title: "Ubuntu 20.10 Docker AppArmor profile problem"
+description: "Ubuntu 20.10에서 Docker 실행 시 AppArmor 프로필 에러 해결하기"
+date: "Oct 15 2020"
+---
+
+## Reference
+
+- [Docker with Ubuntu 20.10 strconv.Atoi parsing error](https://superuser.com/questions/1588174/docker-with-ubuntu-20-10-strconv-atoi-parsing-0-beta1-invalid-syntax)
+- [Lab: AppArmor | DockerLab](https://dockerlabs.collabnix.com/advanced/security/apparmor/)
+
+---
+
+나처럼 20.10 Groovy Gorila 를 설치하면 도커를 실행할 때 이런 메세지를 보게될것이다.
+
+```
+docker: Error response from daemon: AppArmor enabled on system but the docker-default profile could not be loaded: strconv.Atoi: parsing "0-beta1": invalid syntax.
+ERRO[0004] error waiting for container: context canceled
+```
+
+AppArmor라는게 있는데 (나도 오늘 처음 알았다..) SELinux와 비슷한거라고 한다. (사실 SELinux가 뭔지도 모름 -_-) 리눅스 데탑으로 4년째 쓰는데 모르는게 너무 많음. 뜬금없지만 다음에 [PulseAudio](https://wiki.archlinux.org/index.php/PulseAudio), [ALSA](https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture)(Advanced Linux Sound Architecture)에 대해서도 써야함. 왜냐면 이것도 뭔지 모르거든.. 지금 어찌어찌 pulsemixer로 마이크와 스피커를 제어하고 있는데 아오..
+
+---
+
+본론으로 돌아와서 저 문제를 해결하려면 Reference 링크를 보면 되는데 요약해서
+
+```bash
+# create new file
+sudo vim /etc/apparmor.d/docker
+```
+
+```bash
+#include <tunables/global>
+profile docker-default flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+  network,
+  capability,
+  file,
+  umount,
+  deny @{PROC}/* w,   # deny write for all files directly in /proc (not in a subdir)
+  # deny write to files not in /proc/<number>/** or /proc/sys/**
+  deny @{PROC}/{[^1-9],[^1-9][^0-9],[^1-9s][^0-9y][^0-9s],[^1-9][^0-9][^0-9][^0-9]*}/** w,
+  deny @{PROC}/sys/[^k]** w,  # deny /proc/sys except /proc/sys/k* (effectively /proc/sys/kernel)
+  deny @{PROC}/sys/kernel/{?,??,[^s][^h][^m]**} w,  # deny everything except shm* in /proc/sys/kernel/
+  deny @{PROC}/sysrq-trigger rwklx,
+  deny @{PROC}/mem rwklx,
+  deny @{PROC}/kmem rwklx,
+  deny @{PROC}/kcore rwklx,
+  deny mount,
+  deny /sys/[^f]*/** wklx,
+  deny /sys/f[^s]*/** wklx,
+  deny /sys/fs/[^c]*/** wklx,
+  deny /sys/fs/c[^g]*/** wklx,
+  deny /sys/fs/cg[^r]*/** wklx,
+  deny /sys/firmware/efi/efivars/** rwklx,
+  deny /sys/kernel/security/** rwklx,
+  # suppress ptrace denials when using 'docker ps' or using 'ps' inside a container ptrace (trace,read) peer=docker-default,
+}
+```
+
+```bash
+sudo /etc/init.d/apparmor restart
+sudo docker run hello-world
+```
+
+하면 된다. 그리고 이는 apparmor와 관련있고 apparmor가 package들의 profile을 로드해줘야하는데 로드가 됐는지 확인하는 방법은 아래와 같다.
+
+```bash
+sudo aa-status
+
+...
+/usr/sbin/mysqld
+/{,usr/}sbin/dhclient
+docker-default
+...
+```
+
+그럼 위와같이 docker-default가 로드된걸 확인할 수 있다.

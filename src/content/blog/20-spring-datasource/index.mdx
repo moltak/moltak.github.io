@@ -1,0 +1,129 @@
+---
+title: "Spring Data Source 헷갈리지 않고 설정하기"
+description: "spring.datasource vs spring.datasource.hikari — DataSource 설정의 두 가지 방법 완벽 정리"
+date: "Aug 09 2025"
+draft: false
+---
+
+## Data Source 설정이 어려운 이유
+
+Data Source 설정은 한번 설정하고 나면 다시 볼일이 없다. 보통은 다른 동료가 설정을 해주고 나면 문제가 생길때까진 볼일이없다. (우리도 마찬가지였고…) 그래서 Cache, Spring Security 도 Data Source 처럼 설정할때마다 어렵고 헷갈린다.
+
+하지만 [Relaxed Binding](/blog/18-spring-relaxed-binding)에서 적은 것 처럼 Data Source 설정 또한 간단한 내용이므로 조금만 학습하면 쉽게 설정할 수 있다. Data Source를 학습하며 어려웠던 url과 jdbc-url 같이 같아 보이는 필드가 왜 따로 존재하는지 url 필드는 어디서 오는건지 이런게 어려운데. 그건 아래 다 정리 해놨다.
+
+## 미리 알아야하는 지식
+
+> DataSource를 설정하는 방법은 크게 두개다
+
+👆👆👆 이게 정말 중요하다. 두개가 뭐가 있냐면
+
+> `spring.datasource`
+> `spring.datasource.hikari`
+
+`spring.datasource`는 `DataSourceProperties` class 를 사용한다.
+`spring.datasource.hikari`는 `HikariConfig` class 를 사용한다.
+
+위 두개를 잘 기억하고 예시를 확인해보자
+
+### 예시로 살펴보기
+
+개인적으로 재밌었는데, 우리가 yaml에 적은 필드와 같은 필드 이름이 이미 자바 클래스로 만들어져있다. 생각해보면 당연히 만들어져있어야한다. 😌😌
+
+또 재밌는 포인트는 이미 위에있는 필드들이 이미 [아래 문서](https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data)에 다 적혀있다. 더 자세히보고 싶다면 클래스를 보면 좋겠지만 간단히 보려면 문서만 봐도 어떤 필드가 있는지 이미 다 확인이 가능하다. (코멘트도 잘 적혀있다)
+
+yaml과 자바 클래스가 어떻게 연결되고 어떤 문서를 봐야하는지 이해했다면 이제 쉽게 Data Source를 설정할 수 있다.
+
+## Data Source 설정하기
+
+위에서 언급한 spring.datasource, spring.datasource.hikari 두개의 설정 방법을 모두 살펴보자.
+
+> 아래 내용은 [이 문서를](https://docs.spring.io/spring-boot/how-to/data-access.html) 기반으로 만들었다.
+
+### 1. spring.datasource
+
+아래와 같은 yaml 일때 오른쪽 처럼 DataSourceProperties Bean을 생성하면 yaml의 설정값을 가져올 수 있다.
+
+```yaml
+app:
+  datasource:
+    url: "jdbc:mysql://localhost/test"
+    username: "dbuser"
+    password: "dbpass"
+    pool-size: 30
+```
+
+```java
+@Bean
+@ConfigurationProperties(prefix = "spring.datasource")
+public DataSourceProperties headDataSourceProperties() {
+  return new DataSourceProperties();
+}
+```
+
+### 2. spring.datasource.hikari
+
+만약 hikari (아마 대부분 hikari 쓰겠지만…..)를 쓰고 싶다면 다음과 같이 설정할 수 있다.
+
+```yaml
+app:
+  datasource:
+    hikari:
+      jdbc-url: "jdbc:mysql://localhost/test"
+      username: "dbuser"
+      password: "dbpass"
+      maximum-pool-size: 30
+```
+
+```java
+@Bean
+@ConfigurationProperties("app.datasource")
+public HikariDataSource dataSource() {
+	return DataSourceBuilder.create().type(HikariDataSource.class).build();
+}
+```
+
+위에 자세히 보면 `url → jdbc-url` , `pool-size → maximum-pool-size` 로 바꼈다. 바뀐 이유는 위에 언급했던 class, [data properties](https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data)에서 오는 것이므로 정확한 필드를 알고 싶다면 문서에서 필드 이름을 확인하면 된다.
+
+보통은 위와 같이 각 상황에 맞게 Data Source를 생성하는데, 우리가 사용하는 것 처럼 두가지 방식을 조합할 수도 있다. ([SpringBoot 공식문서](https://docs.spring.io/spring-boot/how-to/data-access.html)에서 이 방식을 추천한다)
+
+### 3. spring.datasource + named property
+
+```yaml
+app:
+  datasource:
+    url: "jdbc:mysql://localhost/test"
+    username: "dbuser"
+    password: "dbpass"
+    hikari:
+      maximum-pool-size: 30
+```
+
+```java
+@Bean
+@Primary
+@ConfigurationProperties("app.datasource")
+public DataSourceProperties dataSourceProperties() {
+	return new DataSourceProperties();
+}
+
+@Bean
+@ConfigurationProperties("app.datasource.hikari")
+public HikariDataSource dataSource(DataSourceProperties properties) {
+	return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+}
+```
+
+3번째 방식을 살펴보면 1번째에 있는 datasource namespace에서 hikari namespace를 따로 빼서 조합하는걸 볼 수 있다. 이렇게하게 되면 공통으로 쓸 수 있는 필드와 3rd party에 필요한것만 따로 나눌 수 있으므로 특정 모듈에 종속되지 않을 수 있다.
+
+## 사실을 말하자면
+
+설정하는 방법은 더 많다. [여기서 보면](https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data) 20개 정도 되는 DB를 설정할 수 있다. 하지만 겁먹지 마라 결국 다 같다. 2개를 이해했다면 20개도 이해할 수 있다.
+
+## 결론
+
+이렇게 Data Source를 설정하는 방법과 어떤 필드가 있는지 살펴봤다. Data Source를 설정하는 방법은 [공식문서에](https://docs.spring.io/spring-boot/how-to/data-access.html) 아주 자세히 나와있으므로 내가 쓴 설정방법은 자세히 읽어보지 않아도 좋다(🥹). 하지만 위에 있는 `미리 알아야하는 지식` 은 반드시 자세히 한번 보길 바란다. 왜냐면 위 정보들이 흩어져있어 정보를 모으기가 쉽지 않기 때문이다. 시간을 꽤 소모하게 되므로 한번 보길 권한다.
+
+## 참고
+
+- [Data Access 3.3.3](https://docs.spring.io/spring-boot/how-to/data-access.html)
+- [Appendix Common Application Properties](https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data)

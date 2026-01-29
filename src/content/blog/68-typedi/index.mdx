@@ -1,0 +1,43 @@
+---
+title: "TypeDI"
+description: "TypeDI를 사용해 Node.js/TypeScript 프로젝트에 Dependency Injection 적용하기"
+date: "Sep 30 2020"
+---
+
+나는 DI를 상당히 좋아하는데, 보통은 DI를 기본으로 제공하는 프레임워크를 위주로 사용한다. SpringBoot, Jest를 가장 좋아하고 Express나 Flask 같은건 프로토타이핑할 때만 주로 사용한다.
+
+TypeDI는 이번에 DI를 사용하지 않고 있는 프로젝트에 코드를 추가해야할 일이 생겨 사용하게 되었다. 테스트코드를 원할하게 짜기 위해 나는 Single Resposibility 를 잘 지키게 하는데 이때, 여러 클래스들을 생성해야하고 이들을 한데 잘 묶어서 사용해야하기 때문에 DI는 내게 꽤 중요하다.
+
+---
+
+[Usage Guide](https://docs.typestack.community/typedi/v/develop/02-basic-usage-guide)를 살펴보면 `@Service()` Decorator를 사용하거나 `Container와 Token`을 사용해서 container에 class instance를 저장하고 가져다 쓸 수 있다. 자세한 내용은 링크를 보면 되고 아래 코드를 보면 대략 다 이해가 될 것이다.
+
+```javascript
+import 'reflect-metadata';
+import { Container, Inject, Service } from 'typedi';
+
+@Service()
+class InjectedClass {}
+
+@Service()
+class ExampleClass {
+  constructor(public injectedClass: InjectedClass) {}
+}
+```
+
+중요한 부분은 [Singleton vs transient classes](https://docs.typestack.community/typedi/v/develop/02-basic-usage-guide#singleton-vs-transient-classes) 이 부분인데, `@Service` Decorator로 인스턴스를 생성하면 singleton 으로 생성된다는 점이다. 그게 싫으면 transient를 옵션으로 선택하면 된다.
+
+> Every registered service by default is a **singleton**. Meaning repeated calls to Container.get(MyClass) will return the same instance. If this is not the desired behavior a class can be marked as **transient** via the @Service() decorator.
+
+```javascript
+/**
+ * transient 예
+ */
+@Service({ transient: true })
+class ExampleTransientClass {
+  constructor() {
+    console.log('I am being created!');
+    // this line will be printed twice
+  }
+}
+```

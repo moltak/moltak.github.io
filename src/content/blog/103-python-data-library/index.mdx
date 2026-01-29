@@ -1,0 +1,153 @@
+---
+title: "Python Data Library Cook Book"
+description: "Pandas, matplotlib, numpy, sklearn, keras 등 파이썬 데이터 라이브러리 사용법 정리"
+date: "Nov 28 2020"
+---
+
+## Pandas
+
+```python
+import pandas as pd
+
+# read
+df = pd.read_csv('csv_path', names=['column1', 'column2', 'column'])
+
+# info
+df.info() # 정보
+df.describe() # 자세한 정보
+print(df[['column1', 'column2']]) # 일부 컬럼만 보고 싶을 때
+
+df[['column1', 'colum2']]
+    .groupby(['column1'], as_index=False)
+    .mean()
+    .sort_values(by='column1', ascending=True) # group by
+```
+
+## matplotlib
+
+### heat map
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(12, 12)) # 그래프 크기
+sns.heatmap(
+    df.corr(),
+    linewidths=0.1,
+    vmax=0.5,
+    cmap=plt.cm.gist_heat,
+    linecolor='white',
+    annot=True)
+plt.show()
+```
+
+### 두 항목의 그래프를 막대로 표시
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+grid = sns.FacetGrid(df, col='column')
+grid.map(plt.hist, 'plasma', bins=10)
+plt.show()
+```
+
+### 전체를 한번에 보는 pairplot
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.pairplot(df, hue='column')
+plt.show()
+```
+
+## numpy
+
+```python
+import numpy as np
+
+# read
+Data_set = np.loadtxt('csv path', delimiter=',')
+
+# X, Y로 나누기
+X = Data_set[:, 0:17]
+Y = Data_set[:, 17]
+```
+
+## sklearn
+
+### 어떤 값에 문자가 있을 때
+
+```python
+# LabelEncoder
+from sklearn.preprocessing import LabelEncoder
+
+Y_obj = dataset[:, 4]
+e = LabelEncoder()
+e.fit(Y_obj)
+Y = e.transform(Y_obj)
+
+# Using category codes approach
+# converting type of columns to 'category'
+bridge_df['Bridge_Types'] = bridge_df['Bridge_Types'].astype('category')
+# Assigning numerical values and storing in another column
+bridge_df['Bridge_Types_Cat'] = bridge_df['Bridge_Types'].cat.codes
+```
+
+[category approach](https://towardsdatascience.com/categorical-encoding-using-label-encoding-and-one-hot-encoder-911ef77fb5bd)
+
+### 학습셋 테스트셋 나누기
+
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test
+    = train_test_split(X, Y, test_size=0.3, random_state=seed)
+```
+
+### k겹 교차 검증
+
+```python
+from sklearn.model_selection import StratifiedKFold
+
+n_fold = 10
+skf = StratifiedKFold(n_splits=n_fold, shuffle=True, random_state=seed)
+
+for train, test in skf.split(X, Y):
+    model = Sequential() # 딥러닝 세팅 후 시작
+```
+
+## keras
+
+### 원핫 인코딩
+
+```python
+# 활성화 함수를 적용하기 위해 0과 1로만 구성된 데이터 구조로 변경해야함
+# [1, 2, 3] 을 [[1, 0, 0], [0, 1, 0], [0, 0, 1]] 로 변환
+from tensorflow.keras.utils import np_utils
+
+Y_encoded = tf.keras.utils.to_categorical(Y)
+```
+
+### 모델 저장과 재사용
+
+```python
+from keras.models import load_model
+
+model.save('my_model.h5')
+
+model = load_model('my_model.h5')
+```
+
+### MNIST 데이터 불러오기
+
+```python
+from keras.datasets import mnist
+
+(X_train, Y_class_train), (X_test, Y_class_test) = mnist.load_data()
+
+print('학습셋 이미지 수: %d 개' % (X_train.shape[0]))
+print('테스트셋 이미지 수: %d 개' % (X_test.shape[0]))
+```

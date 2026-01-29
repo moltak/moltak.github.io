@@ -1,0 +1,190 @@
+---
+title: "@Cacheable 헤메지 않고 사용하기"
+description: "Spring @Cacheable + Redis 적용 가이드 — Jackson ObjectMapper 설정과 삽질 기록"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 개요
+
+이 문서를 작성하는 이유는 Cache를 추가하며 삽질했던 경험을 바탕으로 동료들이 같은 문제를 빠르게 회피하기 위함이다. 필요한 부분에선 step by step으로 구성했고 어떤 부분에선 두서에 상관없이 적었기 때문에 목차를 보고 필요한 부분만 찾아보는게 좋다. 만약 처음 `@Cacheable`를 적용한다면 처음부터 보세요!
+
+## `@Cacheable` 적용하기
+
+> redis 없이 메모리만 이용하는 방법도 있으나 우리는 사용하지 않으니 이 문서에선 따로 설명하지 않습니다.
+
+### 1. redis 세팅 (RedisConfig.java)
+
+우린 Redis Client로 [lettuce](https://github.com/lettuce-io/lettuce-core)를 사용함. 아래와 같이 간단히 redis connection을 생성할 수 있음.
+
+```java
+@Bean
+public LettuceConnectionFactory redisConnectionFactory() {
+  return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));
+}
+```
+
+### 2. `@Cacheable` 어노테이션
+
+Redis connection을 설정했고 spring boot 의존성 주입 및 설정도 잘 마쳤으면 아래와 SpEL을 통해 **간단하게** key를 설정할 수 있다.
+
+```java
+@GetMapping
+@Cacheable(
+    key = "#FIRST_ID.toString() + #SECOND_ID.toString() + (#jwt?.userId ?: 'temp')",
+    cacheNames = "CACHE_NAME",
+    value = "VALUE"
+)
+```
+
+key의 파라미터 설명
+- `#FIRST_ID.toString()` → FIRST_ID.toString() 호출. #를 붙여야 변수에 접근할 수 있다.
+- `(#jwt?.CART_NO_KEY ?: 'temp')` SpEL의 [elvis operator](https://docs.spring.io/spring-framework/reference/core/expressions/language-ref/operator-elvis.html)를 사용해서 jwt이 null인 경우 temp를 아닌경우 userId를 key의 일부로 사용하게 하는 변수로 사용할 수 있다.
+
+`@Cacheable`에 설정한 cacheNames, value, key의 조합으로 아래와 같은 cache key가 redis에 생성된다.
+
+```bash
+CACHE_NAME:::FIRST_IDSECOND_IDJWTUSERID
+```
+
+### 3. `@Cacheable` 동작 방식 간략히 설명
+
+`@Cacheable`등의 어노테이션은 proxy로 동작한다. 스프링앱이 부트스트랩 될 때, advice/behavior가 추가되서 "외부 클래스에서 해당 함수를 호출 할 때" advice가 proxy를 실행한다.
+
+> 조금 갑작스래 언급되는 proxy는 spring boot에서 상당히 중요하다. 이걸 제대로 이해하지 못하면 어려움이 생긴다.
+> [여기](https://medium.com/upday-devs/3-common-mistakes-when-implementing-spring-cache-abstraction-a7ac2ee247ba)를 참고하자
+
+아래 예제에서 cache가 동작하는 부분과 하지 않는 부분을 확인해보세요! (kotlin)
+
+```kotlin
+@Component
+class StarWarsOperations {
+
+    fun destroyDeathStar(year: Int): Boolean {
+        println(this.javaClass.name)
+        return year > 2000 && selfDestroyDeathStar() // cache 동작 안함
+    }
+
+    @Cacheable("DeathStar")
+    fun selfDestroyDeathStar(): Boolean {
+        return false
+    }
+}
+
+val a = new StarWarsOperations().selfDestroyDeathStar() // 외부에서 함수 호출 했으므로 cache 동작함
+```
+
+(자세한 설명은 [**1. Invocation of cacheable methods from the same class**](https://medium.com/upday-devs/3-common-mistakes-when-implementing-spring-cache-abstraction-a7ac2ee247ba) 참고)
+
+## 어려운 점 적기
+
+`@Cacheable` 을 적용하고 테스트해보면 json deserialization 때, 아마 에러가 발생할 것이다. 특히 복잡한 데이터 형태를 갖고 있는 경우와 jdk8 LocalDateTime을 사용한 경우에는 반드시 문제를 겪게 된다. 이때 아래에 이어지는 Jackson ObjectMapper 의 옵션 내용이 도움이된다.
+
+### Jackson ObjectMapper
+
+아래에 있는 ObjectMapper가 redis cache를 사용할 때, 사용하는 ObjectMapper이다. 각 옵션이 어떻게 사용되지에 대해 주석을 추가해놨으니 더 궁금한 부분은 직접 찾아보도록 하자.
+
+```java
+@Bean(name = "jacksonRedisSerializer")
+public RedisSerializer<Object> jacksonRedisSerializer() {
+  val objectMapper = new ObjectMapper()
+      // support for detecting constructor and factory method ("creator") parameters
+      // without having to use @JsonProperty annotation
+      .registerModule(new ParameterNamesModule(JsonCreator.Mode.DEFAULT))
+      // support for other new Java 8 datatypes outside of date/time:
+      // most notably Optional, OptionalLong, OptionalDouble
+      .registerModule(new Jdk8Module())
+      // support for Java 8 date/time types (specified in JSR-310 specification)
+      .registerModule(new JavaTimeModule())
+      // serialization 때, date/time을 timestamp로 변환하지 않도록
+      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+      // Deserialization 때, 모르는 property가 있어도 무시하도록
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      // Deserialization 때, date/time을 context timezone으로 변환하지 않도록
+      .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+
+  // @JsonTypeInfo가 없는 경우, 자동으로 type 정보를 추가하도록 설정
+  val objectMapperWithTyping = objectMapper.activateDefaultTyping(
+      objectMapper.getPolymorphicTypeValidator(),
+      // NON_FINAL 클래스에 type 정보를 추가하도록 설정.
+      // record는 final이므로 JsonTypeInfo를 명시적으로 넣어줘야함
+      ObjectMapper.DefaultTyping.NON_FINAL,
+      // JsonTypeInfo를 PROPERTY로 추가하도록 설정
+      JsonTypeInfo.As.PROPERTY);
+
+  return new GenericJackson2JsonRedisSerializer(objectMapperWithTyping);
+}
+```
+
+### `@JsonTypeInfo` 설명
+
+PageResponse는 JsonTypeInfo 어노테이션을 추가해서 타입 정보를 JSON에 포함시킴
+
+```java
+@Builder
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+public record PageResponse(
+    Long id,
+    String title,
+    String description,
+
+    @With
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+    List<ChapterResponse> chapters
+) {
+
+}
+```
+
+ExampleResponse가 JSON에 다음과 같이 저장됨. JSON에 포함된 "@class"를 통해 ObjectMapper는 정확한 클래스로 instance를 만들 수 있음.
+
+```json
+{
+  "@class": "com.example.ParentResponse",
+  "id": 2,
+  "title": "TEST_TITLE",
+  "description": "DESCRIPTION",
+  "chapters": [
+    "java.util.ImmutableCollections$ListN",
+    [
+      {
+        "@class": "com.example.ChildResponse",
+        "id": 1,
+        "title": "CHILD_TITLE",
+        "subtitle": "",
+        "refType": "CHILD_TYPE",
+        "refId": 1,
+        "sequence": 0,
+        "content": {
+          "@class": "com.example.ThirdResponse",
+          "type": "TYPE"
+        }
+      }
+    ]
+  ]
+}
+```
+
+### 헤맸던 부분들
+
+#### `Could not read JSON: Cannot construct instance of 'java.util.ArrayList$SubList'`
+
+Jackson에서 이 에러가 발생하는 경우는, JSON 데이터를 역직렬화(Deserialization) 하려고 할 때, Jackson 라이브러리가 특정 타입의 인스턴스를 생성하려고 하나, 그 과정에서 실패했을 때 발생한다.
+
+`ArrayList$SubList`는 `ArrayList`의 내부 클래스로, `ArrayList`의 일부분을 뷰(view)로 제공하는 용도로 사용된다. 이 클래스는 일반적으로 사용자가 명시적으로 생성하지 않으며, `ArrayList`의 `subList` 메소드를 호출할 때 내부적으로 생성된다.
+
+에러 메시지는 Jackson이 `ArrayList$SubList` 타입의 객체를 생성하려고 시도했으나, 이 타입이 직접적인 인스턴스화를 지원하지 않아 실패했음을 의미한다. (자바 문법 오류)
+
+**해결 방법:**
+1. **타입 정보 수정**: 직렬화 대상이 되는 객체에서 `ArrayList$SubList` 타입을 사용하는 부분을 `List`나 `ArrayList`와 같이 직접 인스턴스화할 수 있는 타입으로 변경
+2. **Custom Deserializer 사용**: Jackson에서 제공하는 기능을 활용하여 커스텀 역직렬화 방법을 구현
+3. **Mix-In Annotation 사용**: Jackson의 Mix-In 기능을 사용하여 타깃 클래스에 대한 직렬화/역직렬화 규칙을 별도의 인터페이스나 추상 클래스에 정의
+
+## Reference
+
+- [Spring Cache Abstraction](https://docs.spring.io/spring-framework/reference/integration/cache.html)
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/)
+- [SpEL - Elvis Operator](https://docs.spring.io/spring-framework/reference/core/expressions/language-ref/operator-elvis.html)
+- [3 Common Mistakes when implementing Spring Cache Abstraction](https://medium.com/upday-devs/3-common-mistakes-when-implementing-spring-cache-abstraction-a7ac2ee247ba)
+- [Jackson Javadoc](https://fasterxml.github.io/jackson-annotations/javadoc/2.4/allclasses-noframe.html)
+- [Jackson Annotation Tutorial Point](https://www.tutorialspoint.com/jackson_annotations/index.htm)

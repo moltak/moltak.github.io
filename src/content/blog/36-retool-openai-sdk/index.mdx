@@ -1,0 +1,56 @@
+---
+title: "Retool에서 OpenAI SDK 사용하기"
+description: "Retool에서 OpenAI SDK를 CDN ESM import로 간단하게 사용하는 방법"
+date: "Jan 14 2026"
+---
+
+## 개요
+
+OpenAI를 리툴에서 쓸 때, 맨날 restful로만 썼는데… 너무 힘들었다. 근데 openai sdk는 cdn에서 제공되고 esm으로 임포트할 수 있어서 왠지 retool에서 될거 같은데 싶어 해보니 잘 됐다.
+
+## 방법
+
+```typescript
+const openai_api_key = retoolContext.configVars.openai_api_key ?? 'sk-proj-KEY'
+
+if (!window.openai) {
+  const module = await import('https://cdn.jsdelivr.net/npm/openai@4/+esm');
+  window.openai = new module.default({
+    apiKey: openai_api_key,
+    dangerouslyAllowBrowser: true
+  });
+}
+
+const vectorStores = await window.openai.vectorStores.list({
+  limit: 20
+});
+
+return vectorStores.data;
+```
+
+위 코드를 보면 알겠지만. 되게 간단함 ㅋㅋㅋ esm이니까 `await import`로 module을 초기화하고 window에 넣어버리면 어디서든 쓸 수 있게됨.
+
+file upload 할때, `toFile` 같은 헬퍼 클래스를 지원한다. 노드에서는 아래처럼 그냥 임포트하면 되지만 retool은 더 쉽다.
+
+```typescript
+// nodejs
+import fs from 'fs';
+import OpenAI, { toFile } from 'openai';
+```
+
+```typescript
+// retool
+const toFile = window.openai.toFile
+```
+
+리툴에서 이렇게 import 할 수 있는건 openai sdk code를 보면 이유를 알 수 있다.
+
+[openai-node/src/index.ts](https://github.com/openai/openai-node/blob/master/src/index.ts)
+
+```typescript
+// openai-node/src/index.ts
+export { OpenAI as default } from './client'; // default 로 지정
+
+export { type Uploadable, toFile } from './core/uploads'; // export toFile
+export { APIPromise } from './core/api-promise';
+```

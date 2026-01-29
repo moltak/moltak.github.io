@@ -1,0 +1,60 @@
+---
+title: "Kafka 1. Topic Partitioning"
+description: "Kafka Topic Partition 변경 방법과 리밸런싱, 데이터 누락/중복 이슈에 대한 학습 정리"
+date: "Aug 24 2021"
+draft: false
+---
+
+# 참고
+
+- [Apache kafka 의 기본 아키텍쳐](https://joooootopia.tistory.com/29?category=907957)
+- [Apache kafka 공식문서 (max.poll.interval.ms)](https://kafka.apache.org/documentation/#consumerconfigs_max.poll.interval.ms)
+- [카프카, 데이터 플랫폼의 최강자(고승범, 공용준 저)](https://ridibooks.com/books/3649000002)
+- [KafkaConsumer Client Internals (Naver D2)](https://d2.naver.com/helloworld/0974525)
+- [Consumer Group Internals: Rebalancing - Jason Gustafson & Onur Karaman](https://youtu.be/QaeXDh12EhE?t=388)
+
+# 개요
+
+카프카를 "사용"만 하다가 "운영"을 해야할 일이 생기다보니 AWS의 기본 설정으론 안되는 경우가 생겼다. 지금 겪는 문제는 Consumer Group의 어떤 하나의 Instance 만 커다란 Load를 갖게되는 경우이다. 여러개의 토픽중 한개의 토픽의 트래픽이 다른 토픽보다 100배 이상 많아 발생하는 문제였다. 이 문제를 해결해야할 필요성이 내부적으로 생기게 됐고 실행을 할 수 있도록 학습을 시작했다. Kafka는 그동안 열심히 사용만 했지 설정을 변경한다던지, 아키텍쳐 같은 부분에 대해 전혀 궁금해 하지 않았기때문에 알아야할 지식이 상당히 많았다.
+
+이번 글은 나처럼 초보가 Kafka Topic Partition에 대해 이해하고 어떤 순서로 작업을 해야하는지 좀 설명할것이다. 상당히 긴 글이 될것같고 부족한 부분도 많겠지만 이 글을 읽는 누군가에게 도움이 됐으면 좋겠다.
+
+# 작업 요약
+
+> 🚫 주의: 토픽의 파티션은 늘릴수만 있고 줄일수는 없다. 파티션을 줄이고 싶으면 토픽을 삭제 후 다시 만들어야한다. 늘릴때 주의하자.
+
+토픽의 파티션을 나누는건 매우 간단하다. 아래와 같이 `--alter` 명령어를 사용해주면 된다.
+
+```bash
+# 토픽 정보 보기
+kafka-topics.sh --describe --bootstrap-server KAFKA_URL --topic TopicA
+
+# 파티션 변경
+kafka-topics.sh --bootstrap-server KAFKA_URL --alter --topic TopicA --partitions 2
+```
+
+# 작업 상세
+
+파티션 변경은 매우 쉽지만 다음과 같은 세가지 질문이 떠오를 것이다.
+
+1. 언제 해야할까? (사용자가 서비스를 많이 사용하는 시간에 파티션을 재조정 해야할까?)
+2. 데이터 누락이 발생하나?
+3. 데이터 중복이 발생하나?
+
+위와 같은 질문에 답하기 위해선 아래에 이어지는 긴 내용이 필요하다. 하지만 간단히 먼저 답을 보면
+
+1. **언제 해야할까?**
+   - 파티션이 변경되면 Consumer Group이 Rebalancing 이란 과정에 들어간다. (바로는 아니고 ㅋ)
+   - 이게 조금 시간이 걸리는 작업이기 때문에 트래픽이 적은 시간에 하는게 좋다
+2. **데이터 누락이 발생하나?**
+   - Consume 되지 못한 데이터는 Broker 에 저장되어 있으므로 데이터는 누락되지 않는다
+3. **데이터 중복이 발생하나**
+   - `카프카, 데이터 플랫폼의 최강자 5.6.1 자동커밋 205p`에 자세히 나와있음. (너무 길어 요약이 힘들다. 책을 구해 읽어보자)
+   - 결론부터 말하자면 발생한다.
+   - ConsumerA가 컨슈밍 중 리밸런스가 일어나 ConsumerB가 추가되었다. 이때, ConsumerA의 offset과 ConsumerB의 offset이 겹칠 가능성이 생기는데, 이때 데이터가 중복된다.
+   - [Consumer Group Internals: Rebalancing](https://youtu.be/QaeXDh12EhE?t=388) 이 영상을 보면 중복 문제는 발생하지 않을것 같다.
+   - 이 부분은 아직 좀 애매하다.
+
+# 번외
+
+위와 같이 토픽의 파티션을 조정하는 것에 대해 알아보았다. 설명한대로 실행하는 방법은 쉬우나 언제 실행해야하고 어떤 문제가 발생하는지에 대해서는 더 많은 학습이 필요했다. 위에 적은 내용은 내가 여러 자료를 읽으며 찾은 자료들이지만 아직도 `중복 문제` 처럼 제대로 이해하지 못한 부분도 존재한다. 자세한 내용을 알고 싶다면 Kafka Consumer Group Rebalancing 글을 이어서 읽어보자.

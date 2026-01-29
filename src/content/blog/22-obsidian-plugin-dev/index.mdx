@@ -1,0 +1,32 @@
+---
+title: "Obsidian 플러그인 개발 조사"
+description: "Obsidian 플러그인 개발 Hello World 체험기"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 전체적인 느낌
+
+hello world를 간단히 해봤는데. 처음엔 약간의 턱이 있었지만 상당히 수월하게 플러그인을 작성할 수 있었다.
+
+[https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin) 여길 보고 했고 sample 을 받은 다음 조금씩 제어해봄
+
+특히 [Hot-Reload](https://github.com/pjeby/hot-reload) 플러그인을 받으니 플러그인 개발 속도가 더욱 빨라지고 쉽게 할 수 있었음.
+
+## 개발 순서 약간 요약
+
+[Build a plugin](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin) 이걸 그대로 따라함
+
+1. vault를 만들고
+   - vault의 root 디렉토리가 제일 헷갈리는데 vault 만들고 그 이름을 설정하는데, 그 이름이 vault의 root임
+2. 거기에 `.obsidian/plugins` 를 만들고
+3. sample 프로젝트를 clone 한다.
+4. `npm i`, `npm run dev` 를 하고
+5. plugin 을 옵시디언에서 켠다
+6. 그리고 `main.ts` 를 수정해보면서 이것저것 살펴봄
+7. `cmd + option + i` 를 누르면 크롬 콘솔도 나오므로 `console.log` 도 사용 가능
+8. 만약 hot reload를 설정 했으면 main.ts를 저장할때마다 자동으로 플러그인이 reload 되므로 반드시 하자
+
+## 이걸로 제품을 만들 수 있을까?
+
+어려울 듯. paid 플러그인이 별로 없다. 심심풀이용이나 만들어야할듯 함

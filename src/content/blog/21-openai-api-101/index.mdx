@@ -1,0 +1,96 @@
+---
+title: "OpenAI API 101 세미나"
+description: "OpenAI API로 AI 앱 만들기 — Thread, Assistants, RAG 구성까지"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 세미나의 목적
+
+OpenAI의 개발 문서가 양이 많고 복잡합니다. (접근이 쉽지 않더라구요). RAG 구현과 AI 제품을 쉽게 개발할 수 있는 부분만 발췌해서 예제와 함께, OpenAI 문서에 쉽게 접근 가능하도록 발표를 준비했습니다.
+
+> 중간중간 질문 - 끼어들기 - 하고싶은말 하기 - 환영 👍☘️✌️
+
+## OpenAI API
+
+> Gemini, Grok 과 비교했어요
+
+### OpenAI API 장점
+
+1. 앱을 만들기 위한 편한 API 제공
+   1. Thread API
+      1. 채팅 이력을 모두 갖고 있음 → 따로 메세지 저장을 위한 DB를 구성하지 않아도됨.
+      2. Thread마다 컨텍스트 유지. LLM에게 컨텍스트 유지를 위한 추가 정보 제공하지 않아도됨.
+   2. Assistants API
+      1. Assistant에 Prompt, 컨텍스트 제공가능.
+      2. Prompt engineering을 Assistant 마다 가능하게 함. `fine-tuning`하기전에 LLM 행동 및 응답에 일관성 제공가능
+2. 내용이 많고 정리가 잘된 Docs
+   1. OpenAI 문서만 다 봐도 AI 제품 개발에 대해 Overview를 마칠 수 있음.
+
+### OpenAI API 단점
+
+1. 기능이 다른 플랫폼 대비 많음 → 문서양도 많음 → 기능 소개가 꽤 자세함 → 문서양 많음
+2. 한글화 없음 → Gemini 는 기계번역 페이지 제공
+
+### Platform 선택
+
+AI 앱을 만들기 위한 가장 좋은 시작지점은 OpenAI, Gemini 순 (2025/04/23 기준 - 몇 달후엔 달라질지도?)
+OpenAI를 선택하면 DB 역할을 축소할 수 있음.
+
+## 구현방법
+
+> 아래 이미지가 오늘 세미나할 내용을 다 담고 있어요
+>
+> `RAG, Keeping chat context, Prompt engineering`
+
+### 화면으로 구성하기
+
+#### RAG 구성
+
+[Vector stores](https://platform.openai.com/storage/vector_stores)에서 file을 업로드
+
+#### 전체 채팅에 동일한 LLM 응답 반환 - Assistants
+
+[Assistants](https://platform.openai.com/assistants)
+
+#### 채팅방 구성 - Thread
+
+[playground](https://platform.openai.com/playground/assistants)에서 Assistants에 설정된 Prompt, model, tool(RAG 등), code interpreter, function 테스트 가능
+
+## OpenAI API 활용법
+
+각 순서에 맞게 API 호출 방법과 링크 제공 (위 화면과 함께 보면 이해가 좀 더 쉬워요!)
+
+### RAG 구성 - Vector store, File api
+
+1. vector store 를 생성하거나 미리 생성된 vector store의 id를 저장
+   - [openai.vectorStores.create](https://platform.openai.com/docs/api-reference/vector-stores?lang=node.js)
+2. file upload
+   - [openai.files.create](https://platform.openai.com/docs/api-reference/files?lang=node.js)
+3. 응답 호출
+   - response API (OpenAI 권고: Chat completion API 대신 response API를 사용하세요)
+     - [openai.responses.create](https://platform.openai.com/docs/api-reference/responses/create?lang=javascript)
+   - thread api
+     - [openai.beta.threads.messages.create](https://platform.openai.com/docs/api-reference/messages?lang=node.js)
+     - [openai.beta.threads.runs.create](https://platform.openai.com/docs/api-reference/runs/createRun?lang=node.js)
+
+### 전체 채팅에 동일한 LLM 응답 반환 - Assistants api
+
+1. assistant 생성
+   - [openai.beta.assistants.create](https://platform.openai.com/docs/api-reference/assistants)
+
+### 채팅방 구성 - Thread api
+
+1. thread 생성
+   - `openai.beta.threads.create`
+2. message 생성
+   - [openai.beta.threads.messages.create](https://platform.openai.com/docs/api-reference/messages/createMessage)
+3. message 실행
+   - [openai.beta.threads.runs.create](https://platform.openai.com/docs/api-reference/runs)
+   - 위에서 생성한 assistants id 필요
+
+## 그 외
+
+- code interpreter
+- function call
+- [AI SDK (Vercel)](https://sdk.vercel.ai/docs/ai-sdk-ui/overview)

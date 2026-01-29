@@ -1,0 +1,66 @@
+---
+title: "@ExtensionMethod — java core class를 확장해서 써보자"
+description: "Lombok @ExtensionMethod로 Java에서 Extension 문법 사용하기"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 개요
+
+Java에서 class를 확장 할 수 있는 방법은 상속이다. 하지만 다른 언어들은 `Extension`이라는 문법을 제공한다. `Extension`은 class, interface에 새로운 기능을 추가할 수 있게 해준다. 예를들어 자주 사용되는 Optional, List, String에 개발자가 원하는 기능을 추가할 수 있다는 의미다.
+
+Java에선 Lombok을 이용해서 비슷하게 구현할 수 있고 그 기능의 이름은 `@ExtensionMethod` 이다.
+
+## Extension 예제
+
+`java.time.LocalDate`에 `isBetween` 함수를 추가해본다.
+
+```java
+public class DateComparators {
+
+  // static function isBetween 함수를 추가
+  public static boolean isBetween(@NonNull LocalDate date, @NonNull LocalDate startDate,
+      @NonNull LocalDate endDate) {
+    return (date.isEqual(startDate) || date.isAfter(startDate))
+        && (date.isEqual(endDate) || date.isBefore(endDate));
+  }
+
+  public static boolean isBetween(@NonNull LocalDateTime dateTime, @NonNull LocalDate startDate,
+      @NonNull LocalDate endDate) {
+    val date = dateTime.toLocalDate();
+    return isBetween(date, startDate, endDate);
+  }
+}
+```
+
+아래와 같이 lombok `@ExtensionMethod` 를 이용해 LocalDate class를 확장할 수 있다.
+
+```java
+@ExtensionMethod(DateComparators.class)
+class DateComparatorsTest {
+
+  @Test
+  void startDate_미만이면_false() {
+    // given
+    val START_DATE = LocalDate.of(2024, 1, 2);
+    val END_DATE = LocalDate.of(2024, 1, 4);
+    // when
+    val result = LocalDate.of(2024, 1, 1)
+        .isBetween(START_DATE, END_DATE); // isBetween을 사용할 수 있게됨.
+    // then
+    assertThat(result).isFalse();
+  }
+}
+```
+
+### 주의점
+
+intellij에선 자동완성 지원이 안된다.
+
+- [Lombok @Extension PR](https://github.com/mplushnikov/lombok-intellij-plugin/issues/21)
+- [Intellij YouTrack](https://youtrack.jetbrains.com/issue/IDEA-261477)
+
+## 참고문서
+
+- [Lombok @ExtensionMethod](https://projectlombok.org/features/experimental/ExtensionMethod)
+- [Kotlin Extensions](https://kotlinlang.org/docs/extensions.html)

@@ -1,0 +1,13 @@
+---
+title: "arch 에 nimf설치"
+description: "Arch Linux에서 nimf 한글 입력기 설치하기"
+date: "May 03 2022"
+---
+
+현재 arch `nimf-git` AUR 이 관리되고 있지 않은지 설치가 되게 안되더라.. 아래와 같이 6개의 패키지를 추가해야 nimf 설치가 가능하다.
+
+```bash
+yay -S rdma-core-dev pkgconfig m17n-lib m17n-db librime anthy
+
+yay -S nimf-git
+```

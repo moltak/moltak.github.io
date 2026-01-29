@@ -1,0 +1,59 @@
+---
+title: "[코딩 에이전트 3] 개인 PM 고용해본 경험 공유 (TaskMaster)"
+description: "TaskMaster로 PRD 기반 분할정복 코딩 — 3~4시간 만에 FE+BE 완성"
+date: "Aug 09 2025"
+draft: false
+---
+
+## 개요
+
+코딩 에이전트는 컨텍스트 관리가 매우 중요하다. [코딩 에이전트 2](/blog/30-coding-agent-2-cursor)에서 언급한 memory-bank 패턴이나 클로드 코드의 `compact` 처럼 컨텍스트를 작지만, 많은 의미를 담을 수 있도록 최적화하는게 코딩 에이전트를 제대로 사용하는 방법이다.
+
+이번에 살펴볼 TaskMaster는 현재까지 가장 진보된 방식을 제공하며 큰 컨텍스트를 작은 컨텍스트로 나눠 분할정복(divide & conquer) 할 수 있게 해준다.
+
+## 결과물
+
+### FE
+
+1. 반응형 + 페이지네이션 + tailwindcss + BE에서 데이터 받아오는 페이지
+2. create-react-app react-router로 세팅 후 나머지는 모두 agent로만 작업
+
+### BE
+
+1. users API + 유저 100명 mocking 데이터
+2. nestjs 기반
+3. nest create app 후 agent로만 작업
+
+## 작업 과정
+
+1. [taskmaster](https://www.task-master.dev/) 세팅
+   - main, fallback, research 각각에 대한 LLM 선택 및 LLM access key 설정
+2. PRD (Product Requirement Document) 작성
+   - memory-bank 패턴을 함께 사용. `architecture.md`, `tdd.md` 를 작성
+   - 위 문서를 기반으로 GPT 와 함께 PRD 작성
+3. PRD를 작성하면 task를 작게 나눌 수 있고 요약 + 상세 정보, status, priority, task간 dependency를 확인할 수 있다.
+4. task가 나눠졌다면 `task 3번 구현해줘` 와 같은 명령어 사용 가능.
+   - 또는 `다음 태스크 구현해줘`. `3-5번까지 다 구현해줘`
+5. 큰 작업인 경우 task 분할도 가능
+6. TDD 방식으로 작업을 요청했기 때문에 항상 테스트부터 작성
+
+## 결과 및 회고
+
+1. 결과
+   - 총 소요 시간: 3-4시간 사이
+   - TaskMaster 세팅 시간 1시간 30분 (처음이라 조금 오래 걸렸음)
+   - 10개 task 완료하는 시간 2-3시간사이 (이것도 처음이라 한땀한땀 확인해보느라 오래 걸렸음)
+2. 회고
+   - PRD를 기반으로 작업을 매우 작게 나눴기때문에 추적이 쉬웠음
+   - 컨텍스트가 task 단위로 압축되므로 에이전트가 대체로 올바르게 동작함
+   - FE, BE 테스트 코드가 매우 많음
+   - task 단위로 작업을 하기 때문에 에이전트가 생성하는 코드 양이 리뷰하기에 적절한 수준을 유지함
+
+> 담담하게 글을 적었지만 실제로 해보면 `오우. 워매. 대박. 내 자리 어쩔? PM만 남음?` 이런 말이 절로 나옵니다 ㅋㅋ
+
+## TOOL
+
+1. cursor 동기 에이전트 모드
+2. claude-sonnet-4-thinking
+3. mcp: taskmaster, context7
+4. 비용: \$0 (cursor \$20 달러 요금제 안에서 해결됨)

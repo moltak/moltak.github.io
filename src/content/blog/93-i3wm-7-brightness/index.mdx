@@ -1,0 +1,56 @@
+---
+title: "i3wm 7 - 밝기 조절"
+description: "i3wm에서 xbacklight를 이용한 모니터 밝기 조절 (AMD/Intel)"
+date: "Oct 30 2020"
+---
+
+i3wm 을 사용한지 대략 한달정도가 되었다. 참 많은걸 했다. 안되는게 너무 많았고 gnome이 가끔 그리웠다. 하지만 key binding에 익숙해지며 특정 상황에 너무 편해졌고 창을 탭처럼 쌓을 수 있는 기능은 이제 없으면 작업을 못 할것 같다. 너무 좋다
+
+오늘은 오랜만에 랩탑을 갖고 스타벅스에 왔는데 내가 설정을 안해둔 많은 것들이 떠올랐다.
+
+1. wifi... 어떻게 하지?? gnome으로 들어가서 와이파이 세팅하고 다시 i3로 돌아와서 해결ㅎㅎ ㅠㅠ 더 나은 방법을 찾아봐야지...
+2. 밝기 조절! ← 오늘의 주제
+
+---
+
+## 본격적으로 시작!
+
+나의 랩탑은 ryzen 4700u cpu 가 장착되어 있는데 너무나 행복하게 잘 쓰고 있다. 발열이 많지 않아서 소음도 거의 없고 컴파일 속도도 빨라서 왠만한 작업으론 느려지지도 않고 소음도 거의 들리지 않는다. 다만 대부분의 리눅스 문서들이 intel cpu 기준이라 좀 헤멜 뿐이다 ㅋ
+
+[이 글](https://askubuntu.com/questions/715306/xbacklight-no-outputs-have-backlight-property-no-sys-class-backlight-folder)에서 보고 문제를 해결하려 노력했고 그 과정을 요약한다. 바쁜 사람은 요약만 읽어봐라.
+
+### 요약하기 전에!
+
+리눅스의 구조를 대략적으로 아는 사람들은 (나도 대략적으로 알지만...) hw 장치들이 파일로 존재한다는 것을 알것이다. 신기하게도! 밝기 조절도 파일을 직접 액세스 해서 바꿀 수 있는데 `/sys/devices/pci0000:00/0000:00:08.1/0000:03:00.0/backlight/amdgpu_bl0/brightness` 이 파일을 열면 integer 값이 있는데 그걸 수정하는 순간 밝기가 변한다!
+
+### 요약
+
+```bash
+# brightness 를 담당하는 파일 찾기
+sudo find /sys/ -type f -iname '*brightness*'
+
+# 위 명령어를 실행하면 intel, amd에 따라 아래 파일같은게 출력됨
+# intel
+/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-LVDS-1/intel_backlight/brightness
+# amd
+/sys/devices/pci0000:00/0000:00:08.1/0000:03:00.0/backlight/amdgpu_bl0/brightness
+
+# sudo 명령으로 저 파일을 열어 직접 밝기를 조절하거나
+
+sudo ln -s /sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-LVDS-1/intel_backlight /sys/class/backlight
+
+# 파일 만들기
+sudo vim /etc/X11/xorg.conf
+
+# 아래 코드 붙여넣기 - 옵션을 amd에 맞게 바꿔야하는데 모르겠다;;;
+Section "Device"
+Identifier  "Card0"
+Driver      "intel"
+Option      "Backlight"  "NAME OF THE FOLDER"
+EndSection
+
+# 그 후 로그아웃 로그인 후 xbacklight 설치
+sudo apt install xbacklight
+
+xbacklight +20
+```

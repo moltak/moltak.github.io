@@ -1,0 +1,34 @@
+---
+title: "AWS EC2-EBS increase Error"
+description: "EC2 EBS 용량 변경 시 growpart 에러 해결 방법"
+date: "Apr 12 2021"
+---
+
+## References
+
+- [https://aws.amazon.com/premiumsupport/knowledge-center/ebs-volume-size-increase/](https://aws.amazon.com/premiumsupport/knowledge-center/ebs-volume-size-increase/)
+- [https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html)
+
+## 들어가며
+
+EC2-EBS의 사이즈를 변경하다보면 바로 안될 때가 있다. 이번 나의 경우가 그랬는데, EBS 용량을 AWS console에서 변경 후 partition 사이즈를 수정하려 `sudo growpart /dev/nvme0n1 1` 명령어를 사용하면 다음과 같은 에러가 출력된다.
+
+```bash
+CHANGED: partition=1 start=4096 old: size=16773087 end=16777183 new: size=18870239 end=18874335
+FAILED: failed: sfdisk --list /dev/nvme0n1
+```
+
+이 문제는 disk 사이즈가 부족해서 발생하는 문제로 해결책은 tmp를 메모리로 옮겨 일시적으로 disk의 용량을 확보하는 방법이다. 해결 방법은 다음과 같다.
+
+## 해결방법
+
+```bash
+sudo mount -o size=10M,rw,nodev,nosuid -t tmpfs tmpfs /tmp
+
+df -hT
+lsblk # 블록 디바이스 정보 표시
+sudo growpart /dev/xvda 1
+sudo resize2fs /dev/xvda1
+
+sudo umount /tmp
+```

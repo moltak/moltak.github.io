@@ -1,0 +1,47 @@
+---
+title: "(jest) Sequelize db (데모 코드)"
+description: "Jest와 Sequelize를 이용한 SQLite in-memory DB 테스트 데모"
+date: "Oct 12 2020"
+---
+
+```bash
+# Dependency
+npm i sqlite3 sequelize sequelize-typescript jest ts-jest typescript @types/jest @types/sequelize --save-dev
+```
+
+```typescript
+describe('Whatever model test', () => {
+    let db: Sequelize = null
+
+    beforeEach(async () => {
+        db = new Sequelize(`sqlite::memory:`, {logging: false});
+        db.addModels([
+            ModelA,
+            ModelB
+        ])
+        await db.sync({ force: true });
+    });
+
+    afterEach(async () => {
+        if (db) {
+            await db.close()
+            db = null
+        }
+    })
+
+    const repository = new WhateverRepository()
+
+    it('should return 1 row', async () => {
+        // given
+        const DUMMY_ID = 'DUMMY_ID'
+
+        // when
+        await repository.save({
+            idd: DUMMY_ID,
+        })
+
+        // then
+        expect(await repository.findAll()).toHaveLength(1)
+    })
+})
+```
