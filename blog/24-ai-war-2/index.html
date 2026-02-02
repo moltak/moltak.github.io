@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/24-ai-war-2/"><!-- Primary Meta Tags --><title>AI 전쟁 2.0 하정우 - 한상기 | Kh Jung</title><meta name="title" content="AI 전쟁 2.0 하정우 - 한상기 | Kh Jung"><meta name="description" content="AI 패권 경쟁, 안전성, 그리고 개인이 준비해야 할 것들 — 독서 노트"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/24-ai-war-2/"><meta property="og:title" content="AI 전쟁 2.0 하정우 - 한상기 | Kh Jung"><meta property="og:description" content="AI 패권 경쟁, 안전성, 그리고 개인이 준비해야 할 것들 — 독서 노트"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/24-ai-war-2/"><meta property="twitter:title" content="AI 전쟁 2.0 하정우 - 한상기 | Kh Jung"><meta property="twitter:description" content="AI 패권 경쟁, 안전성, 그리고 개인이 준비해야 할 것들 — 독서 노트"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="75-aws-codedeploy" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-08T15:00:00.000Z"> Aug 9, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> AI 전쟁 2.0 하정우 - 한상기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="짧은-소감">짧은 소감</h2>
+<p>이 책은 AI에 대한 국가, 기업간의 현재 모습과 미래의 모습을 예측하고 있다. 미국의 독주 그러다가 중국의 부상. AI도 패권경쟁으로 넘어가고 전략자산 취급이 되며 수출제한도 적극적으로 한다. 그런 상황에 각 국가는 어떤 전략을 취해야하고 소버린 AI를 구축해야하는 당위성도 이야기한다.</p>
+<p>개인의 입장에선 어떨까? 일단 CBRN이 있다. 지금도 매우 많은 지식이 있는 LLM들이 CBRN에 어떻게 대처할까? 다크웹에 있는 데이터로 학습된 LLM들이 어떤 정보를 제공할까? 폭탄이나 총기 같은 제조법을 알려주고. 심지어 재료를 어떻게 모을지도 알려줄텐데</p>
+<p>이 책을 읽기전 들었던 막연한 생각. 나는 AI 시대에 직업적으로 어떻게 대처해야할까 정도 생각을 했다면. 삶에 연관된 문제도 생길 가능성이 높다는걸 알게됐다. AI연구에서 안전연구는 너무나 필요하다</p>
+<p>AI시대에 직업적으로 살아남는 방법은 어떤게 있을까. AI가 우리의 직업을 위협하는건 아니다. 우리의 직업을 위협하는 건 우리보다 AI 도구를 잘 쓰는 경쟁자다.</p>
+<p>AI가 나오고 보니 숙련자보단 초급자에게 더 위협이 됐다. 신입이 해야했던 귀찮은 일을 숙련자가 AI에게 명령을 내려 더 빠르게 업무를 수행한다. 결국은 상위 10% 이내에 들 수 있는 실력을 갖춰야한다.</p>
+<p>LLM 그루밍을 통해 새로운 갈등이 생겨날 수도 있다. 역사적 문화적 갈등이 존재하는 모든 곳에 나타날것이고. LLM들이 이걸 학습하면 동해를 일본해라고 부르겠지</p>
+<h2 id="ai-오픈소스-생태계-진정한-공개인가">AI 오픈소스 생태계, 진정한 공개인가?</h2>
+<ul>
+<li>오픈소스가 더 비쌀 가능성이큼</li>
+<li>모델 다운로드는 싸지만</li>
+<li>모델만 가지고는 아무것도 못함</li>
+<li>추가 데이터 준비하고 기업 맞춤형으로 파인튜닝하고.
+<ul>
+<li>파인튜닝은 노하우가 필요하고 수많은 시행착오와 숙련된 인력이 필요</li>
+</ul>
+</li>
+<li>AIOps도 필요.
+<ul>
+<li>모델을 배포 및 운영하는 인력</li>
+<li>도구를 직접 개발</li>
+</ul>
+</li>
+<li>트래픽이 늘어날수록 당연히 노하우는 더 필요</li>
+</ul>
+<h3 id="지식-증류">지식 증류</h3>
+<ul>
+<li>학습이 완료된 강력하고 큰 모델을 일부 매개변수를 제거하는 pruning(프루닝) 같은 모델 경량화 기법을 써서 능력은 유지하고 매개변수제거</li>
+<li>증류: 대형 모델이 보유한 뛰어난 지식과 추론 능력을 이용해 데이터를 생성하고 이를 다시 작은 모델에 추가 학습
+<ul>
+<li>딥시크 R1이 라마를 이용해서 증류함</li>
+</ul>
+</li>
+</ul>
+<h2 id="트럼프-시대-ai-패권-경쟁은-어떻게-달라질까">트럼프 시대, AI 패권 경쟁은 어떻게 달라질까</h2>
+<ul>
+<li>바이든 행정부는 AI 가속칩, GPU를 수출 규제함</li>
+<li>동맹국, 티어1, 티어2, 티어3으로 나눠 쿼터제 적용</li>
+<li>트럼프는 더 세게 할것</li>
+</ul>
+<h2 id="moemixture-of-experts">MoE(Mixture of Experts)</h2>
+<ul>
+<li>모델 자체를 하나로 단일화 하는 것은 현실적으로 쉽지 않음 (ROI가 안좋음)</li>
+<li>MoE 형태로 여러 모델을 배포
+<ul>
+<li>몇개의 기능 그룹으로 나누고 각 그룹내에 다양한 과제를 잘 수행할 수 있는 추론 능력이 뛰어난 별도의 AI를 둔다.</li>
+<li>개별 AI들이 서로 라우팅함</li>
+<li>A2A, MCP도 비슷</li>
+</ul>
+</li>
+</ul>
+<h2 id="수츠케버는-이전-학습-방식을-안쓸거-같다함">수츠케버는 이전 학습 방식을 안쓸거 같다함</h2>
+<ul>
+<li>오토리그레시브 모델 방식이나, 트랜스포머 아키텍처를 유지할지 여부도 불확실</li>
+<li>넥스트 토큰 프리딕션 방식을 사용하지 않을것 같음</li>
+</ul>
+<h2 id="aslai-safety-level">ASL(AI Safety Level)</h2>
+<ul>
+<li>CBRN 화생방핵
+<ul>
+<li>AI가 자체적으로 연구하다가 인간의 통제를 벗어남</li>
+<li>모델이 폭탄 제조법을 상세하게 알려주고 그걸 어디서 만들 수 있는지도 알려주면 얼마나 위험할까</li>
+<li>누구나 다 폭탄을 만들 수 있는 시대가 될것</li>
+</ul>
+</li>
+<li>다크웹 데이터로 튜닝되면 어떻게 될까</li>
+</ul>
+<h2 id="ai-시장의-발전은-산업용-ai-에이전트에-달려있다">AI 시장의 발전은 산업용 AI 에이전트에 달려있다</h2>
+<ul>
+<li>사티아 나델라 — AI 가 예상만큼 GDP 성장에 도움을 주고 있지 않다.</li>
+<li>AI 가 확산되면 생산성이 급격히 증가할 것이다</li>
+<li>에이전트 기반으로 진화할 수 밖에 없다</li>
+</ul>
+<h2 id="세이프티--시큐리티">세이프티 → 시큐리티</h2>
+<p>엔트로픽 다리오 아모데이</p>
+<ul>
+<li>세이프티: 투명성, 편향성, 설명 가능성, 오작동 가능성 등 주로 AI 모델 자체의 내부적 문제를 다룸</li>
+<li>시큐리티: AI 모델 자체뿐 아니라, 이를 포함한 전체 시스템의 보안과 안정성. 해커가 AI 시스템의 취약점을 공격한다거나</li>
+<li>레드팀 운영</li>
+</ul>
+<h2 id="새로운-사업들">새로운 사업들</h2>
+<ol>
+<li>AI 안정성 검증만을 전문으로 하는 민간 기업
+<ul>
+<li>아폴로 리서치</li>
+<li>TTA (한국정보통신기술협회)</li>
+<li>셀렉트스타</li>
+</ul>
+</li>
+</ol>
+<h2 id="ai가-인류를-몰락-시키는건-터미네이터가-아니다">AI가 인류를 몰락 시키는건 터미네이터가 아니다</h2>
+<ul>
+<li>저출산</li>
+<li>AI는 사람보다 더 친절하고 감정도 잘 이해함</li>
+<li>미래 세대는 분명히 사람보다 AI랑 더 가까울 것</li>
+<li>알렉사 다 빼버린 학교
+<ul>
+<li>질문을 반복하거나 장난쳐도 짜증 안내고 친절함</li>
+<li>아이들이 상대방도 친절하다는걸 전혀 배우지 못함</li>
+<li>타인에 대한 배려나 예의를 못배움</li>
+</ul>
+</li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#짧은-소감" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="짧은-소감"> 짧은 소감 </a> </li><li> <a href="#ai-오픈소스-생태계-진정한-공개인가" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ai-오픈소스-생태계-진정한-공개인가"> AI 오픈소스 생태계, 진정한 공개인가? </a> </li><li> <a href="#지식-증류" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="지식-증류"> 지식 증류 </a> </li><li> <a href="#트럼프-시대-ai-패권-경쟁은-어떻게-달라질까" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="트럼프-시대-ai-패권-경쟁은-어떻게-달라질까"> 트럼프 시대, AI 패권 경쟁은 어떻게 달라질까 </a> </li><li> <a href="#moemixture-of-experts" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="moemixture-of-experts"> MoE(Mixture of Experts) </a> </li><li> <a href="#수츠케버는-이전-학습-방식을-안쓸거-같다함" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="수츠케버는-이전-학습-방식을-안쓸거-같다함"> 수츠케버는 이전 학습 방식을 안쓸거 같다함 </a> </li><li> <a href="#aslai-safety-level" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="aslai-safety-level"> ASL(AI Safety Level) </a> </li><li> <a href="#ai-시장의-발전은-산업용-ai-에이전트에-달려있다" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ai-시장의-발전은-산업용-ai-에이전트에-달려있다"> AI 시장의 발전은 산업용 AI 에이전트에 달려있다 </a> </li><li> <a href="#세이프티--시큐리티" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="세이프티--시큐리티"> 세이프티 → 시큐리티 </a> </li><li> <a href="#새로운-사업들" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="새로운-사업들"> 새로운 사업들 </a> </li><li> <a href="#ai가-인류를-몰락-시키는건-터미네이터가-아니다" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ai가-인류를-몰락-시키는건-터미네이터가-아니다"> AI가 인류를 몰락 시키는건 터미네이터가 아니다 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

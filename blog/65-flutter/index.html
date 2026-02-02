@@ -1,0 +1,695 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/65-flutter/"><!-- Primary Meta Tags --><title>Flutter | Kh Jung</title><meta name="title" content="Flutter | Kh Jung"><meta name="description" content="Flutter 공식 문서를 읽으며 정리한 학습 노트. Widgets, Layouts, Interactive, Navigation, Http 등 핵심 개념과 Dart 코드 예제"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/65-flutter/"><meta property="og:title" content="Flutter | Kh Jung"><meta property="og:description" content="Flutter 공식 문서를 읽으며 정리한 학습 노트. Widgets, Layouts, Interactive, Navigation, Http 등 핵심 개념과 Dart 코드 예제"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/65-flutter/"><meta property="twitter:title" content="Flutter | Kh Jung"><meta property="twitter:description" content="Flutter 공식 문서를 읽으며 정리한 학습 노트. Widgets, Layouts, Interactive, Navigation, Http 등 핵심 개념과 Dart 코드 예제"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="35-retool-terraform-ecs" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-08-19T15:00:00.000Z"> Aug 20, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 10 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Flutter </div> </div> <div class="relative"> <article class="animate"> <blockquote>
+<p>이 글은 Flutter에 있는 글들을 읽으며 정리하는 내용이기 때문에 <a href="https://flutter.dev/">링크</a>에 다 있다. 혹시 Flutter를 자세히 공부하고 싶다면 내 글보다 <a href="https://flutter.dev/">링크</a>를 추천한다.</p>
+</blockquote>
+<h2 id="들어가며">들어가며</h2>
+<p>요새 Flutter 를 학습해보고 있다. 2.0 이 나오면서 더 관심을 갖게 됐는데, Linux와 Web을 동시에 개발할 수 있다는 것에 큰 매료가 됐다. 특히 Web의 CSS는 삽질이 좀 필요하고 Linux App은 여러 대안이 있지만 딱히 맘에 들지 않아 학습할 의지가 별로 없었다. 그 와중에 나온 Flutter는 Dart를 사용하여 Cross Platform(iOS, AOS, Web, Linux, Mac OS, Windows)를 지원하는 Framework로써 상당히 기대하고 있다.</p>
+<p>예전에 <a href="/blog/66-flutter-3-reasons">Flutter를 배워야하는 3가지 이유</a>라는 글을 썼는데, 거기서더 언급했듯이 Kotlin, Typescript, React를 해본적이 있다면 더 쉽게 익힐 수 있을거라 생각된다.</p>
+<p>이 글을 쓰는 목적은 Flutter Tutorial과 문서들을 보며 알게된 내용들을 내 나름의 방식으로 기록하고자 함이다. 기본적으로 나는 Tutorial에서 설명하는 모든 코드를 typing 하는데, 그것만 갖고는 전체 원리를 다 파악하지 못하는 경우가 대부분이다. 실무에서 사용하며 오랜시간을 함께해야 체화가 되는데, 이 과정을 단축시켜주는게 Tutorial과 정리라고 생각한다.</p>
+<p>혹시나 이 글을 읽는 사람이 있다면 나와 같은 방법을 써보는게 어떨까 한다.</p>
+<h2 id="introduction-to-widgets">Introduction to widgets</h2>
+<h2 id="building-layouts">Building layouts</h2>
+<h2 id="adding-interactive">Adding interactive</h2>
+<p>위에서도 언급했듯이 Flutter는 React와 상당히 흡사하다. 그리고 Widget과 Interactive(상호작용)을 할 때도 비슷한 방식으로 할 수 있다. 아래 예제 코드가 있는데 살펴보면.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> TapboxA</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatefulWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> TapboxA</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  _TapboxAState</span><span style="color:#B392F0"> createState</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> _TapboxAState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> _TapboxAState</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> State</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">TapboxA</span><span style="color:#E1E4E8">&gt; {</span></span>
+<span class="line"><span style="color:#79B8FF">  bool</span><span style="color:#E1E4E8"> _active </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  void</span><span style="color:#B392F0"> _handleTap</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">    setState</span><span style="color:#E1E4E8">(() {</span></span>
+<span class="line"><span style="color:#E1E4E8">      _active </span><span style="color:#F97583">=</span><span style="color:#F97583"> !</span><span style="color:#E1E4E8">_active;</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> GestureDetector</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      onTap</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> _handleTap,</span></span>
+<span class="line"><span style="color:#E1E4E8">      child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Container</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            _active </span><span style="color:#F97583">?</span><span style="color:#9ECBFF"> &#39;Active&#39;</span><span style="color:#F97583"> :</span><span style="color:#9ECBFF"> &#39;Inactive&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">            style</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> TextStyle</span><span style="color:#E1E4E8">(fontSize</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> 32.0</span><span style="color:#E1E4E8">, color</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Colors</span><span style="color:#E1E4E8">.white),</span></span>
+<span class="line"><span style="color:#E1E4E8">          ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        width</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> 200.0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        height</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> 200.0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        decoration</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> BoxDecoration</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          color</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> _active </span><span style="color:#F97583">?</span><span style="color:#79B8FF"> Colors</span><span style="color:#E1E4E8">.lightGreen[</span><span style="color:#79B8FF">700</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Colors</span><span style="color:#E1E4E8">.grey[</span><span style="color:#79B8FF">600</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>StatefulWidget 클래스를 생성하고 State 클래스를 반환한다. State 클래스에는 상태값(_active), 상태변경 함수(_handleTab), 그리고 build라는 override 함수가 있다. build 함수는 React의 render 함수와 마찬가지로 state 값이 변경되면 build함수가 호출되는 구조로 되어있다. 그리고 state값을 변경해주기 위해 <code>setState()</code> 를 호출하게 되는데, 이 또한 react와 상당히 비슷한 점이다.</p>
+<p>여기선 간단히 설명했지만 자세히 알고 싶다면 이 <a href="https://flutter.dev/docs/development/ui/interactive#the-widget-manages-its-own-state">링크</a>를 참조해보고 tutorial을 한번해보자.</p>
+<h2 id="navigation">Navigation</h2>
+<p>앱을 개발할 때, 화면 전환은 가장 많이 사용된다. React에서는 Router를 사용해 화면 전환을 하는데, Flutter는 <code>Navigator</code> 를 사용해 화면을 전환한다.</p>
+<h3 id="navigate-to-a-new-screen-and-back">Navigate to a new screen and back</h3>
+<p>아래 코드가 가장 단순한 예다. Button을 각 스크린에 띄워 FirstRoute와 SecondRoute를 왕복할 수 있게 한 예제이다. 눈여겨봐야할 곳은 <code>Navigator.push, Navigator.pop</code> 함수다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(home</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> FirstRoute</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> FirstRoute</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        title</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;First Route&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Open Route&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">        onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">          Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            context,</span></span>
+<span class="line"><span style="color:#79B8FF">            MaterialPageRoute</span><span style="color:#E1E4E8">(builder</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> SecondRoute</span><span style="color:#E1E4E8">()),</span></span>
+<span class="line"><span style="color:#E1E4E8">          );</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">      )),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> SecondRoute</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        title</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Second Route&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">            Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">(context);</span></span>
+<span class="line"><span style="color:#E1E4E8">          },</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Go Back!&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="animate-a-widget-across-screens">Animate a widget across screens</h3>
+<p>아래 코드는. Hero widget을 사용한 Animate 화면 전환이다. <a href="https://flutter.dev/docs/development/ui/animations/hero-animations">Hero animations</a>은 이 페이지에 있는 영상에서 볼 수 있는데, 꽤 자주 사용되므로 알아두면 좋다. (나는 아직 초보라 잘 모름ㅋ)</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      home</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> MainScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MainScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> MainScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Main Screen&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> GestureDetector</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        onTap</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">          Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(context, </span><span style="color:#79B8FF">MaterialPageRoute</span><span style="color:#E1E4E8">(builder</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) {</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> DetailScreen</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">          }));</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Hero</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          tag</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;imageHero&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Image</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">network</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#9ECBFF">            &#39;https://picsum.photos/250?image=9&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">          ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> DetailScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> DetailScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> GestureDetector</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            onTap</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">              Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">(context);</span></span>
+<span class="line"><span style="color:#E1E4E8">            },</span></span>
+<span class="line"><span style="color:#E1E4E8">            child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">              child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Hero</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">                tag</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;imageHero&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">                child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Image</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">network</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#9ECBFF">                  &#39;https://picsum.photos/250?image=9&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">                ),</span></span>
+<span class="line"><span style="color:#E1E4E8">              ),</span></span>
+<span class="line"><span style="color:#E1E4E8">            )</span></span>
+<span class="line"><span style="color:#E1E4E8">        )</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="navigate-with-named-routes">Navigate with named routes</h3>
+<p>이름으로 라우트를 할 수 있는 기능이다. 특이했던건 route 를 하기 위해 web의 ’/’, ‘/second’ 같은걸 사용했던건데, 이걸 이용해서 web에서도 바로 routing이 된다. 아마 web과 함께 처리하기 위해 이런 방식을 쓰지 않았을까 추측해본다. 아래에서 코드를 확인할 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      title</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;Named Routes Demo&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      initialRoute</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;/&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      routes</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;/&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> FirstScreen</span><span style="color:#E1E4E8">(),</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;/second&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> SecondScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> FirstScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> FirstScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;First Screen&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">          Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pushNamed</span><span style="color:#E1E4E8">(context, </span><span style="color:#9ECBFF">&#39;/second&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Launch Screen&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      )),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> SecondScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> SecondScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Second Screen&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">          Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">(context);</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Bo Back!&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">      )),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="pass-arguments-to-a-named-route">Pass arguments to a named route</h3>
+<p>다른 스크린에 Arguments를 넘기는 방법인데, 어렵지 않다.</p>
+<p><code>Navigator.pushNamed</code> 함수에 Route와 arguments를 함께 넘긴 후 해당 Screen에서 <code>final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;</code> 를 사용해 값을 가져올 수 있다. 자세한 내용은 아래 코드를 참조하자.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      initialRoute</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;/&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      routes</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;/&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> FirstScreen</span><span style="color:#E1E4E8">(),</span></span>
+<span class="line"><span style="color:#79B8FF">        ExtractArgumentsScreen</span><span style="color:#E1E4E8">.routeName</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span></span>
+<span class="line"><span style="color:#F97583">            const</span><span style="color:#79B8FF"> ExtractArgumentsScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> FirstScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;First Screen&#39;</span><span style="color:#E1E4E8">)),</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">              Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pushNamed</span><span style="color:#E1E4E8">(context, </span><span style="color:#79B8FF">ExtractArgumentsScreen</span><span style="color:#E1E4E8">.routeName,</span></span>
+<span class="line"><span style="color:#E1E4E8">                  arguments</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ScreenArguments</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Extract Arguments Screen&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">                      &#39;This message is extracted in the build method.&#39;</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">            },</span></span>
+<span class="line"><span style="color:#E1E4E8">            child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Navigate to screen that extracts arguments&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">          ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> ExtractArgumentsScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> ExtractArgumentsScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  static</span><span style="color:#F97583"> const</span><span style="color:#E1E4E8"> routeName </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;/extractArguments&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> args </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> ModalRoute</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">of</span><span style="color:#E1E4E8">(context)</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">.settings.arguments </span><span style="color:#F97583">as</span><span style="color:#79B8FF"> ScreenArguments</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          title</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(args.title),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(args.message),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> ScreenArguments</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> String</span><span style="color:#E1E4E8"> title;</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> String</span><span style="color:#E1E4E8"> message;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">  ScreenArguments</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.title, </span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.message);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="return-data-from-a-screen">Return data from a screen</h3>
+<p>다른 스크린에서 값을 반환하는 방법이다. 좀 특이한건 async, await 구문을 사용한다는 점인데, 그 외에 특별한 부분은 없다. <code>Navigator.pop(context, DATA)</code> 옆의 문법과 같이 pop 할 때, object (any type)을 넣어주면 된다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(initialRoute</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;/&#39;</span><span style="color:#E1E4E8">, routes</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">      &#39;/&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> HomeScreen</span><span style="color:#E1E4E8">(),</span></span>
+<span class="line"><span style="color:#79B8FF">      SelectionScreen</span><span style="color:#E1E4E8">.routeName</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> SelectionScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> HomeScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> HomeScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Returning Data Demo&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> SelectionButton</span><span style="color:#E1E4E8">()));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> SelectionButton</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> SelectionButton</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#B392F0">          _navigateAndDisplaySelection</span><span style="color:#E1E4E8">(context);</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Pick an option, any option!&#39;</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  void</span><span style="color:#B392F0"> _navigateAndDisplaySelection</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> result </span><span style="color:#F97583">=</span></span>
+<span class="line"><span style="color:#F97583">        await</span><span style="color:#79B8FF"> Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pushNamed</span><span style="color:#E1E4E8">(context, </span><span style="color:#79B8FF">SelectionScreen</span><span style="color:#E1E4E8">.routeName);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">    ScaffoldMessenger</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">of</span><span style="color:#E1E4E8">(context)</span></span>
+<span class="line"><span style="color:#E1E4E8">      ..</span><span style="color:#B392F0">removeCurrentSnackBar</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">      ..</span><span style="color:#B392F0">showSnackBar</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">SnackBar</span><span style="color:#E1E4E8">(content</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;</span><span style="color:#9ECBFF">$</span><span style="color:#79B8FF">result</span><span style="color:#9ECBFF">&#39;</span><span style="color:#E1E4E8">)));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> SelectionScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> SelectionScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  static</span><span style="color:#F97583"> const</span><span style="color:#E1E4E8"> routeName </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;/selection&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Pick an option&#39;</span><span style="color:#E1E4E8">)),</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Column</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            mainAxisAlignment</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> MainAxisAlignment</span><span style="color:#E1E4E8">.center,</span></span>
+<span class="line"><span style="color:#E1E4E8">            children</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#79B8FF">              Padding</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">                padding</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> EdgeInsets</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">all</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">8</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">                child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">                  onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">                    Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">(context, </span><span style="color:#9ECBFF">&#39;Yep!&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">                  },</span></span>
+<span class="line"><span style="color:#E1E4E8">                  child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Yep!&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">                ),</span></span>
+<span class="line"><span style="color:#E1E4E8">              ),</span></span>
+<span class="line"><span style="color:#79B8FF">              Padding</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">                  padding</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> EdgeInsets</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">all</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">8</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">                  child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ElevatedButton</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">                    onPressed</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">                      Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pop</span><span style="color:#E1E4E8">(context, </span><span style="color:#9ECBFF">&#39;Nope.&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">                    },</span></span>
+<span class="line"><span style="color:#E1E4E8">                    child</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Nope.&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">                  ))</span></span>
+<span class="line"><span style="color:#E1E4E8">            ],</span></span>
+<span class="line"><span style="color:#E1E4E8">          ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="send-data-to-a-new-screen">Send data to a new screen</h3>
+<p>새로운 스크린에 데이터를 보낼 때, <a href="https://flutter.dev/docs/cookbook/navigation/navigate-with-arguments">위에서 언급된</a> 방식도 있지만 클래스의 instance를 생성하며 constructor에 직접 넣는 방식도 있다. 아래 코드를 보면 <code>const TodosScreen({Key? key, required this.todos}) : super(key: key);</code> 이 구문이 있는데, 여기가 생성자 함수를 생성하고 값을 바로 입력받는 부분이다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> todos </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> List</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">generate</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#79B8FF">      20</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      (i) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> Todo</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;Todo </span><span style="color:#9ECBFF">$</span><span style="color:#79B8FF">i</span><span style="color:#9ECBFF">&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;A description of what needs to be done for Todo </span><span style="color:#9ECBFF">$</span><span style="color:#79B8FF">i</span><span style="color:#9ECBFF">&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      initialRoute</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;/&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      routes</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;/&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> TodosScreen</span><span style="color:#E1E4E8">(todos</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> todos),</span></span>
+<span class="line"><span style="color:#79B8FF">        DetailScreen</span><span style="color:#E1E4E8">.routeName</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> DetailScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> TodosScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> TodosScreen</span><span style="color:#E1E4E8">({</span><span style="color:#79B8FF">Key</span><span style="color:#F97583">?</span><span style="color:#E1E4E8"> key, </span><span style="color:#F97583">required</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.todos}) </span><span style="color:#F97583">:</span><span style="color:#79B8FF"> super</span><span style="color:#E1E4E8">(key</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> List</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">Todo</span><span style="color:#E1E4E8">&gt; todos;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Todos&#39;</span><span style="color:#E1E4E8">)),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> ListView</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">builder</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        itemCount</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> todos.length,</span></span>
+<span class="line"><span style="color:#E1E4E8">        itemBuilder</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context, index) {</span></span>
+<span class="line"><span style="color:#F97583">          return</span><span style="color:#79B8FF"> ListTile</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            title</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(todos[index].title),</span></span>
+<span class="line"><span style="color:#E1E4E8">            onTap</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> () {</span></span>
+<span class="line"><span style="color:#79B8FF">              Navigator</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">pushNamed</span><span style="color:#E1E4E8">(context, </span><span style="color:#79B8FF">DetailScreen</span><span style="color:#E1E4E8">.routeName,</span></span>
+<span class="line"><span style="color:#E1E4E8">                  arguments</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> todos[index]);</span></span>
+<span class="line"><span style="color:#E1E4E8">            },</span></span>
+<span class="line"><span style="color:#E1E4E8">          );</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> DetailScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  static</span><span style="color:#F97583"> const</span><span style="color:#E1E4E8"> routeName </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &#39;/detail&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    final</span><span style="color:#E1E4E8"> todo </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> ModalRoute</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">of</span><span style="color:#E1E4E8">(context)</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">.settings.arguments </span><span style="color:#F97583">as</span><span style="color:#79B8FF"> Todo</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        title</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(todo.title),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">      body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Padding</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        padding</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> EdgeInsets</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">all</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">16</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">        child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(todo.description),</span></span>
+<span class="line"><span style="color:#E1E4E8">      ),</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> Todo</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> String</span><span style="color:#E1E4E8"> title;</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> String</span><span style="color:#E1E4E8"> description;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> Todo</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.title, </span><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.description);</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h2 id="http">Http</h2>
+<h3 id="fetch-data-from-the-internet">Fetch data from the internet</h3>
+<p>이번 문서는 약간 어렵다. 외울게 많기 때문인데, 어떤게 있는지 먼저 꼽아보자</p>
+<ol>
+<li><strong>Future</strong> - Http 응답을 반환하는 함수를 생성하는데 사용한다. Future와 await, async 를 조합해 사용하며 응답이 반환했을 때, unmarshaled object로 반환해준다.</li>
+<li><strong>parse json from response</strong> - factory 함수를 이용해 json 을 반환받아 unmarshal 을 수행한다. typed 언어들은 이런부분들이 좀 귀찮더라.</li>
+<li><strong>FutureBuilder</strong> - FutureBuilder 라고 widget 인데, 위에 언급한 Future의 반환값을 사용하기 위해 쓴다.</li>
+</ol>
+<p>아주 어렵진 않으나 외워서 능숙하게 쓰려면 여러번 해봐야할것 같다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="dart"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;dart:convert&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/cupertino.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:flutter/material.dart&#39;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;package:http/http.dart&#39;</span><span style="color:#F97583"> as</span><span style="color:#E1E4E8"> http;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">void</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">  runApp</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">MyApp</span><span style="color:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MyApp</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatelessWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> MaterialApp</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      initialRoute</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &#39;/&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      routes</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">        &#39;/&#39;</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context) </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> MainScreen</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> MainScreen</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> StatefulWidget</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  State</span><span style="color:#B392F0"> createState</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">=&gt;</span><span style="color:#79B8FF"> _MainScreenState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> _MainScreenState</span><span style="color:#F97583"> extends</span><span style="color:#79B8FF"> State</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">MainScreen</span><span style="color:#E1E4E8">&gt; {</span></span>
+<span class="line"><span style="color:#F97583">  late</span><span style="color:#79B8FF"> Future</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">Album</span><span style="color:#E1E4E8">&gt; futureAlbum;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#F97583">  void</span><span style="color:#B392F0"> initState</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#79B8FF">    super</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">initState</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">    futureAlbum </span><span style="color:#F97583">=</span><span style="color:#B392F0"> fetchAlbum</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  @override</span></span>
+<span class="line"><span style="color:#79B8FF">  Widget</span><span style="color:#B392F0"> build</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">BuildContext</span><span style="color:#E1E4E8"> context) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Scaffold</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        appBar</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> AppBar</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">          title</span><span style="color:#F97583">:</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Fetch Data Example&#39;</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">        ),</span></span>
+<span class="line"><span style="color:#E1E4E8">        body</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> Center</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">            child</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> FutureBuilder</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">Album</span><span style="color:#E1E4E8">&gt;(</span></span>
+<span class="line"><span style="color:#E1E4E8">              future</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> futureAlbum,</span></span>
+<span class="line"><span style="color:#E1E4E8">              builder</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> (context, snapshot) {</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> (snapshot.hasData) {</span></span>
+<span class="line"><span style="color:#F97583">                  return</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(snapshot.data</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">.title);</span></span>
+<span class="line"><span style="color:#E1E4E8">                } </span><span style="color:#F97583">else</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> (snapshot.hasError) {</span></span>
+<span class="line"><span style="color:#F97583">                  return</span><span style="color:#79B8FF"> Text</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;</span><span style="color:#9ECBFF">${</span><span style="color:#79B8FF">snapshot</span><span style="color:#9ECBFF">.</span><span style="color:#79B8FF">error</span><span style="color:#9ECBFF">}</span><span style="color:#9ECBFF">&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">                }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">                // By default, show a loading spinner.</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#F97583"> const</span><span style="color:#79B8FF"> CircularProgressIndicator</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">              },</span></span>
+<span class="line"><span style="color:#E1E4E8">            )</span></span>
+<span class="line"><span style="color:#E1E4E8">        )</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">Future</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">Album</span><span style="color:#E1E4E8">&gt; </span><span style="color:#B392F0">fetchAlbum</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#E1E4E8"> response </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> http</span></span>
+<span class="line"><span style="color:#E1E4E8">      .</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">Uri</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">parse</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;https://jsonplaceholder.typicode.com/albums/1&#39;</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (response.statusCode </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 200</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">    // If the server did return a 200 OK response,</span></span>
+<span class="line"><span style="color:#6A737D">    // then parse the JSON.</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Album</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">fromJson</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">jsonDecode</span><span style="color:#E1E4E8">(response.body));</span></span>
+<span class="line"><span style="color:#E1E4E8">  } </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    // If the server did not return a 200 OK response,</span></span>
+<span class="line"><span style="color:#6A737D">    // then throw an exception.</span></span>
+<span class="line"><span style="color:#F97583">    throw</span><span style="color:#79B8FF"> Exception</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;Failed to load album&#39;</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#79B8FF"> Album</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> int</span><span style="color:#E1E4E8"> userId;</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> int</span><span style="color:#E1E4E8"> id;</span></span>
+<span class="line"><span style="color:#F97583">  final</span><span style="color:#79B8FF"> String</span><span style="color:#E1E4E8"> title;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">  Album</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#F97583">    required</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.userId,</span></span>
+<span class="line"><span style="color:#F97583">    required</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.id,</span></span>
+<span class="line"><span style="color:#F97583">    required</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.title,</span></span>
+<span class="line"><span style="color:#E1E4E8">  });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  factory</span><span style="color:#79B8FF"> Album</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">fromJson</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">Map</span><span style="color:#E1E4E8">&lt;</span><span style="color:#79B8FF">String</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">dynamic</span><span style="color:#E1E4E8">&gt; json) {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> Album</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">      userId</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> json[</span><span style="color:#9ECBFF">&#39;userId&#39;</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">      id</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> json[</span><span style="color:#9ECBFF">&#39;id&#39;</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">      title</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> json[</span><span style="color:#9ECBFF">&#39;title&#39;</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">    );</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#들어가며" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="들어가며"> 들어가며 </a> </li><li> <a href="#introduction-to-widgets" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="introduction-to-widgets"> Introduction to widgets </a> </li><li> <a href="#building-layouts" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="building-layouts"> Building layouts </a> </li><li> <a href="#adding-interactive" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="adding-interactive"> Adding interactive </a> </li><li> <a href="#navigation" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="navigation"> Navigation </a> </li><li> <a href="#navigate-to-a-new-screen-and-back" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="navigate-to-a-new-screen-and-back"> Navigate to a new screen and back </a> </li><li> <a href="#animate-a-widget-across-screens" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="animate-a-widget-across-screens"> Animate a widget across screens </a> </li><li> <a href="#navigate-with-named-routes" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="navigate-with-named-routes"> Navigate with named routes </a> </li><li> <a href="#pass-arguments-to-a-named-route" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="pass-arguments-to-a-named-route"> Pass arguments to a named route </a> </li><li> <a href="#return-data-from-a-screen" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="return-data-from-a-screen"> Return data from a screen </a> </li><li> <a href="#send-data-to-a-new-screen" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="send-data-to-a-new-screen"> Send data to a new screen </a> </li><li> <a href="#http" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="http"> Http </a> </li><li> <a href="#fetch-data-from-the-internet" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="fetch-data-from-the-internet"> Fetch data from the internet </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

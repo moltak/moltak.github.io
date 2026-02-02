@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/30-coding-agent-2-cursor/"><!-- Primary Meta Tags --><title>[코딩 에이전트 2] Cursor Background Agent로 크롬 익스텐션 만들어본 경험 공유 | Kh Jung</title><meta name="title" content="[코딩 에이전트 2] Cursor Background Agent로 크롬 익스텐션 만들어본 경험 공유 | Kh Jung"><meta name="description" content="비동기 코딩 에이전트만으로 크롬 익스텐션을 개발한 경험 공유. 66커밋, 70+ 테스트, 10시간"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/30-coding-agent-2-cursor/"><meta property="og:title" content="[코딩 에이전트 2] Cursor Background Agent로 크롬 익스텐션 만들어본 경험 공유 | Kh Jung"><meta property="og:description" content="비동기 코딩 에이전트만으로 크롬 익스텐션을 개발한 경험 공유. 66커밋, 70+ 테스트, 10시간"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/30-coding-agent-2-cursor/"><meta property="twitter:title" content="[코딩 에이전트 2] Cursor Background Agent로 크롬 익스텐션 만들어본 경험 공유 | Kh Jung"><meta property="twitter:description" content="비동기 코딩 에이전트만으로 크롬 익스텐션을 개발한 경험 공유. 66커밋, 70+ 테스트, 10시간"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="40-spring-unique-id-request" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-04T15:00:00.000Z"> Aug 5, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> [코딩 에이전트 2] Cursor Background Agent로 크롬 익스텐션 만들어본 경험 공유 </div> </div> <div class="relative"> <article class="animate"> <h2 id="개요">개요</h2>
+<p>비동기 코딩 에이전트가 개발 트렌드를 완전히 바꿀것이라는 생각이 들었다. 동기식 대비 사용법이 간단하고 개발 환경도 가리지 않으니 (심지어 핸드폰에서도 개발 가능하고) 10x 생산성이 가능할 것이라는 기대가 생겼다.</p>
+<p>간단한 프로젝트를 만들어보며 검증한 결과를 여기에 작성한다.</p>
+<h2 id="tldr">TL;DR</h2>
+<ol>
+<li>크롬 익스텐션 개발해본적 없지만 에이전트만 이용해서 <strong>원하는 기능 모두 구현 완료</strong></li>
+<li>claude-4-sonnet MAX만 사용
+<ul>
+<li>총 66 커밋 생성</li>
+<li>커밋 하나 생성에 1-3번의 대화</li>
+<li>cursor 비용 $15 발생</li>
+<li>테스트 코드 70개 이상</li>
+<li>총 개발 시간 10시간 내외</li>
+</ul>
+</li>
+</ol>
+<h2 id="프로젝트-소개">프로젝트 소개</h2>
+<ul>
+<li><strong>동기</strong>: 영어로된 오픈소스 프로젝트에 기여하기 위해 언어장벽 낮추기 (자동번역 기능 개발)</li>
+<li><strong>종류</strong>: 크롬 익스텐션</li>
+<li><strong>기능</strong>
+<ol>
+<li>github pull request, issue 페이지에서 영문 → 한글 자동 번역</li>
+<li>코멘트 작성시 한글 → 영문 번역</li>
+</ol>
+</li>
+</ul>
+<h2 id="사전-정보">사전 정보</h2>
+<ol>
+<li>작성자는 크롬 익스텐션을 만들어본 경험이 없음</li>
+<li>코딩 에이전트 사용 경험은 많음</li>
+<li>이번엔 비동기 코딩 에이전트만 사용하기로 함</li>
+</ol>
+<h2 id="구현-과정">구현 과정</h2>
+<h3 id="1-memory-bank-패턴으로-시작">1. memory-bank 패턴으로 시작</h3>
+<ul>
+<li><a href="https://github.com/moltak/github-translator/tree/main/memory-bank">memory-bank 디렉토리</a>에 architecture.md, implementation-plan.md, progress.md를 작성 후 구현 시작</li>
+<li>architecture와 implementation은 Chat GPT를 이용해 최대한 자세히 작성
+<ul>
+<li>LLM은 컨텍스트 유지가 매우 중요하므로 memory-bank 패턴을 사용했을 때 효율성 증가</li>
+<li>progress.md에 작업 내용을 추가하므로 llm 세션이 닫히거나 채팅창이 길어져도 컨텍스트 유지하는 것에 대해 부담이 적음</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-tdd로-대부분의-작업을-처리">2. TDD로 대부분의 작업을 처리</h3>
+<ul>
+<li>agent는 pass/fail 메세지를 받았을 때, 스스로 문제를 수정할 수 있음</li>
+<li>TDD로 테스트부터 작성시킨 후 리뷰하고 비즈니스 로직을 작성하게 시킴</li>
+</ul>
+<h3 id="3-비동기-에이전트-background-agent만-사용">3. 비동기 에이전트 (background agent)만 사용</h3>
+<ul>
+<li>비동기 에이전트들은 가상 환경을 만들어 코드 작성, 테스트를 스스로 실행</li>
+<li>내 PC에서 테스트가 실행되는게 아니므로 보안 위험이 현저히 낮고 개발환경 세팅 필요 없음
+<ul>
+<li>bash 명령 실행에도 부담이 없음</li>
+</ul>
+</li>
+<li>실행 결과를 나중에 다양한 경로로 전달 받으므로 이동중에도 코딩 가능</li>
+</ul>
+<h2 id="후기">후기</h2>
+<ol>
+<li>같은 기능을 다시 개발한다면 30커밋 이내에도 가능할것 같음 (더 능숙해지면 더 줄일수도 있지 않을까?)</li>
+<li><strong>memory-bank 패턴 매우 유용함</strong>
+<ul>
+<li>memory-bank 패턴에 대해 학습이 더 필요</li>
+<li>에이전트를 이용한 개발에 핵심</li>
+</ul>
+</li>
+<li><strong>TDD 매우 유용함</strong>
+<ul>
+<li>LLM 스스로 피드백 루프를 실행</li>
+</ul>
+</li>
+<li>claude-sonnet-4는 대부분의 영역에서 초급-중급 개발자의 느낌을 주고 가끔은 훨씬 잘하는 느낌을 받기도 함</li>
+<li>코딩 에이전트는 다루기 어렵지만 좀 더 자신감 생김</li>
+</ol>
+<h3 id="cursor를-선택한-이유">Cursor를 선택한 이유</h3>
+<ul>
+<li>지난번 작성했던 <a href="/blog/29-coding-agent-1-async">비동기 코딩 에이전트 체험</a>에서 3개의 비동기 코딩 에이전트를 소개. 이중 cursor는 혼자 local에 설치 가능한 IDE를 제공함. local 개발 ↔ 비동기 개발을 손쉽게 전환하며 코딩이 가능함 (이미 락인도 많이 됐고…)</li>
+<li>cursor는 Pro 사용자라면 $20의 유료 바우처도 제공되므로 비용 부담도 적었음</li>
+<li>jules는 베타라 그런지? 좀 잘 안되는 느낌이 많았음</li>
+<li>devin은 ($50 충전은 해뒀지만..) 나중에 사용해볼 예정</li>
+</ul>
+<h2 id="관련-자료">관련 자료</h2>
+<ul>
+<li><a href="https://github.com/moltak/github-translator">github-translator</a></li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="개요"> 개요 </a> </li><li> <a href="#tldr" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="tldr"> TL;DR </a> </li><li> <a href="#프로젝트-소개" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="프로젝트-소개"> 프로젝트 소개 </a> </li><li> <a href="#사전-정보" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="사전-정보"> 사전 정보 </a> </li><li> <a href="#구현-과정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="구현-과정"> 구현 과정 </a> </li><li> <a href="#1-memory-bank-패턴으로-시작" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-memory-bank-패턴으로-시작"> 1. memory-bank 패턴으로 시작 </a> </li><li> <a href="#2-tdd로-대부분의-작업을-처리" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-tdd로-대부분의-작업을-처리"> 2. TDD로 대부분의 작업을 처리 </a> </li><li> <a href="#3-비동기-에이전트-background-agent만-사용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="3-비동기-에이전트-background-agent만-사용"> 3. 비동기 에이전트 (background agent)만 사용 </a> </li><li> <a href="#후기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="후기"> 후기 </a> </li><li> <a href="#cursor를-선택한-이유" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="cursor를-선택한-이유"> Cursor를 선택한 이유 </a> </li><li> <a href="#관련-자료" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="관련-자료"> 관련 자료 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

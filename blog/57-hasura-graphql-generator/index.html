@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/57-hasura-graphql-generator/"><!-- Primary Meta Tags --><title>Hasura Graphql Generator | Kh Jung</title><meta name="title" content="Hasura Graphql Generator | Kh Jung"><meta name="description" content="Hasura GraphQL auto generator 사용 후기 - 설치부터 Auth, Actions까지"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/57-hasura-graphql-generator/"><meta property="og:title" content="Hasura Graphql Generator | Kh Jung"><meta property="og:description" content="Hasura GraphQL auto generator 사용 후기 - 설치부터 Auth, Actions까지"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/57-hasura-graphql-generator/"><meta property="twitter:title" content="Hasura Graphql Generator | Kh Jung"><meta property="twitter:description" content="Hasura GraphQL auto generator 사용 후기 - 설치부터 Auth, Actions까지"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="59-enzyme-test" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-05-15T15:00:00.000Z"> May 16, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Hasura Graphql Generator </div> </div> <div class="relative"> <article class="animate"> <h1 id="도입">도입</h1>
+<p>지금 알아볼껀 graphql 을 auto generator 해주는 툴이다.</p>
+<p>미리 결론부터 말해보자면 매우 편했다! 설치도 쉬웠고 사용도 매우 쉬웠다! 아래 몇 이미지를 봐보자.</p>
+<p><img src="/_astro/hasura-table.UkijLATb_Z19IS55.webp" alt="Table 만들기" loading="lazy" decoding="async" fetchpriority="auto" width="1225" height="434"></p>
+<p><img src="/_astro/hasura-query.Bp6wJuTA_Z1FHoKO.webp" alt="쿼리 짜기" loading="lazy" decoding="async" fetchpriority="auto" width="771" height="594"></p>
+<p>위 두 이미지에서 보듯이, 테이블 추가 후 쿼리만 짜면 바로 내가 보고 싶은 값을 가져올 수 있었다; 소름돕게 직관적이었고 심지어 <a href="https://hasura.io/docs/1.0/graphql/manual/getting-started/docker-simple.html">설치방법</a>도 매우 간단했는데, 도커 이미지가 있어서 그걸 실행만 하면 됐다. 아주 작은 프로젝트에서는 충분히 잘 사용해볼 수 있을 것 같다. 이제 조금 섹션을 나눠서 봐보자.</p>
+<h1 id="auth">Auth</h1>
+<p>Hasura는 custom function 을 넣는게 매우 제한되므로 좀 복잡한 기능들을 다음과 같이 api 콜을 이용해 해결하도록 했는데 그 중 하나가 인증이다. 아래 화면에서 보듯이 어떤 테이블에서 어떤 기능(Operation)이 호출될 때, webhook 을 이용해 인증을 처리할 수 있다. 이 <a href="https://hasura.io/docs/1.0/graphql/manual/auth/authentication/index.html#webhook">링크</a>에서 webhook을 이용해 인증을 처리하는 방법이 있고 또 JWT를 이용해서도 인증 처리를 할 수 있다고 <a href="https://hasura.io/docs/1.0/graphql/manual/auth/authentication/index.html#jwt-json-web-token">다음 링크</a>에도 나와있다.</p>
+<p><img src="/_astro/hasura-auth.DHY3VoBE_ZYnPwg.webp" alt="Auth 설정 화면" loading="lazy" decoding="async" fetchpriority="auto" width="644" height="634"></p>
+<h1 id="actions">Actions</h1>
+<p>복잡한 비즈니스 로직 처리를 위해 Actions 라는 메뉴를 지원한다.</p>
+<p><img src="/_astro/hasura-actions.BwOqzmN1_Z1zdtlH.webp" alt="Actions 메뉴" loading="lazy" decoding="async" fetchpriority="auto" width="674" height="628"></p>
+<p>설정화면으로 들어가서 봐도 딱히 어렵진 않은데, 다만 비즈니스 로직을 처리하는 곳도 graphql 을 구현해야 한다.</p>
+<p><img src="/_astro/hasura-actions-detail.CWY8Ax6m_33A5L.webp" alt="Actions 설정 상세" loading="lazy" decoding="async" fetchpriority="auto" width="591" height="906"></p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#도입" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="도입"> 도입 </a> </li><li> <a href="#auth" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="auth"> Auth </a> </li><li> <a href="#actions" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="actions"> Actions </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

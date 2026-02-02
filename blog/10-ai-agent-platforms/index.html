@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/10-ai-agent-platforms/"><!-- Primary Meta Tags --><title>AI agents platforms | Kh Jung</title><meta name="title" content="AI agents platforms | Kh Jung"><meta name="description" content="AI 에이전트 플랫폼들을 비교해봤다. StackAI, Dify, Flowise, Scoutos, Langflow 등 에이전트-First 플랫폼 정리."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/10-ai-agent-platforms/"><meta property="og:title" content="AI agents platforms | Kh Jung"><meta property="og:description" content="AI 에이전트 플랫폼들을 비교해봤다. StackAI, Dify, Flowise, Scoutos, Langflow 등 에이전트-First 플랫폼 정리."><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/10-ai-agent-platforms/"><meta property="twitter:title" content="AI agents platforms | Kh Jung"><meta property="twitter:description" content="AI 에이전트 플랫폼들을 비교해봤다. StackAI, Dify, Flowise, Scoutos, Langflow 등 에이전트-First 플랫폼 정리."><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="20-spring-datasource" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2026-01-12T15:00:00.000Z"> Jan 13, 2026 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> AI agents platforms </div> </div> <div class="relative"> <article class="animate"> <h2 id="목록">목록</h2>
+<p><strong>Flowise / LangFlow</strong> — LangChain을 시각적/빠르게 구축
+<strong>StackAI / Scoutos</strong> — 에이전트-First 플랫폼으로 빠른 제품화
+<a href="http://dify.ai/">Dify: Leading Agentic Workflow Builder</a></p>
+<h2 id="관련-자료">관련 자료</h2>
+<p><a href="https://www.marketermilk.com/blog/best-ai-agent-platforms">10 best AI agent platforms &amp; companies I’m using in 2026 | Marketer Milk</a></p>
+<h2 id="지금까지-느낌">지금까지 느낌</h2>
+<p>stack ai가 참 좋아보인다 ㅋㅋ.</p>
+<h2 id="stackai">StackAI</h2>
+<p>이거 참 좋다. 내가 원하는거랑 거의 비슷</p>
+<ul>
+<li>두개의 화면이 있다. agent 설계 / 배포</li>
+<li>배포는 여러 화면을 제공. 심지어 API도 제공</li>
+</ul>
+<p><img src="/_astro/stackai-deploy.CkLsq6TN_23zcep.webp" alt="StackAI 배포 화면" loading="lazy" decoding="async" fetchpriority="auto" width="4728" height="2720"></p>
+<ul>
+<li>Agent 설계 화면은 일반적임. 우리가 아는 일반적인 모습과 비슷</li>
+</ul>
+<p><img src="/_astro/stackai-agent.DWiXN3T0_1JULFE.webp" alt="StackAI Agent 설계" loading="lazy" decoding="async" fetchpriority="auto" width="1752" height="1732"></p>
+<ul>
+<li>데이터 처리 화면 하나만 더 있으면 좋은데. 약간 아쉽지만. 전처리는 다른거 써도 되니 일단. 좋아보임</li>
+</ul>
+<h2 id="dify">Dify</h2>
+<p>이게 내가 찾던거랑 진짜 흡사하다. 그냥 이거 써도 될듯. 이라고 생각했으나 rag가 아직 좀 애매하네.</p>
+<ul>
+<li>agent 작성</li>
+</ul>
+<p><img src="/_astro/dify-agent.DTIn5lLb_mPJDe.webp" alt="Dify agent 작성" loading="lazy" decoding="async" fetchpriority="auto" width="2660" height="986"></p>
+<ul>
+<li>rag - 아 왜 디비가 없지…..</li>
+</ul>
+<p><img src="/_astro/dify-rag1.BEd9gozE_Z1EUVKo.webp" alt="Dify RAG" loading="lazy" decoding="async" fetchpriority="auto" width="1378" height="698"></p>
+<p><img src="/_astro/dify-rag2.CCDBpOwC_BnTEY.webp" alt="Dify RAG 상세" loading="lazy" decoding="async" fetchpriority="auto" width="1466" height="858"></p>
+<h2 id="flowise"><a href="https://docs.flowiseai.com/">Flowise</a></h2>
+<p>opensource. npm 잘 되있어서 그냥 설치해서 쓰면 되는듯. 라이센스는 두개로 apache 2.0과 flowise commercial 라이센스가 있음. flowise 라이센스는 특정한 디렉토리 하위에 있는 디렉토리 및 파일들로 sso 같은게 포함됨. 그래도 상당히 좋아보인다.</p>
+<p><img src="/_astro/flowise.Bmp7vjB-_Z1lkKDQ.webp" alt="Flowise" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1382"></p>
+<p><a href="https://docs.flowiseai.com/configuration/databases">디비도 4개 지원</a></p>
+<p><img src="/_astro/flowise-db.CmWCRV2Y_ZreDUQ.webp" alt="Flowise DB 지원" loading="lazy" decoding="async" fetchpriority="auto" width="630" height="494"></p>
+<h2 id="scoutos"><a href="https://www.scoutos.com/">scoutos</a></h2>
+<p>에이전트 생성화면은 일반적인데,</p>
+<p><img src="/_astro/scoutos.WvyDycRy_Z1qiket.webp" alt="Scoutos" loading="lazy" decoding="async" fetchpriority="auto" width="1334" height="1228"></p>
+<p>디비 connection을 설정 가능</p>
+<p><img src="/_astro/scoutos-db.C34WcXR2_1CmvAK.webp" alt="Scoutos DB 설정" loading="lazy" decoding="async" fetchpriority="auto" width="880" height="528"></p>
+<h2 id="langflow"><a href="https://www.langflow.org/">Langflow</a></h2>
+<p>신기하게도 desktop app으로 설치해서 에이전트를 만들 수 있음. 다른 서비스들도 충분히 직관적인데, 이건 데이터 연동하는 것에 대해서 엄청나게 직관적이네;;</p>
+<p><img src="/_astro/langflow.CluA662A_Z1kAmUk.webp" alt="Langflow" loading="lazy" decoding="async" fetchpriority="auto" width="2244" height="1430"></p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#목록" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="목록"> 목록 </a> </li><li> <a href="#관련-자료" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="관련-자료"> 관련 자료 </a> </li><li> <a href="#지금까지-느낌" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="지금까지-느낌"> 지금까지 느낌 </a> </li><li> <a href="#stackai" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="stackai"> StackAI </a> </li><li> <a href="#dify" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="dify"> Dify </a> </li><li> <a href="#flowise" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="flowise"> Flowise </a> </li><li> <a href="#scoutos" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="scoutos"> scoutos </a> </li><li> <a href="#langflow" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="langflow"> Langflow </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/58-tailwindcss-101/"><!-- Primary Meta Tags --><title>Tailwindcss 101 - 학습곡선 평탄화 | Kh Jung</title><meta name="title" content="Tailwindcss 101 - 학습곡선 평탄화 | Kh Jung"><meta name="description" content="백엔드 개발자의 Tailwind CSS 입문 세미나 - 컨셉, 문법, flex 기본"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/58-tailwindcss-101/"><meta property="og:title" content="Tailwindcss 101 - 학습곡선 평탄화 | Kh Jung"><meta property="og:description" content="백엔드 개발자의 Tailwind CSS 입문 세미나 - 컨셉, 문법, flex 기본"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/58-tailwindcss-101/"><meta property="twitter:title" content="Tailwindcss 101 - 학습곡선 평탄화 | Kh Jung"><meta property="twitter:description" content="백엔드 개발자의 Tailwind CSS 입문 세미나 - 컨셉, 문법, flex 기본"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="90-i3wm-2-dual-monitor" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-08T15:00:00.000Z"> Aug 9, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Tailwindcss 101 - 학습곡선 평탄화 </div> </div> <div class="relative"> <article class="animate"> <h1 id="개요">개요</h1>
+<p>백엔드 개발에 더 익숙한 저는 css에 학습과 사용에 대해 어려움을 겪었습니다. 약 5년전 마지막으로 했던 FE 프로젝트에서 css를 사용하며 느꼈던 막막함과 어려움은 아직도 기억에 남아있습니다. 지금은 LLM이 있어 훨씬 접근이 쉽지만 학습량과 전문 Frontend의 노하우를 배우기는 여전히 너무 어렵습니다. 로직을 잘 작성할 수 있는 저는 FE의 서비스로직은 문제가 되지 않지만 CSS는 너무 어렵습니다.</p>
+<p>하지만 tailwindcss는 바로 도움이 되더군요. 물론 학습커브가 있지만 일관된 규칙을 갖고 있고 css를 그냥 쓰는 것 보단 더 빠른 효과를 얻을 수 있기때문에 저와같은 배경을 가진 사람이 사용하기 좋다고 생각합니다.</p>
+<p>이 세미나에선 tailwindcss의 컨셉을 설명하고 tailwindcss의 일관된 규칙에 대해 이야기합니다. 처음에 계단 처럼 약간의 높은 턱이 있지만 그 턱을 넘으면 평평하다는 느낌을 받았습니다. 이 세미나는 턱을 조금 넘어보는걸 목표로합니다.</p>
+<p>tailwindcss는 modern web 개발을 위한 모든 기능을 제공하지만 내용이 너무 많으므로 이 세미나에선 기본 컨셉, 문법, flex와 함께 제가 문서 보는 방법을 함께 설명합니다.</p>
+<h1 id="taliwindcss-컨셉">Taliwindcss 컨셉</h1>
+<h2 id="1-mobile-first">1. mobile first</h2>
+<ul>
+<li>작은 화면을 먼저 타게팅</li>
+<li>다양한 미디어 쿼리를 지원함 (sm, md, lg, xl, 2xl)</li>
+<li>미디어 쿼리를 사용하지 않았을 땐, 모든 화면에 동일하게 적용</li>
+<li>만약 <code>sm:w-32</code> 같이 미디어 쿼리를 사용했다면 화면 사이즈가 sm이 넘었을 때 <code>w-32</code>가 적용됩니다.</li>
+<li>breakpoint prefix: <a href="https://tailwindcss.com/docs/responsive-design">Responsive design - Core concepts</a></li>
+<li><a href="https://tailwindcss.com/">demo</a></li>
+</ul>
+<h2 id="2-class-naming">2. class naming</h2>
+<p>엄격한 클래스 네이밍 설계</p>
+<ul>
+<li><strong><a href="https://tailwindcss.com/docs/padding">padding</a></strong>
+<ul>
+<li><code>p-40</code>, <code>pt-40</code>, <code>pb-40</code>, <code>pr-40</code>, <code>pl-40</code>, <code>ps-40</code>, <code>pe-40</code>, <code>px-40</code>, <code>py-40</code></li>
+<li>t,b,r,l,s,e,x,y 에 집중 해서 보세요</li>
+<li><a href="https://tailwindcss.com/docs/padding#adding-horizontal-padding">Adding horizontal padding</a></li>
+</ul>
+</li>
+<li><strong><a href="https://tailwindcss.com/docs/margin">margin</a></strong>
+<ul>
+<li><code>m-40</code>, <code>mt-40</code>, <code>mb-40</code>, <code>mr-40</code>, <code>ml-40</code>, <code>ms-40</code>, <code>me-40</code></li>
+</ul>
+</li>
+<li><strong><a href="https://tailwindcss.com/docs/width">width</a></strong>
+<ul>
+<li><code>w-40</code>, <code>w-sm</code>, <code>w-md</code>, <code>w-lg</code>, <code>w-xl</code>, <code>w-2xl</code>, <code>w-3xl</code>, <code>w-1/3</code>, <code>w-9/10</code></li>
+</ul>
+</li>
+<li><strong><a href="https://tailwindcss.com/docs/height">height</a></strong>
+<ul>
+<li><code>h-40</code>, <code>h-screen</code>, <code>h-max</code>, <code>h-1/3</code>, <code>h-9/10</code></li>
+</ul>
+</li>
+<li><strong>size</strong>
+<ul>
+<li><code>size-40</code>, <code>size-full</code>, <code>size-max</code></li>
+</ul>
+</li>
+<li><strong><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#hover-focus-and-active">hover, focus</a></strong>
+<ul>
+<li><code>&lt;button class=&quot;hover:bg-gray-100 size-40 pt-40 bg-sky-300/10&quot;&gt;button&lt;/button&gt;</code></li>
+<li><code>hover:bg-gray-100</code>, <code>focus:bg-red-100</code></li>
+</ul>
+</li>
+<li><strong><a href="https://tailwindcss.com/docs/colors">color</a></strong>
+<ul>
+<li><code>bg-sky-500</code>, <code>text-sky-500</code>, <code>bg-sky-500/10</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="3-container">3. container</h2>
+<ul>
+<li><strong><a href="https://tailwindcss.com/docs/flex">flex</a></strong>
+<ul>
+<li>flex - 자식 dom을 순서대로 렌더링 - 1차원</li>
+<li>WEB은 flex를 정~말 많이 씀</li>
+</ul>
+</li>
+</ul>
+<h1 id="저도-초보라-더-자세한건-모름-ㅋ-대신-문서를-보는-법을-알려드림">저도 초보라 더 자세한건 모름 ㅋ 대신 문서를 보는 법을 알려드림</h1>
+<ol>
+<li>
+<p>메인 페이지에 좋은 내용이 많다!</p>
+<ul>
+<li><a href="https://tailwindcss.com/">Tailwind CSS</a></li>
+<li>가볍게 일단 한번 보기</li>
+</ul>
+</li>
+<li>
+<p><a href="https://tailwindcss.com/docs/styling-with-utility-classes">CORE CONCEPTS</a>에 기본적인 내용이 다 있으니 여러번 보기</p>
+<ul>
+<li>특히 <code>Styling with utility classes</code>, <code>Hover, focus, and other states</code>, <code>Responsive design</code>, <code>Colors</code>가 내용이 참 좋더군요.</li>
+</ul>
+</li>
+<li>
+<p>근데 여전히 우린 초보라 뭐 만들때 어려움. 특히 오브젝트를 배치하거나 스타일링을 줄땐 여전히 어렵더군요.</p>
+<ul>
+<li>이런 경우 LLM에게 그냥 묻자.</li>
+<li>그리고 LLM이 사용한 class 들을 tailwindcss 에서 다시 찾아서 자세히 보세요. LLM이 추가한것 중 필요없는건 지우시고</li>
+<li>tailwindcss 페이지에서 command+k 누르면 빠르게 문서를 찾을 수 있어요.</li>
+<li>모든 페이지엔 contents 가 있어요. 샘플도 많으니 같이 보세요.</li>
+</ul>
+</li>
+<li>
+<p>어느정도 익히면 <a href="https://ui.shadcn.com/">shadcn</a>을 같이 써보세요</p>
+<ul>
+<li>shadcn은 tailwindcss”만” 사용해서 컴포넌트를 만들었어요</li>
+<li>설치하면 컴포넌트가 우리 코드로 들어옴. 그리고 모두 tailwindcss이기때문에 편하게 수정 가능</li>
+<li><a href="https://ui.shadcn.com/blocks">building blocks</a>들도 미리 준비되어 있음</li>
+</ul>
+</li>
+</ol> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="개요"> 개요 </a> </li><li> <a href="#taliwindcss-컨셉" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="taliwindcss-컨셉"> Taliwindcss 컨셉 </a> </li><li> <a href="#1-mobile-first" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-mobile-first"> 1. mobile first </a> </li><li> <a href="#2-class-naming" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="2-class-naming"> 2. class naming </a> </li><li> <a href="#3-container" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="3-container"> 3. container </a> </li><li> <a href="#저도-초보라-더-자세한건-모름-ㅋ-대신-문서를-보는-법을-알려드림" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="저도-초보라-더-자세한건-모름-ㅋ-대신-문서를-보는-법을-알려드림"> 저도 초보라 더 자세한건 모름 ㅋ 대신 문서를 보는 법을 알려드림 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

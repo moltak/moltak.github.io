@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/93-i3wm-7-brightness/"><!-- Primary Meta Tags --><title>i3wm 7 - 밝기 조절 | Kh Jung</title><meta name="title" content="i3wm 7 - 밝기 조절 | Kh Jung"><meta name="description" content="i3wm에서 xbacklight를 이용한 모니터 밝기 조절 (AMD/Intel)"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/93-i3wm-7-brightness/"><meta property="og:title" content="i3wm 7 - 밝기 조절 | Kh Jung"><meta property="og:description" content="i3wm에서 xbacklight를 이용한 모니터 밝기 조절 (AMD/Intel)"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/93-i3wm-7-brightness/"><meta property="twitter:title" content="i3wm 7 - 밝기 조절 | Kh Jung"><meta property="twitter:description" content="i3wm에서 xbacklight를 이용한 모니터 밝기 조절 (AMD/Intel)"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="10-ai-agent-platforms" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-10-29T15:00:00.000Z"> Oct 30, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> i3wm 7 - 밝기 조절 </div> </div> <div class="relative"> <article class="animate"> <p>i3wm 을 사용한지 대략 한달정도가 되었다. 참 많은걸 했다. 안되는게 너무 많았고 gnome이 가끔 그리웠다. 하지만 key binding에 익숙해지며 특정 상황에 너무 편해졌고 창을 탭처럼 쌓을 수 있는 기능은 이제 없으면 작업을 못 할것 같다. 너무 좋다</p>
+<p>오늘은 오랜만에 랩탑을 갖고 스타벅스에 왔는데 내가 설정을 안해둔 많은 것들이 떠올랐다.</p>
+<ol>
+<li>wifi… 어떻게 하지?? gnome으로 들어가서 와이파이 세팅하고 다시 i3로 돌아와서 해결ㅎㅎ ㅠㅠ 더 나은 방법을 찾아봐야지…</li>
+<li>밝기 조절! ← 오늘의 주제</li>
+</ol>
+<hr/>
+<h2 id="본격적으로-시작">본격적으로 시작!</h2>
+<p>나의 랩탑은 ryzen 4700u cpu 가 장착되어 있는데 너무나 행복하게 잘 쓰고 있다. 발열이 많지 않아서 소음도 거의 없고 컴파일 속도도 빨라서 왠만한 작업으론 느려지지도 않고 소음도 거의 들리지 않는다. 다만 대부분의 리눅스 문서들이 intel cpu 기준이라 좀 헤멜 뿐이다 ㅋ</p>
+<p><a href="https://askubuntu.com/questions/715306/xbacklight-no-outputs-have-backlight-property-no-sys-class-backlight-folder">이 글</a>에서 보고 문제를 해결하려 노력했고 그 과정을 요약한다. 바쁜 사람은 요약만 읽어봐라.</p>
+<h3 id="요약하기-전에">요약하기 전에!</h3>
+<p>리눅스의 구조를 대략적으로 아는 사람들은 (나도 대략적으로 알지만…) hw 장치들이 파일로 존재한다는 것을 알것이다. 신기하게도! 밝기 조절도 파일을 직접 액세스 해서 바꿀 수 있는데 <code>/sys/devices/pci0000:00/0000:00:08.1/0000:03:00.0/backlight/amdgpu_bl0/brightness</code> 이 파일을 열면 integer 값이 있는데 그걸 수정하는 순간 밝기가 변한다!</p>
+<h3 id="요약">요약</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># brightness 를 담당하는 파일 찾기</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> find</span><span style="color:#9ECBFF"> /sys/</span><span style="color:#79B8FF"> -type</span><span style="color:#9ECBFF"> f</span><span style="color:#79B8FF"> -iname</span><span style="color:#9ECBFF"> &#39;*brightness*&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 위 명령어를 실행하면 intel, amd에 따라 아래 파일같은게 출력됨</span></span>
+<span class="line"><span style="color:#6A737D"># intel</span></span>
+<span class="line"><span style="color:#B392F0">/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-LVDS-1/intel_backlight/brightness</span></span>
+<span class="line"><span style="color:#6A737D"># amd</span></span>
+<span class="line"><span style="color:#B392F0">/sys/devices/pci0000:00/0000:00:08.1/0000:03:00.0/backlight/amdgpu_bl0/brightness</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># sudo 명령으로 저 파일을 열어 직접 밝기를 조절하거나</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> ln</span><span style="color:#79B8FF"> -s</span><span style="color:#9ECBFF"> /sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-LVDS-1/intel_backlight</span><span style="color:#9ECBFF"> /sys/class/backlight</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 파일 만들기</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> vim</span><span style="color:#9ECBFF"> /etc/X11/xorg.conf</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 아래 코드 붙여넣기 - 옵션을 amd에 맞게 바꿔야하는데 모르겠다;;;</span></span>
+<span class="line"><span style="color:#B392F0">Section</span><span style="color:#9ECBFF"> &quot;Device&quot;</span></span>
+<span class="line"><span style="color:#B392F0">Identifier</span><span style="color:#9ECBFF">  &quot;Card0&quot;</span></span>
+<span class="line"><span style="color:#B392F0">Driver</span><span style="color:#9ECBFF">      &quot;intel&quot;</span></span>
+<span class="line"><span style="color:#B392F0">Option</span><span style="color:#9ECBFF">      &quot;Backlight&quot;</span><span style="color:#9ECBFF">  &quot;NAME OF THE FOLDER&quot;</span></span>
+<span class="line"><span style="color:#B392F0">EndSection</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 그 후 로그아웃 로그인 후 xbacklight 설치</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> xbacklight</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">xbacklight</span><span style="color:#9ECBFF"> +20</span></span></code></pre> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#본격적으로-시작" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="본격적으로-시작"> 본격적으로 시작! </a> </li><li> <a href="#요약하기-전에" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="요약하기-전에"> 요약하기 전에! </a> </li><li> <a href="#요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="요약"> 요약 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

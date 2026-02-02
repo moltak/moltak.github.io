@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/96-anbox-ridibooks/"><!-- Primary Meta Tags --><title>Ubuntu 20.10 Anbox 사용해서 안드로이드 리디북스 보기 | Kh Jung</title><meta name="title" content="Ubuntu 20.10 Anbox 사용해서 안드로이드 리디북스 보기 | Kh Jung"><meta name="description" content="Linux에서 Anbox를 이용해 Android 앱을 실행하고 Playstore까지 설치하기"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/96-anbox-ridibooks/"><meta property="og:title" content="Ubuntu 20.10 Anbox 사용해서 안드로이드 리디북스 보기 | Kh Jung"><meta property="og:description" content="Linux에서 Anbox를 이용해 Android 앱을 실행하고 Playstore까지 설치하기"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/96-anbox-ridibooks/"><meta property="twitter:title" content="Ubuntu 20.10 Anbox 사용해서 안드로이드 리디북스 보기 | Kh Jung"><meta property="twitter:description" content="Linux에서 Anbox를 이용해 Android 앱을 실행하고 Playstore까지 설치하기"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="67-android-iap-backend" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-12-23T15:00:00.000Z"> Dec 24, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Ubuntu 20.10 Anbox 사용해서 안드로이드 리디북스 보기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/anbox/anbox">Anbox Github</a></li>
+<li><a href="https://www.linuxuprising.com/2018/07/anbox-how-to-install-google-play-store.html">Playstore 설치</a></li>
+</ul>
+<h2 id="들어가며">들어가며</h2>
+<p>Linux에서 Android를 실행할 필요가 생겼는데, 후보군이 여럿 있지만 <a href="https://linuxhint.com/android_apps_games_linux/">링크</a> 나는 anbox를 사용하기로 했다. 그 이유는 Anbox는 container안에서 Linux namespaces(user, pid, uts, net, mount, pic)를 이용해 Android를 직접 실행하기 때문이다. 이 말은 퍼포먼스가 좋다는 말. 자세한건 <a href="https://github.com/anbox/anbox">Anbox Github</a>를 참고하면 됨. Ubuntu 20.10 groovy gorila를 사용중인데 Anbox 문서에선 20.04 기준으로 설명하고 있으므로 다시 정리함. (사실 Github page 보고 잘 따라하면 문제없이 되긴 함)</p>
+<h2 id="설치하기">설치하기</h2>
+<h3 id="install-necessary-kernel-modules">Install necessary kernel modules</h3>
+<p>19.04 이후의 Ubuntu에서는 kernel module을 설치하지 않아도됨. 아래 명령어 실행하기</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> modprobe</span><span style="color:#9ECBFF"> ashmem_linux</span></span></code></pre>
+<p>하지만 <code>modprobe: ERROR: could not insert &#39;ashmem_linux&#39;: Operation not permitted</code> 이런 에러를 만든다면 <code>SecureBoot</code>이 켜져있으므로 아래명령어로 확인해보고 SecureBoot을 끄거나 하라고 한다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> mokutil</span><span style="color:#79B8FF"> --sb-state</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">SecureBoot</span><span style="color:#9ECBFF"> enabled</span><span style="color:#6A737D"> # 이렇게 출력되면 SecureBoot 끄거나 ashmem_linux를 sign 하란다.</span></span></code></pre>
+<h3 id="kernel-module-load-되어있는지-확인">kernel module load 되어있는지 확인</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">ls</span><span style="color:#79B8FF"> -1</span><span style="color:#9ECBFF"> /dev/{ashmem,binder}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 여긴 정상 출력</span></span>
+<span class="line"><span style="color:#B392F0">/dev/ashmem</span></span>
+<span class="line"><span style="color:#B392F0">/dev/binder</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 내껀 비정상 출력. 근데 anbox 실행가능..</span></span>
+<span class="line"><span style="color:#B392F0">ls:</span><span style="color:#9ECBFF"> cannot</span><span style="color:#9ECBFF"> access</span><span style="color:#9ECBFF"> &#39;/dev/binder&#39;:</span><span style="color:#9ECBFF"> No</span><span style="color:#9ECBFF"> such</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> or</span><span style="color:#9ECBFF"> directory</span></span>
+<span class="line"><span style="color:#B392F0">/dev/ashmem</span></span></code></pre>
+<h3 id="anbox-install">Anbox Install</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> snap</span><span style="color:#9ECBFF"> install</span><span style="color:#79B8FF"> --devmode</span><span style="color:#79B8FF"> --beta</span><span style="color:#9ECBFF"> anbox</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">snap</span><span style="color:#9ECBFF"> info</span><span style="color:#9ECBFF"> anbox</span><span style="color:#6A737D"> # 설치 확인</span></span></code></pre>
+<h3 id="uninstall-anbox">Uninstall Anbox</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">snap</span><span style="color:#9ECBFF"> remove</span><span style="color:#9ECBFF"> anbox</span></span></code></pre>
+<h2 id="사용하기">사용하기</h2>
+<p>Anbox 실행하면 아래 이미지 처럼 실행됨</p>
+<p><img src="/_astro/anbox-home.pKxh6vu4_Z1qDaQD.webp" alt="Anbox 홈화면" loading="lazy" decoding="async" fetchpriority="auto" width="900" height="507"></p>
+<h3 id="앱-설치">앱 설치</h3>
+<p>Android SDK를 설치하면 adb도 설치되는데 이걸 이용해서 앱을 설치할 수 있음.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">adb</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> APK_PATH</span></span></code></pre>
+<h3 id="playstore-설치">Playstore 설치</h3>
+<p>이제 Playstore를 설치해볼건데 <a href="https://www.linuxuprising.com/2018/07/anbox-how-to-install-google-play-store.html">여기</a>에 있는 스크립트를 사용할거다. 이게 되게 좋은게 요런 문구가 있음. ㅋ ARM을 지원하는 앱도 설치해서 사용할 수 있음.</p>
+<blockquote>
+<p>The script to install Google Play Store and enable ARM (libhoudini) support</p>
+</blockquote>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">wget</span><span style="color:#9ECBFF"> https://raw.githubusercontent.com/geeks-r-us/anbox-playstore-installer/master/install-playstore.sh</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">chmod</span><span style="color:#9ECBFF"> +x</span><span style="color:#9ECBFF"> install-playstore.sh</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">./install-playstore.sh</span></span></code></pre>
+<p>anbox 실행</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">anbox.appmgr</span></span></code></pre>
+<p><code>Settings &gt; Apps &gt; Google Play Services &gt; Permissions</code> 여기에서 Playstore, Playservice의 모든 권한을 열어주고</p>
+<p><img src="/_astro/anbox-permissions.C8zlh14B_Z1gnE9v.webp" alt="Anbox 권한 설정" loading="lazy" decoding="async" fetchpriority="auto" width="640" height="483"></p>
+<p>anbox-bridge restart</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> /snap/anbox/current/bin/anbox-bridge.sh</span><span style="color:#9ECBFF"> start</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> /snap/anbox/current/bin/anbox-bridge.sh</span><span style="color:#9ECBFF"> restart</span></span></code></pre>
+<p>그러면 짠!</p>
+<p><img src="/_astro/anbox-playstore.reciDIAB_Z1YPhTk.webp" alt="Anbox Playstore" loading="lazy" decoding="async" fetchpriority="auto" width="564" height="680"></p>
+<h2 id="후기">후기</h2>
+<p>playstore 사용 가능. 앱 설치 가능. 하지만 chrome 등 앱들이 실행이 안된다. 내 목표는 Ridibooks를 실행하는 거였는데, 그냥 wine으로 했다. anbox 알아보고 이것저것 해보는데 한시간 사용했지만 wine으로 2분만에 Ridibook를 실행했다. 약간 허탈.. anbox는 계속 업데이트 될테니 나중에 또 살펴봐야겠다.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#들어가며" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="들어가며"> 들어가며 </a> </li><li> <a href="#설치하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="설치하기"> 설치하기 </a> </li><li> <a href="#install-necessary-kernel-modules" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="install-necessary-kernel-modules"> Install necessary kernel modules </a> </li><li> <a href="#kernel-module-load-되어있는지-확인" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="kernel-module-load-되어있는지-확인"> kernel module load 되어있는지 확인 </a> </li><li> <a href="#anbox-install" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="anbox-install"> Anbox Install </a> </li><li> <a href="#uninstall-anbox" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="uninstall-anbox"> Uninstall Anbox </a> </li><li> <a href="#사용하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="사용하기"> 사용하기 </a> </li><li> <a href="#앱-설치" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="앱-설치"> 앱 설치 </a> </li><li> <a href="#playstore-설치" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="playstore-설치"> Playstore 설치 </a> </li><li> <a href="#후기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="후기"> 후기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

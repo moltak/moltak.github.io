@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/67-android-iap-backend/"><!-- Primary Meta Tags --><title>Android In-App-Purchase Backend 설정 (androidpublishapi) | Kh Jung</title><meta name="title" content="Android In-App-Purchase Backend 설정 (androidpublishapi) | Kh Jung"><meta name="description" content="Google Play Console과 GCP 연동하여 Android IAP Backend를 설정하는 방법과 흔한 문제 해결"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/67-android-iap-backend/"><meta property="og:title" content="Android In-App-Purchase Backend 설정 (androidpublishapi) | Kh Jung"><meta property="og:description" content="Google Play Console과 GCP 연동하여 Android IAP Backend를 설정하는 방법과 흔한 문제 해결"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/67-android-iap-backend/"><meta property="twitter:title" content="Android In-App-Purchase Backend 설정 (androidpublishapi) | Kh Jung"><meta property="twitter:description" content="Google Play Console과 GCP 연동하여 Android IAP Backend를 설정하는 방법과 흔한 문제 해결"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="56-apollo-graphql-react" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-10-07T15:00:00.000Z"> Oct 8, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Android In-App-Purchase Backend 설정 (androidpublishapi) </div> </div> <div class="relative"> <article class="animate"> <h2 id="references">References</h2>
+<ul>
+<li><a href="https://support.readyeducation.com/hc/en-us/articles/360047693573-Google-Play-Service-Account-Setup">READY Education (여기가 아래 공식 문서보다 나음)</a></li>
+<li><a href="https://stackoverflow.com/questions/43536904/google-play-developer-api-the-current-user-has-insufficient-permissions-to-pe">권한 문제 해결 안될 때(The current user has insufficient permissions to perform the requested operation.)</a></li>
+<li><a href="https://developers.google.com/android-publisher/getting_started">구글 공식 문서 (별로임 - 이거대로 하면 거의 무조건 문제 생김)</a></li>
+</ul>
+<h2 id="들어가며">들어가며</h2>
+<p>이 글을 남기는 이유는 Backend에서 InAppPurchase(이하 IAP)를 구현할 때, 겪게되는 문제를 미연에 방지하고자 한다. 이 글을 남기는 시점에 나는 이 문제를 거의 5시간 정도 붙들고 있다가 겨우 해결했는데, Google Play Console과 Google Cloud Platform 의 연동 문제가 발목을 잡았다. 이 문제에 대해 먼저 한번 살펴보고 세팅하는 방법을 단계별로 적어놓으려 한다.</p>
+<h2 id="google-play-console-과-google-cloud-platform-의-연동-문제">Google Play Console 과 Google Cloud Platform 의 연동 문제</h2>
+<h3 id="문제-1-google-play-console에-gcp에서-만든-serviceaccount가-나타나지-않음">문제 1. Google Play Console에 GCP에서 만든 ServiceAccount가 나타나지 않음.</h3>
+<p><a href="https://developers.google.com/android-publisher/getting_started">구글 공식 문서</a>를 따라 세팅하다 보면 아래와 같은 내용이 있다. 3번의 두번째 줄의 설명이 참 애매한데, 액세스 권한을 Cloud project에 줘야한다는 거다. 근데 어떤 권한인지 말이 없다. 아래 내용을 놓치기 참 쉬운데, 저걸 설정하지 않으면 절대! Google Play Console에서 SerivceAccount를 볼수가 없다. 좀 중요 표시를 해주면 좋은데 아무런 표시가 없어 놓치기 쉬운 부분이다.</p>
+<p><img src="/_astro/gcp-permission.z7cnTzlk_Z1EWRoA.webp" alt="GCP 권한 설정" loading="lazy" decoding="async" fetchpriority="auto" width="837" height="84"></p>
+<p>권한 설정 부분은 오히려 <a href="https://support.readyeducation.com/hc/en-us/articles/360047693573-Google-Play-Service-Account-Setup">첫번째 References</a> 보는게 낫다. 아래와 같이 적혀있다.</p>
+<p><img src="/_astro/service-account-role.BaUOA-Hj_Z1vnkh6.webp" alt="Service Account Role 설정" loading="lazy" decoding="async" fetchpriority="auto" width="684" height="196"></p>
+<p>ServiceAccount를 만들고 Service Account User role을 부여하라는 말이다. 저걸 부여하면 Google Play Console에 ServiceAccount가 나타난다.</p>
+<h3 id="문제-2-the-current-user-has-insufficient-permissions-to-perform-the-requested-operation">문제 2. The current user has insufficient permissions to perform the requested operation.</h3>
+<p>이 문제가 원인을 찾기가 상당히 어려웠다. 일단 이 <a href="https://stackoverflow.com/questions/43536904/google-play-developer-api-the-current-user-has-insufficient-permissions-to-pe">링크</a>에 보면 나 뿐만 아니라 다른 사람도 많이 겪는 문제라는 것을 알 수 있다. 이건 다음과 같은 상황에 발생한다.</p>
+<ul>
+<li>아이템을 생성하고 ServiceAccount를 생성한 경우</li>
+<li>ServiceAccount 생성 시간이 24시간 미만인 경우 (이건 <a href="https://stackoverflow.com/a/56390408">여기</a> 있는 내용이지만 잘 모르겠다.)</li>
+</ul>
+<p>이게 진짜 머리아프다. 이거때문에 몇시간을 소비했다. 이 문제를 해결하기 위해 <a href="https://stackoverflow.com/a/60691844">첫번째에</a> 있는걸 적용했더니 해결되었다. 해결 방법은 다음과 같다.</p>
+<ul>
+<li>아이템의 정보를 수정 후 저장한다.</li>
+<li>아이템을 다시 만든다.</li>
+</ul>
+<p>이 문제 1, 2가 설정하는데 큰 허들이고 이것만 잘 해결하면 큰 어려움이 없이 연동이 될 것이다.</p>
+<h2 id="google-play-console과-google-cloud-platform-연동하기">Google Play Console과 Google Cloud Platform 연동하기</h2>
+<p>이 과정은 다음과 같이 진행된다. 이미 Google Play Store에 가입을 했다고 가정한다. <a href="https://support.readyeducation.com/hc/en-us/articles/360047693573-Google-Play-Service-Account-Setup">첫번째 Reference</a>가 잘 되어 있으므로 참고하고 나도 그걸 기반으로 아래 내용을 작성한다.</p>
+<h3 id="1-google-play-console의-api-access-메뉴-이동">1. Google Play Console의 API Access 메뉴 이동</h3>
+<p><img src="/_astro/api-access-step1.5csuf4E-_Z1j28A2.webp" alt="API Access Step 1" loading="lazy" decoding="async" fetchpriority="auto" width="1440" height="738"></p>
+<h3 id="2-gcp-프로젝트-연동하기">2. GCP 프로젝트 연동하기</h3>
+<p>(위 gif 참조) Link Project 를 누른 후 새로 만들자. (이상하게 기존 프로젝트는 검색이 되질 않음)</p>
+<h3 id="3-service-account-만들기">3. Service Account 만들기</h3>
+<p>반드시 아래에 있는 Service Account User 부여. Google Pub/Sub 을 한번에 하고 싶다면 파란색 Role 도 설정. 위에서 잠깐 언급 했지만 Service Account User Role을 부여하지 않으면 Google Play Console에서 Service Account가 보이질 않음.</p>
+<p><img src="/_astro/service-account-create.BeC2wkuC_Z1d5cdT.webp" alt="Service Account 생성" loading="lazy" decoding="async" fetchpriority="auto" width="1124" height="1366"></p>
+<h3 id="4-key-file-얻기">4. key file 얻기</h3>
+<p>만들어진 계정 안에 들어가서 ADD KEY 후 json 파일 다운로드</p>
+<p><img src="/_astro/add-key.J_ZYhzPM_MMfB5.webp" alt="ADD KEY" loading="lazy" decoding="async" fetchpriority="auto" width="1596" height="818"></p>
+<h3 id="5-google-play-console에-serviceaccount-연동하기">5. Google Play Console에 ServiceAccount 연동하기</h3>
+<p>ServiceAccount에 Role이 제대로 부여됐다면 Refresh service accounts를 누르면 아래와 같이 내가 만든 계정이 노출됨.</p>
+<p><img src="/_astro/refresh-service-accounts.BwZ9s9mc_1OlvC.webp" alt="Refresh Service Accounts" loading="lazy" decoding="async" fetchpriority="auto" width="2910" height="654"></p>
+<h3 id="6-serviceaccount에-google-play-console-권한-부여">6. ServiceAccount에 Google Play Console 권한 부여</h3>
+<p>View access 을 누른 후 Account permissions에 적절한 권한 부여. (잘 모르겠으면 그냥 Admin 하자.)</p>
+<p><img src="/_astro/account-permissions.BFzMU_7__S7nso.webp" alt="Account Permissions" loading="lazy" decoding="async" fetchpriority="auto" width="1816" height="1464"></p>
+<hr/>
+<p>여기까지 마친 후 위에서 받은 json 파일을 사용해서 우리의 Backend를 사용해 Android 앱에서 주는 결제 정보를 decode 할 수 있을 것이다. 만약 안된다면 첫 부분을 다시 살펴보고 해결하자. 나는 1,2번 문제 밖에 겪지 못했지만 GCP와 연동이 쉽지 않은것으로 보아 GCP ↔ Google Play Console 연동간에 버그가 있는것 같고 그래서 다양한 문제를 겪을 수 있을 것 같다. 어렵겠지만 다들 힘내자.</p>
+<p>끝</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#들어가며" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="들어가며"> 들어가며 </a> </li><li> <a href="#google-play-console-과-google-cloud-platform-의-연동-문제" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="google-play-console-과-google-cloud-platform-의-연동-문제"> Google Play Console 과 Google Cloud Platform 의 연동 문제 </a> </li><li> <a href="#문제-1-google-play-console에-gcp에서-만든-serviceaccount가-나타나지-않음" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="문제-1-google-play-console에-gcp에서-만든-serviceaccount가-나타나지-않음"> 문제 1. Google Play Console에 GCP에서 만든 ServiceAccount가 나타나지 않음. </a> </li><li> <a href="#문제-2-the-current-user-has-insufficient-permissions-to-perform-the-requested-operation" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="문제-2-the-current-user-has-insufficient-permissions-to-perform-the-requested-operation"> 문제 2. The current user has insufficient permissions to perform the requested operation. </a> </li><li> <a href="#google-play-console과-google-cloud-platform-연동하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="google-play-console과-google-cloud-platform-연동하기"> Google Play Console과 Google Cloud Platform 연동하기 </a> </li><li> <a href="#1-google-play-console의-api-access-메뉴-이동" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-google-play-console의-api-access-메뉴-이동"> 1. Google Play Console의 API Access 메뉴 이동 </a> </li><li> <a href="#2-gcp-프로젝트-연동하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-gcp-프로젝트-연동하기"> 2. GCP 프로젝트 연동하기 </a> </li><li> <a href="#3-service-account-만들기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="3-service-account-만들기"> 3. Service Account 만들기 </a> </li><li> <a href="#4-key-file-얻기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="4-key-file-얻기"> 4. key file 얻기 </a> </li><li> <a href="#5-google-play-console에-serviceaccount-연동하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="5-google-play-console에-serviceaccount-연동하기"> 5. Google Play Console에 ServiceAccount 연동하기 </a> </li><li> <a href="#6-serviceaccount에-google-play-console-권한-부여" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="6-serviceaccount에-google-play-console-권한-부여"> 6. ServiceAccount에 Google Play Console 권한 부여 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/94-readitzine-i3wm/"><!-- Primary Meta Tags --><title>(readITzine 기고) - 들어봤니 i3wm | Kh Jung</title><meta name="title" content="(readITzine 기고) - 들어봤니 i3wm | Kh Jung"><meta name="description" content="readITzine에 기고한 i3wm 소개 글 - 타일링 윈도우 매니저의 매력"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/94-readitzine-i3wm/"><meta property="og:title" content="(readITzine 기고) - 들어봤니 i3wm | Kh Jung"><meta property="og:description" content="readITzine에 기고한 i3wm 소개 글 - 타일링 윈도우 매니저의 매력"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/94-readitzine-i3wm/"><meta property="twitter:title" content="(readITzine 기고) - 들어봤니 i3wm | Kh Jung"><meta property="twitter:description" content="readITzine에 기고한 i3wm 소개 글 - 타일링 윈도우 매니저의 매력"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="70-winston-loki" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-09-08T15:00:00.000Z"> Sep 9, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> (readITzine 기고) - 들어봤니 i3wm </div> </div> <div class="relative"> <article class="animate"> <h2 id="references">References</h2>
+<ul>
+<li><a href="https://best-bag-0db.notion.site/zine-2-d75d938591e34c69a9242d9841fa9a81">readITzine 2호</a></li>
+<li><a href="https://github.com/addy-dclxvi/i3-starterpack">i3-starterpack</a></li>
+</ul>
+<h2 id="본문">본문</h2>
+<p>개발자들은 다양한 환경에서 작업을 한다. 대표적으로 맥과 윈도우, 그리고 극소수(PC사용자 중 2.4%)가 리눅스를 사용한다. 나는 소수에 포함된다. 이 글에선 내가 리눅스에서 가장 좋아하는 Window Manager(이하 WM)인 i3wm에 대해 소개한다.</p>
+<p>리눅스는 X윈도우(X11)을 통해 화면을 출력한다. X윈도우는 Display Manager, Session Manager, Window Manager로 구성되는데, 이중 i3wm은 WM의 한 종류이다. WM은 Window(이하 창)의 모양과 위치를 담당하며 창을 열거나 닫는 역할을 한다. i3wm도 WM이므로 창의 모양과 위치를 담당하는데, 창을 조금은 특이한 방법으로 관리한다.</p>
+<p>윈도우와 맥만을 사용해 봤다면 창이 어디에서 떠있을 수 있다는 것을 경험적으로 알고 있을 것이다. 크롬을 켜고 그 위에 사파리를 띄운다든지 혹은 지뢰 찾기를 한다든지 창은 항상 다른 창위에 떠 있을 수 있고 그게 맥과 윈도우의 일반적인 사용 방법이다. 게임이나 영상과 같이 Full Screen을 사용하지 않는다면 항상 하나의 창을 다른 창이 덮고 있을 수 있다. i3wm도 다른 창 위에 창을 둘 수 있지만, 기본 배치 방법은 타일링(tiling) 이다.</p>
+<p><img src="/_astro/i3wm-tiling-1.B4JEXqv2_1N8POG.webp" alt="출처: https://i3wm.org/screenshots/" loading="lazy" decoding="async" fetchpriority="auto" width="1280" height="800"></p>
+<p><img src="/_astro/i3wm-tiling-2.C8taVHI3_ZCJSDU.webp" alt="i3wm 타일링 예시" loading="lazy" decoding="async" fetchpriority="auto" width="1399" height="1049"></p>
+<p>위 이미지를 보면 알 수 있는데, 창들이 타일(tile) 모양으로 배치가 되어있다. i3wm은 위 그림처럼 창을 타일로 배치하고 창이 다른 창을 가리지 않게 하는 데 중점을 둔다. 창을 하나 띄우고 새 창을 띄우기 전, 그걸 아래/오른쪽에 둘지 선택할 수 있다. 창은 그 설정에 맞춰 자동으로 화면을 절반으로 나뉘며 새 창이 띄워진다. 그리고 vim key binding을 적용하여 창과 창 사이를 아주 빠르게 이동할 수 있다. 또한, i3wm에 익숙해지면 알트-탭으로 다른 창을 선택하는 게 아니라 아예 Desktop Screen을 점프하며 작업을 하게 된다. 맥을 쓰면 보통 Desktop Screen을 1<del>3개 정도 사용할 텐데 (더 많이 쓸 수도 있지만 그럼 1번에서 끝으로 갈 때 상당히 힘들다) i3wm에선 보통 1</del>10까지의 Desktop Screen을 사용한다. Desktop Screen을 번호로 지정해놓고 빠르게 건너뛸 수 있기 때문에 다른 어떤 환경보다 작업창 전환 속도가 빠르다.</p>
+<p>난 창이 어떤 Desktop Screen에서 실행돼야 하는지 미리 정의해놓는다. 예를 들어 1번에 Intellij 2번에 크롬과 파이어폭스 3번에 Music App 4번에 슬랙등 채팅 프로그램. 이렇게 정의하고 듀얼 모니터를 써서 왼쪽에 1,3,5,7 스크린을 오른쪽 모니터에 2,4,6,8 스크린을 지정해 왼쪽엔 항상 작업 창을 띄우고 오른쪽엔 그 외에 부가적으로 필요한 걸 실행해놓는다. 위에선 듀얼 모니터로 설명했지만 i3wm은 싱글 모니터에서도 매우 효과적으로 사용할 수 있는 프로그램이다.</p>
+<p>지금까지 장점만 말했지만, 당연히 단점도 있다. 일단은 설정하기가 상당히 힘들다는 것이다. i3wm은 간단한 설정 파일을 통해 나에게 꼭 맞는 맞춤 환경을 제공해주지만, 그 설정을 하나하나 찾아서 한다는 게 즐겁지만은 않다. 아주 낯선 작업 환경에 적응해야 한다는 것도 절대 쉽지 않은 일이다. 하지만 자신에게 꼭 맞는 환경을 찾아 공부하고 시도해보는 것을 좋아하는 사람이라면 i3wm을 굉장히 좋아하게 될 것이라고 확신한다.</p>
+<p><img src="/_astro/i3wm-starterpack.CvlubHQs_lwq8V.webp" alt="i3wm starterpack" loading="lazy" decoding="async" fetchpriority="auto" width="1366" height="768"></p>
+<p>조금 더 깊게 들어가고 싶은 독자를 위해 Github Repository 하나를 추천한다. i3wm starterpack으로 구글링해보면 Github 링크가 하나 나온다. 해당 Github Repository에선 i3wm의 기본 설정법 뿐만 아니라, 모니터, 작업바, Task Swicher, 단축키, 배경화면 설정 방법들에 대해 설명해놓았다. (위의 이미지가 starterpack 페이지를 따라가 보면 얻을 수 있는 화면이다) 처음 i3wm을 설치하면 배경화면도 없는 깜깜한 화면을 얻게 되는데, 그 막막함을 해결해주는 아주 좋은 팁이 많이 모여있다. Github 페이지에 재미있는 내용도 많은데 다음과 같은 내용이다. (번역해서 첨부)</p>
+<blockquote>
+<p>starterpack 개발자</p>
+<ul>
+<li>저는 프로가 아닙니다. 저는 1년 전에 Linux를 배우기 시작했습니다. 그리고 저는 IT 전문가가 아닙니다. 따라서 이 가이드에는 약간의 오류가 있을 수 있습니다. 저를 모욕하기 보다는 정정해주셨으면 좋겠습니다.</li>
+<li>쉽게 포기하지 마세요. 100회 오류, 100회 되돌리기, 100회 재시도 3년 연속으로 리미터를 깰 수 있습니다.</li>
+</ul>
+</blockquote>
+<p>위에 언급된 말처럼 i3wm이 쉽지만은 않지만, 전문가가 아니더라도 충분히 잘 사용할 수 있는 WM이다. 하지만 리눅스를 더 잘 쓰고 싶고 이리저리 갖고 노는 것을 좋아하는 사람이라면 아주 재밌게 써볼 수 있을 것이다.</p>
+<p>지금까지의 글만 갖고는 감이 잘 오지 않을 것이다. 다만 내가 이 글로 전달하고 싶었던 내용은 리눅스는 윈도우, 맥과는 다르게 창을 관리할 수 있는 여러 가지 방법이 있다는 것과 그중 하나인 i3wm이 있다는 것을 알려주고 싶었다. 만약 독자 중 한 명이라도 i3wm을 시도해보고 싶었다는 생각이 들었다면 성공적인 글이라 생각된다. 혹시 설치하는 방법에 대해 자세히 알고 싶다면 <a href="/blog/88-i3wm-1-starterpack">내 글(i3wm 1 - 기본 및 starterpack 설치)</a>을 참고해보는 것도 괜찮겠다.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#본문" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="본문"> 본문 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

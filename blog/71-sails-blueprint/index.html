@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/71-sails-blueprint/"><!-- Primary Meta Tags --><title>Sails Blueprint(CRUD 자동 생성) | Kh Jung</title><meta name="title" content="Sails Blueprint(CRUD 자동 생성) | Kh Jung"><meta name="description" content="Sails.js의 Blueprint 기능을 사용해 모델 기반 CRUD API를 자동 생성하는 방법"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/71-sails-blueprint/"><meta property="og:title" content="Sails Blueprint(CRUD 자동 생성) | Kh Jung"><meta property="og:description" content="Sails.js의 Blueprint 기능을 사용해 모델 기반 CRUD API를 자동 생성하는 방법"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/71-sails-blueprint/"><meta property="twitter:title" content="Sails Blueprint(CRUD 자동 생성) | Kh Jung"><meta property="twitter:description" content="Sails.js의 Blueprint 기능을 사용해 모델 기반 CRUD API를 자동 생성하는 방법"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="13-langchain-102" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-05-07T15:00:00.000Z"> May 8, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 2 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Sails Blueprint(CRUD 자동 생성) </div> </div> <div class="relative"> <article class="animate"> <h2 id="요약">요약</h2>
+<ol>
+<li>npm install -g sails</li>
+<li>sails create new project</li>
+<li>sails generate model something</li>
+<li>edit config.blueprints.js (blue print enable 시키기)</li>
+<li>edit config.policies.js (모든 요청을 인증없이 받기)</li>
+</ol>
+<hr/>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://sailsjs.com/documentation/concepts/blueprints">https://sailsjs.com/documentation/concepts/blueprints</a></li>
+<li><a href="https://github.com/moltak/practice-sails-auto-crud">완성된 프로젝트 Github repo</a></li>
+</ul>
+<hr/>
+<p>이전에 설치해본 Admin Forest 를 사용할 때, 가장 신기했던 기능은 DB의 DDL을 분석해서 자동으로 CRUD 기능들을 만들어 주는 기능이었다. 생각해보면 이미 모든 정보가 다 DB에 있으니 CRUD를 자동 생성해주는건 크게 어려운 일이 아니라는 생각이 들었다.</p>
+<p>그걸 해결해주는게 sails 의 <a href="https://sailsjs.com/documentation/concepts/blueprints">blueprint</a> 기능이다. 만약 sails generate 명령(<code>sails generate model student name:string</code>) 으로 model 을 만들었다면 blueprint API가 아래 보이는 blueprint routes 를 expose 해주고 이를 이용해 GET,POST,PUT,DELETE 등의 명령을 클라이언트가 호출할 수 있게 된다.</p>
+<p><img src="/_astro/blueprint-routes.jYWPb3Pw_ZvRuju.webp" alt="Shortcut blueprint routes" loading="lazy" decoding="async" fetchpriority="auto" width="824" height="717"></p>
+<p>하지만 READ 명령만 실행을 해봤는데, Blueprint API를 통해 CREATE 할 때 403 Forbidden 에러가 발생하고 이를 해결하는 정책 변경방법을 아직 못 찾았기 때문이다. 이어지는 아래 글들을 통해 지금까지 알게된 방법들을 적어놨다.</p>
+<h2 id="설정방법">설정방법</h2>
+<h3 id="configblueprintsjs">config/blueprints.js</h3>
+<p>속성들 true 로 변경하기</p>
+<h3 id="configpoliciesjs">config/policies.js</h3>
+<p>’*’: ‘is-logged-in’ -&gt; ’*’: true 로 변경</p>
+<h2 id="실행-결과">실행 결과</h2>
+<h3 id="get">GET</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#E1E4E8">&gt; </span><span style="color:#9ECBFF">http</span><span style="color:#9ECBFF"> GET</span><span style="color:#9ECBFF"> :1337/user</span><span style="color:#79B8FF"> --print</span><span style="color:#9ECBFF"> HhBb</span></span>
+<span class="line"><span style="color:#B392F0">GET</span><span style="color:#9ECBFF"> /user</span><span style="color:#9ECBFF"> HTTP/1.1</span></span>
+<span class="line"><span style="color:#B392F0">Accept:</span><span style="color:#79B8FF"> *</span><span style="color:#9ECBFF">/</span><span style="color:#79B8FF">*</span></span>
+<span class="line"><span style="color:#B392F0">Accept-Encoding:</span><span style="color:#9ECBFF"> gzip,</span><span style="color:#9ECBFF"> deflate</span></span>
+<span class="line"><span style="color:#B392F0">Connection:</span><span style="color:#9ECBFF"> keep-alive</span></span>
+<span class="line"><span style="color:#B392F0">Host:</span><span style="color:#9ECBFF"> localhost:1337</span></span>
+<span class="line"><span style="color:#B392F0">User-Agent:</span><span style="color:#9ECBFF"> HTTPie/1.0.3</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">HTTP/1.1</span><span style="color:#79B8FF"> 200</span><span style="color:#9ECBFF"> OK</span></span>
+<span class="line"><span style="color:#B392F0">Connection:</span><span style="color:#9ECBFF"> keep-alive</span></span>
+<span class="line"><span style="color:#B392F0">Content-Length:</span><span style="color:#79B8FF"> 2</span></span>
+<span class="line"><span style="color:#B392F0">Content-Type:</span><span style="color:#9ECBFF"> application/json</span><span style="color:#E1E4E8">; charset</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">utf-8</span></span>
+<span class="line"><span style="color:#B392F0">Date:</span><span style="color:#9ECBFF"> Sat,</span><span style="color:#79B8FF"> 16</span><span style="color:#9ECBFF"> May</span><span style="color:#79B8FF"> 2020</span><span style="color:#9ECBFF"> 06:25:34</span><span style="color:#9ECBFF"> GMT</span></span>
+<span class="line"><span style="color:#B392F0">ETag:</span><span style="color:#9ECBFF"> W/&quot;2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w&quot;</span></span>
+<span class="line"><span style="color:#B392F0">X-Powered-By:</span><span style="color:#9ECBFF"> Sails</span><span style="color:#F97583"> &lt;</span><span style="color:#9ECBFF">sailsjs.co</span><span style="color:#E1E4E8">m</span><span style="color:#F97583">&gt;</span></span>
+<span class="line"><span style="color:#B392F0">set-cookie:</span><span style="color:#9ECBFF"> sails.sid=s%3A9O5v-mQvY8_6ui_gt28eAxEU8bMrEAX5.yk4xNEpbbEgK8yog719LeGxpc6GGDynk%2FAXeGrgWIBQ</span><span style="color:#E1E4E8">; Path</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">/</span><span style="color:#E1E4E8">; </span><span style="color:#B392F0">HttpOnly</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[]</span></span></code></pre>
+<h3 id="post">POST</h3>
+<p>POST 는 Forbidden으로 계속 실패하는데, 어떻게 권한을 만들어줘야하는지 모르겠음…</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#E1E4E8">&gt; </span><span style="color:#9ECBFF">http</span><span style="color:#9ECBFF"> POST</span><span style="color:#9ECBFF"> :1337/Student</span><span style="color:#9ECBFF"> name=test3</span><span style="color:#79B8FF"> --json</span><span style="color:#79B8FF"> --print</span><span style="color:#9ECBFF"> HBhb</span></span>
+<span class="line"><span style="color:#B392F0">POST</span><span style="color:#9ECBFF"> /Student</span><span style="color:#9ECBFF"> HTTP/1.1</span></span>
+<span class="line"><span style="color:#B392F0">Accept:</span><span style="color:#9ECBFF"> application/json,</span><span style="color:#79B8FF"> *</span><span style="color:#9ECBFF">/</span><span style="color:#79B8FF">*</span></span>
+<span class="line"><span style="color:#B392F0">Accept-Encoding:</span><span style="color:#9ECBFF"> gzip,</span><span style="color:#9ECBFF"> deflate</span></span>
+<span class="line"><span style="color:#B392F0">Connection:</span><span style="color:#9ECBFF"> keep-alive</span></span>
+<span class="line"><span style="color:#B392F0">Content-Length:</span><span style="color:#79B8FF"> 17</span></span>
+<span class="line"><span style="color:#B392F0">Content-Type:</span><span style="color:#9ECBFF"> application/json</span></span>
+<span class="line"><span style="color:#B392F0">Host:</span><span style="color:#9ECBFF"> localhost:1337</span></span>
+<span class="line"><span style="color:#B392F0">User-Agent:</span><span style="color:#9ECBFF"> HTTPie/1.0.3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#B392F0">    &quot;name&quot;</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> &quot;test3&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">HTTP/1.1</span><span style="color:#79B8FF"> 403</span><span style="color:#9ECBFF"> Forbidden</span></span>
+<span class="line"><span style="color:#B392F0">Connection:</span><span style="color:#9ECBFF"> keep-alive</span></span>
+<span class="line"><span style="color:#B392F0">Content-Length:</span><span style="color:#79B8FF"> 9</span></span>
+<span class="line"><span style="color:#B392F0">Content-Type:</span><span style="color:#9ECBFF"> text/plain</span><span style="color:#E1E4E8">; charset</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">utf-8</span></span>
+<span class="line"><span style="color:#B392F0">Date:</span><span style="color:#9ECBFF"> Sat,</span><span style="color:#79B8FF"> 16</span><span style="color:#9ECBFF"> May</span><span style="color:#79B8FF"> 2020</span><span style="color:#9ECBFF"> 06:27:45</span><span style="color:#9ECBFF"> GMT</span></span>
+<span class="line"><span style="color:#B392F0">ETag:</span><span style="color:#9ECBFF"> W/&quot;9-PatfYBLj4Um1qTm5zrukoLhNyPU&quot;</span></span>
+<span class="line"><span style="color:#B392F0">X-Powered-By:</span><span style="color:#9ECBFF"> Sails</span><span style="color:#F97583"> &lt;</span><span style="color:#9ECBFF">sailsjs.co</span><span style="color:#E1E4E8">m</span><span style="color:#F97583">&gt;</span></span>
+<span class="line"><span style="color:#B392F0">set-cookie:</span><span style="color:#9ECBFF"> sails.sid=s%3A9lmrTrjtnTjYjBkuHxzHxvdLVdI8p2EL.nG0cT9mpadEVjFVe%2BE7Plgl8tAUOkFGulhTfLzy%2BI4o</span><span style="color:#E1E4E8">; Path</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">/</span><span style="color:#E1E4E8">; </span><span style="color:#B392F0">HttpOnly</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">Forbidden</span></span></code></pre> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="요약"> 요약 </a> </li><li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#설정방법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="설정방법"> 설정방법 </a> </li><li> <a href="#configblueprintsjs" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="configblueprintsjs"> config/blueprints.js </a> </li><li> <a href="#configpoliciesjs" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="configpoliciesjs"> config/policies.js </a> </li><li> <a href="#실행-결과" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="실행-결과"> 실행 결과 </a> </li><li> <a href="#get" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="get"> GET </a> </li><li> <a href="#post" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="post"> POST </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

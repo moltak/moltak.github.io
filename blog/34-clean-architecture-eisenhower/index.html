@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/34-clean-architecture-eisenhower/"><!-- Primary Meta Tags --><title>엉클밥의 아이젠하워 매트릭스 - Clean Architecture | Kh Jung</title><meta name="title" content="엉클밥의 아이젠하워 매트릭스 - Clean Architecture | Kh Jung"><meta name="description" content="Clean Code 강의에서 엉클밥이 말하는 아키텍처의 목표와 개발자의 책임"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/34-clean-architecture-eisenhower/"><meta property="og:title" content="엉클밥의 아이젠하워 매트릭스 - Clean Architecture | Kh Jung"><meta property="og:description" content="Clean Code 강의에서 엉클밥이 말하는 아키텍처의 목표와 개발자의 책임"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/34-clean-architecture-eisenhower/"><meta property="twitter:title" content="엉클밥의 아이젠하워 매트릭스 - Clean Architecture | Kh Jung"><meta property="twitter:description" content="Clean Code 강의에서 엉클밥이 말하는 아키텍처의 목표와 개발자의 책임"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="66-flutter-3-reasons" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-07-27T15:00:00.000Z"> Jul 28, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> 엉클밥의 아이젠하워 매트릭스 - Clean Architecture </div> </div> <div class="relative"> <article class="animate"> <h2 id="엉클밥-강의">엉클밥 강의</h2>
+<p><a href="https://www.youtube.com/watch?v=sn0aFEMVTpA&t=4268s">Clean Code - Uncle Bob / Lesson 5</a></p>
+<p>이 강의를 본(보진 않았지…. 요약을 읽기만 했다 ㅎ) 이유는 요새 하는 프로젝트에서 또 속도를 강요받아 어떤식으로 이야기를 풀어가야할까 고민이 되었기 때문이다. 예전에 클린 아키텍처, 헥사고날 아키텍처에서 엉클밥이 해주신 이야기가 언뜻 떠올라 자세한 내용을 봐야겠다 생각했다.</p>
+<p>아래 요약이 많은데 내가 다시 요약해보면 아래와 같다.</p>
+<ol>
+<li>고객의 요구사항은 “긴급한 일”</li>
+<li>아키텍처는 “중요한 일”</li>
+<li>그런데 비즈니스 담당자는 아키텍처는 모르므로 그걸 지키는건 개발자의 책임
+<ul>
+<li>개발자는 시스템의 장기적인 건강을 책임지는 이해관계자(Stakeholder)로써 담당자를 설득할 수 있어야한다.</li>
+<li>이 일은 용기와 소통 능력이 필요한, 매우 어려운 일임을 인정하지만, 이것이 진정한 프로페셔널리즘이라고 정의합니다.</li>
+</ul>
+</li>
+<li>아키텍처의 목표
+<ul>
+<li>시스템을 작동시키는 것이 아니라, 시스템을 구축하고 유지보수하는 데 필요한 인력(비용)을 최소화하는 것</li>
+<li>“빠르고 지저분하게(Quick and Dirty)“라는 개발 문화는 신화에 불과하며, 진짜로 빠르게 가는 유일한 방법은 처음부터 깨끗하게, 즉 ‘제대로’ 가는 것이라고 강조합니다.</li>
+</ul>
+</li>
+</ol>
+<p>나는 친구들과 이야기하며 시니어를 뽑는 이유는 더러운것을 치우기 위해서라고 자주 이야기한다. (물론 우리도 더러운것을 만들지만…) 매우 더러운것을 좀 덜 더러운 것으로 만들기 위해 우리가 비싼 값을 받는거라고. 항상 가는 곳 마다 정말… 엄청난게 있다. 그걸 치우며 스트레스와 성취감을 느끼며 도를 닦는 마음으로 한발한발 나아간다.</p>
+<p>아키텍처의 목표는 <code>인력을 최소화하는 것</code>이라는 목표를 다시한번 상기해본다.</p>
+<p><img src="/_astro/eisenhower-matrix.DKYCDTT8_Z2tUrUx.webp" alt="아이젠하워 매트릭스" loading="lazy" decoding="async" fetchpriority="auto" width="1118" height="838"></p>
+<h2 id="ai-요약">AI 요약</h2>
+<h3 id="소프트웨어의-두-가지-가치와-위기">소프트웨어의 두 가지 가치와 위기</h3>
+<p>강연은 소프트웨어 아키텍처의 근본적인 목표를 정의하며 시작합니다. 엉클 밥은 아키텍처의 목표가 단순히 시스템을 작동시키는 것이 아니라, <strong>시스템을 구축하고 유지보수하는 데 필요한 인력(비용)을 최소화</strong>하는 것이라고 단언합니다. 그는 실제 한 인터넷 스타트업의 데이터를 보여주며, 잘못된 아키텍처가 어떻게 개발자 수를 기하급수적으로 늘리면서도 실제 코드 생산성은 바닥으로 떨어뜨리는지 생생하게 증명합니다.</p>
+<h3 id="아키텍처와-개발자의-책임">아키텍처와 개발자의 책임</h3>
+<p>엉클 밥은 아이젠하워 매트릭스를 빌려 이 두 가치를 설명합니다. 고객의 요구사항은 ‘긴급한 일’이고, 좋은 아키텍처를 유지하는 것은 ‘중요한 일’입니다. 그는 비즈니스 담당자는 아키텍처의 중요성을 이해하거나 우선순위를 정할 수 없으므로, <strong>아키텍처를 지키는 것은 온전히 개발자의 책임</strong>이라고 말합니다.</p>
+<h3 id="클린-아키텍처의-서막-의도를-드러내는-설계">클린 아키텍처의 서막: 의도를 드러내는 설계</h3>
+<p>좋은 아키텍처는 사용된 프레임워크가 아니라 <strong>애플리케이션의 ‘의도(Intent)‘를 소리쳐야 한다</strong>고 주장합니다. 마치 건물의 설계도가 ‘이것은 도서관이다’라고 말해주는 것처럼, 소프트웨어의 최상위 구조는 ‘이것은 은행 시스템이다’라고 명확히 보여줘야 한다는 것입니다.</p>
+<h3 id="핵심-원칙-의존성-규칙과-플러그인-아키텍처">핵심 원칙: 의존성 규칙과 플러그인 아키텍처</h3>
+<p>클린 아키텍처의 심장부인 **‘의존성 규칙(The Dependency Rule)‘**이 소개됩니다. 모든 소스 코드 의존성은 시스템의 외부(UI, DB, 프레임워크)에서 내부(핵심 비즈니스 로직)를 향해야 한다는 것이 핵심입니다. UI와 데이터베이스는 비즈니스 로직에 **‘플러그인’**처럼 연결됩니다.</p>
+<h3 id="결론-결정을-미루는-기술과-프레임워크에-대한-경고">결론: 결정을 미루는 기술과 프레임워크에 대한 경고</h3>
+<p>좋은 아키텍처가 어떻게 <strong>중요한 기술적 결정을 가능한 한 뒤로 미룰 수 있게 하는지</strong> 보여줍니다. 프레임워크는 ‘결혼’할 대상이 아니라, 항상 경계를 두고 신중하게 사용해야 할 도구일 뿐이라고 말하며 강연을 마무리합니다.</p>
+<h2 id="핵심-인사이트">핵심 인사이트</h2>
+<blockquote>
+<p>“소프트웨어 아키텍처의 품질은 ‘무엇을 할 수 있는가’가 아니라, ‘무엇을 하지 않아도 되는가’로 결정된다.”</p>
+</blockquote>
+<p>좋은 아키텍처는 UI를 바꾸기 위해 비즈니스 로직을 수정할 필요가 없고, DB를 교체하기 위해 UI 코드를 건드릴 필요가 없습니다. 변경의 파급 효과를 최소화하고, 개발자가 ‘하지 않아도 될 일’을 만들어주는 것이 아키텍처의 진정한 가치입니다.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#엉클밥-강의" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="엉클밥-강의"> 엉클밥 강의 </a> </li><li> <a href="#ai-요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ai-요약"> AI 요약 </a> </li><li> <a href="#소프트웨어의-두-가지-가치와-위기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="소프트웨어의-두-가지-가치와-위기"> 소프트웨어의 두 가지 가치와 위기 </a> </li><li> <a href="#아키텍처와-개발자의-책임" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="아키텍처와-개발자의-책임"> 아키텍처와 개발자의 책임 </a> </li><li> <a href="#클린-아키텍처의-서막-의도를-드러내는-설계" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="클린-아키텍처의-서막-의도를-드러내는-설계"> 클린 아키텍처의 서막: 의도를 드러내는 설계 </a> </li><li> <a href="#핵심-원칙-의존성-규칙과-플러그인-아키텍처" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="핵심-원칙-의존성-규칙과-플러그인-아키텍처"> 핵심 원칙: 의존성 규칙과 플러그인 아키텍처 </a> </li><li> <a href="#결론-결정을-미루는-기술과-프레임워크에-대한-경고" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="결론-결정을-미루는-기술과-프레임워크에-대한-경고"> 결론: 결정을 미루는 기술과 프레임워크에 대한 경고 </a> </li><li> <a href="#핵심-인사이트" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="핵심-인사이트"> 핵심 인사이트 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

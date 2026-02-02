@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/72-java-monitoring/"><!-- Primary Meta Tags --><title>Java - 모니터링 | Kh Jung</title><meta name="title" content="Java - 모니터링 | Kh Jung"><meta name="description" content="jstat, JProfiler, Eclipse JVM Monitor를 활용한 Java JVM 모니터링과 Memory Leak 분석"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/72-java-monitoring/"><meta property="og:title" content="Java - 모니터링 | Kh Jung"><meta property="og:description" content="jstat, JProfiler, Eclipse JVM Monitor를 활용한 Java JVM 모니터링과 Memory Leak 분석"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/72-java-monitoring/"><meta property="twitter:title" content="Java - 모니터링 | Kh Jung"><meta property="twitter:description" content="jstat, JProfiler, Eclipse JVM Monitor를 활용한 Java JVM 모니터링과 Memory Leak 분석"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="26-coding-agent-3-taskmaster" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-11-02T15:00:00.000Z"> Nov 3, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Java - 모니터링 </div> </div> <div class="relative"> <article class="animate"> <p>eggbun의 dev 서버의 heap 이 자꾸 죽고 있어서 왜 그런지 분석해보려는데 jstat를 이용해야 정확히 분석을 할 수 있다는 것을 알았다. 하지만 jstat는 나는 처음 보는 것이라서 조금 학습이 필요하다. 이걸 정확히 알게되면 앞으로 많은 부분이 편해질거 같다…</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/ko_kr/sdk-for-java/v1/developer-guide/generating-sdk-metrics.html">JVM 정보를 cloud watch 에 저장하는 방법</a></li>
+<li><a href="https://dzone.com/articles/visualvm-monitoring-remote-jvm">JStatD를 실행하려고 참고한 문서</a></li>
+</ul>
+<ol>
+<li>JStatD</li>
+<li>위 링크에 있는 jstatd.all.policy 내용</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>grant codebase &quot;file:/usr/lib/jvm/default-java/lib/tools.jar&quot; {</span></span>
+<span class="line"><span>  permission java.security.AllPermission;</span></span>
+<span class="line"><span>};</span></span></code></pre>
+<ol>
+<li>실행방법</li>
+<li><code>sudo jstatd -J-Djava.security.policy=jstatd.all.policy -p 2020</code>
+<ul>
+<li>근데 접속이 안되는 중 -_-</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2 id="jstat-command">jstat command</h2>
+<ul>
+<li><a href="https://d2.naver.com/helloworld/6043">Garbage Collection 모니터링하는 방법 by Naver</a></li>
+<li><a href="https://d2.naver.com/helloworld/1329">Java Garbage Collection by Naver</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html">jstat oracle document</a></li>
+<li><a href="http://johnhunsley.blogspot.com/2016/03/custom-cloudwatch-tomcat-jvm-metrics.html">에그번에서 사용중인 JVM -&gt; Cloud Watch Metric 방법</a>
+-&gt; 위 글은 JAVA6 기준이라서 parameter의 개수가 다름. JAVA8 부터 Permanent Space가 Metaspace와 CCS로 나눠졌음</li>
+</ul>
+<p><code>jstat -gcutil ${ps_number} 1000</code> ← 1초마다 ps_number의 정보를 보여줌.</p>
+<h2 id="permanent-generation-meta-generation">Permanent Generation, Meta Generation</h2>
+<p>JStat를 사용해서 JVM 메모리를 관찰하다보면 인터넷에 떠도는 예제들과 내가 직접 실행해본 결과에서 보이는 항목이 다르다. 인터넷의 예제에서는 항상 Permanet Area가 나오는데, 내가 실행했던 곳에서는 Permanent대신 Metasapce, CCS가 나온다. 왜 결과가 다를까?</p>
+<p><a href="https://stackoverflow.com/questions/27131165/what-is-the-difference-between-permgen-and-metaspace">What is the difference between PermGen and Metaspace?</a> 를 보면 Permanent space는 고정되어있는 사이즈라고 한다. JVM이 시작될때 사용되는 클래스 정보가 저장되는 영역인데, class dynamic loading 을 사용할 수 없다는 것이다. 이 때, Meta space가 사용되며 meta space는 크기가 변할 수 있는 영역이며 dynamic loading을 지원할 수 있게된다.</p>
+<p><a href="http://java-latte.blogspot.com/2014/03/metaspace-in-java-8.html">Metaspace in java 8</a>를 보면 permanent space가 meta space, ccs 로 나뉜것에 대한 정보를 읽어볼 수 있음.</p>
+<h2 id="memory-leak">Memory Leak</h2>
+<p>에그번 Dev vertx서버가 응답을 주지 못하는 상황이 자주 발생한다. 원인은 어떤 순간이 되면 FullGC의 횟수가 엄청나게 증가하게 되는 것이다. FullGC는 Old 영역이 많이 찼을 때 발생하는 GC인데 에그번 DEV 서버의 문제는 FullGC 후 Old 영역이 비워지지 않는다는 것이다.</p>
+<p>Old영역 부족 -&gt; FullGC 수행 -&gt; 가정(FullGC 실패 혹은 메모리 Release 안됨) -&gt; Old 영역 부족 -&gt; … 반복</p>
+<p>좀 검색을 해보니 Memory Leak이 발생했을 때 에그번 Dev와 같은 문제가 발생할 수 있다는 것을 알게되었다.</p>
+<blockquote>
+<p>Memory Leak이 단지 OOME만을 일으키는 것은 아니다. Memory Leak이 발생하면 JAVA Heap 공간의 여유 공간이 잘 확보되지 않기 때문에 계속적인 Garbage Collection이 발생한다. 불행 중 다행으로 OOME가 발생하지 않더라도 계속적인 GC 작업에 의해 성능이 저하된다. 따라서 GC Dump를 분석할 때 Memory Leak의 발생 가능성이 있는지 검토해야 한다.</p>
+<p>From <a href="http://lyb1495.tistory.com/6">hello world</a></p>
+</blockquote>
+<h2 id="jprofiler-사용해보기">JProfiler 사용해보기</h2>
+<p>JProfiler 를 Remote (측정하고 싶은 VM이 있는 곳)로 연결해서 vm instance의 상태를 측정할 수 있다. <a href="https://www.jvmhost.com/articles/connect-remote-jvm-jprofiler/">참고 사이트</a>에 보면 자세히 나와있는데 아주 간단하므로 여기서는 요약만한다.</p>
+<h3 id="remote-설정">Remote 설정</h3>
+<p>JProfiler 를 다운로드 하고 압축을 해제한다. 보통은 linux 서버를 사용할것이므로 <a href="https://www.ej-technologies.com/download/jprofiler/files">JProfiler 다운로드 사이트</a>에서 linux버전 .tar.gz를 받고 압축을 푼다. 그 후</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>sudo ./jprofiler/bin/jpenable</span></span></code></pre>
+<p>명령어로 실행하고 port를 기억해놓는다. service로 실행되므로 jpenable을 실행한 후 terminal을 닫아도 된다.</p>
+<h3 id="viewer-설정">Viewer 설정</h3>
+<p>JProfiler를 다운로드 하고 new session -&gt; remote 설정을 한다. 그러면 바로 JVM 상태를 볼 수 있다.</p>
+<p>JProfiler 되게 좋은거 같은데 400달러가 넘는다 -_-</p>
+<p>Memory Leak 참고: <a href="http://lyb1495.tistory.com/6">Helloworld</a></p>
+<h2 id="eclipse-jvm-monitor">Eclipse JVM monitor</h2>
+<p>Eclipse 를 이용해서 monitoring 하는것이 가능하다. <a href="http://www.jvmmonitor.org/doc/index.html">JVM Monitor</a>를 이용하면 되는데, eclipse 를 설치하고 market place에서 다운로드하면 된다.</p>
+<p>그 후 window -&gt; perspective -&gt; other -&gt; java monitor (<a href="http://www.jvmmonitor.org/doc/index.html">Getting Started</a>에서 확인 가능)에서 JVM monitor window를 열 수 있으며 바로 monitoring 이 가능하다.</p>
+<p>Remote로도 설정이 가능하며 아래 argument와 함께 프로그램을 시작해야한다. (아직 안해봄..)</p>
+<ul>
+<li><code>-Dcom.sun.management.jmxremote.port=9876</code></li>
+<li><code>-Dcom.sun.management.jmxremote.ssl=false</code></li>
+<li><code>-Dcom.sun.management.jmxremote.authenticate=false</code></li>
+<li><code>-Dcom.sun.management.jmxremote</code></li>
+</ul>
+<p><a href="https://dzone.com/articles/visualvm-monitoring-remote-jvm">VisualVM: Monitoring Remote JVM Over SSH (JMX Or Not)</a> 이 문서의 JMX 설정에도 비슷한 말이 나온다. SOCKS proxy를 이용해서 SSH 인증을 통해 데이터를 가져올 수 있다.</p>
+<h2 id="부하-테스트">부하 테스트</h2>
+<p>Jmeter</p>
+<h2 id="jvm-heap-dump-만들기">JVM Heap Dump 만들기</h2>
+<p>오랜만에 eggbun-vertx-dev 가 또 멈췄다. 한 3일만인가.. 그래서 언능 heap dump를 만들었다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">jmap</span><span style="color:#79B8FF"> -dump:format=b,file=</span><span style="color:#E1E4E8">{</span><span style="color:#B392F0">file</span><span style="color:#9ECBFF"> name}.hprof</span><span style="color:#9ECBFF"> {pid}</span></span></code></pre>
+<p>jmap으로 파일을 덤프하고 나중에 분석할 수 있다. 이것도 Eclipse 를 이용해서 분석할 수 있는데 market place에서 “Memory Analyzer”를 설치하면 된다.</p>
+<p>그 후 file -&gt; open file 하면 분석기가 열린다. 자세한 설명은 아래 링크를 보면 된다.</p>
+<p><a href="https://dzone.com/articles/java-heap-dump-analyzer-1">JVM Heap Dump Analyze</a></p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#jstat-command" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="jstat-command"> jstat command </a> </li><li> <a href="#permanent-generation-meta-generation" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="permanent-generation-meta-generation"> Permanent Generation, Meta Generation </a> </li><li> <a href="#memory-leak" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="memory-leak"> Memory Leak </a> </li><li> <a href="#jprofiler-사용해보기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="jprofiler-사용해보기"> JProfiler 사용해보기 </a> </li><li> <a href="#remote-설정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="remote-설정"> Remote 설정 </a> </li><li> <a href="#viewer-설정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="viewer-설정"> Viewer 설정 </a> </li><li> <a href="#eclipse-jvm-monitor" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="eclipse-jvm-monitor"> Eclipse JVM monitor </a> </li><li> <a href="#부하-테스트" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="부하-테스트"> 부하 테스트 </a> </li><li> <a href="#jvm-heap-dump-만들기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="jvm-heap-dump-만들기"> JVM Heap Dump 만들기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

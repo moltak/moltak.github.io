@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/56-apollo-graphql-react/"><!-- Primary Meta Tags --><title>Apollo Graphql React 편하게 사용하기 | Kh Jung</title><meta name="title" content="Apollo Graphql React 편하게 사용하기 | Kh Jung"><meta name="description" content="React에서 GraphQL을 편하게 사용하기 위한 자동화 도구 탐색기"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/56-apollo-graphql-react/"><meta property="og:title" content="Apollo Graphql React 편하게 사용하기 | Kh Jung"><meta property="og:description" content="React에서 GraphQL을 편하게 사용하기 위한 자동화 도구 탐색기"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/56-apollo-graphql-react/"><meta property="twitter:title" content="Apollo Graphql React 편하게 사용하기 | Kh Jung"><meta property="twitter:description" content="React에서 GraphQL을 편하게 사용하기 위한 자동화 도구 탐색기"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="78-deployment-strategies" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-05-14T15:00:00.000Z"> May 15, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Apollo Graphql React 편하게 사용하기 </div> </div> <div class="relative"> <article class="animate"> <p>사용한 툴과 링크:
+<a href="https://github.com/apollographql/apollo-tooling#code-generation">apollo-tooling</a>, <a href="https://github.com/timqian/gql-generator">gql-generator</a></p>
+<p><a href="https://medium.com/open-graphql/automatically-generate-typescript-definitions-for-graphql-queries-with-apollo-codegen-e73eae72b561">참고 블로그</a> (<a href="https://github.com/faahmad/react-apollo-typescript/blob/master/src/types/graphql-global-types.ts">git repo</a>)</p>
+<hr/>
+<p>react 에서 graphql 을 사용하기 위해 여러가지 작업을 해줘야한다. 그런데 스키마가 이미 정해져있는 graphql 은 툴들의 도움을 받기가 매우 쉽다. 이미 많은 툴들이 나와있고 이를 이용해 서버가 변경되더라도 클라이언트에서 매우 조금만 변경해 제품을 만드는것이 가능하다. 지금까지 여러가지 툴을 이용해 모든 과정을 자동화하려고 했으나 실패했고 그에 대한 기록을 남긴다.</p>
+<p>내 목적은 아래 두개로 분류할 수 있다.</p>
+<h1 id="1-apollo-react-gql-을-이용">1. apollo react gql 을 이용</h1>
+<ol>
+<li>서버에서 graphql schema 변경</li>
+<li>클라이언트에서 몇번의 커맨드로 <code>schema.graqhql</code> 생성 및 <code>apollo react gql</code> 생성</li>
+</ol>
+<h1 id="2-react-componet-로-graphql-함수를-호출">2. react componet 로 graphql 함수를 호출</h1>
+<ol>
+<li>서버에서 graphql schema 변경</li>
+<li>클라이언트에서 몇번의 커맨드로 <code>types</code> 생성</li>
+<li>이를 <code>react-apollo</code> 로 감싸서 <code>&lt;PokemonsQuery &gt;</code> 이런 모습으로 쿼리 실행</li>
+</ol>
+<blockquote>
+<p>위에서도 말했듯이 두가지 방법 모두 실패했는데 그 상황과 결과를 한번씩 살펴보자.</p>
+</blockquote>
+<h1 id="react-gql">react gql</h1>
+<h2 id="환경-설정">환경 설정</h2>
+<p>apollo.config.js 파일이 필요하다</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="graphql"><code><span class="line"><span style="color:#B392F0">module</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">exports</span><span style="color:#E1E4E8"> = {</span></span>
+<span class="line"><span style="color:#9ECBFF">  client</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">    service</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">      name</span><span style="color:#E1E4E8">: &#39;</span><span style="color:#FFAB70">Mathpedia</span><span style="color:#E1E4E8">&#39;,</span></span>
+<span class="line"><span style="color:#9ECBFF">      url</span><span style="color:#E1E4E8">: &#39;</span><span style="color:#9ECBFF">https</span><span style="color:#E1E4E8">://</span><span style="color:#FFAB70">wonri</span><span style="color:#E1E4E8">-</span><span style="color:#FFAB70">back</span><span style="color:#E1E4E8">.</span><span style="color:#FFAB70">ngrok</span><span style="color:#E1E4E8">.</span><span style="color:#FFAB70">io</span><span style="color:#E1E4E8">/</span><span style="color:#FFAB70">graphql</span><span style="color:#E1E4E8">&#39;,</span></span>
+<span class="line"><span style="color:#E1E4E8">      // </span><span style="color:#FFAB70">optional</span><span style="color:#FFAB70"> headers</span></span>
+<span class="line"><span style="color:#9ECBFF">      headers</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">        authorization</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">          &#39;</span><span style="color:#FFAB70">Bearer</span><span style="color:#E1E4E8"> &#39;,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      // </span><span style="color:#FFAB70">optional</span><span style="color:#FFAB70"> disable</span><span style="color:#FFAB70"> SSL</span><span style="color:#FFAB70"> validation</span><span style="color:#FFAB70"> check</span></span>
+<span class="line"><span style="color:#9ECBFF">      skipSSLValidation</span><span style="color:#E1E4E8">: </span><span style="color:#FFAB70">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span></code></pre>
+<h2 id="작업-과정">작업 과정</h2>
+<p>1번(apollo react gql 을 이용)을 달성하기 위해선 apollo-tooling 을 이용 <code>apollo client:download-schema schema.gql</code> 명령어를 통해 schema를 다운 받고 <code>gqlg --schemaFilePath schema.gql --destDirPath gqls --depthLimit 5</code> 를 통해 gql 을 생성할 수 있다. 이로인해 만들어진 파일은 다음과 같다</p>
+<p>생성된 디렉토리 구조와 problem.gql 일부:</p>
+<p><img src="/_astro/gql-directory.CuS9n-v0_Z1m165d.webp" alt="생성된 디렉토리 구조" loading="lazy" decoding="async" fetchpriority="auto" width="135" height="87"></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="graphql"><code><span class="line"><span style="color:#6A737D"># problem.gql</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">query</span><span style="color:#B392F0"> problem</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">$id</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">String</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">){</span></span>
+<span class="line"><span style="color:#FFAB70">    problem</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">id</span><span style="color:#E1E4E8">: </span><span style="color:#FFAB70">$id</span><span style="color:#E1E4E8">){</span></span>
+<span class="line"><span style="color:#FFAB70">        id</span></span>
+<span class="line"><span style="color:#FFAB70">        title</span></span>
+<span class="line"><span style="color:#FFAB70">        problemUniqueId</span></span>
+<span class="line"><span style="color:#FFAB70">        bookTitle</span></span>
+<span class="line"><span style="color:#FFAB70">        partTitle</span></span>
+<span class="line"><span style="color:#FFAB70">        sectionTitle</span></span>
+<span class="line"><span style="color:#FFAB70">        sectionType</span></span></code></pre>
+<h2 id="결과물">결과물</h2>
+<p>위에서 만들어진 결과물은 텍스트로 이루어진 graphql query 로써 이를 사용하기 위해선 추가적인 작업이 필요하다. file을 읽던가 (하지만 browser엔 file read 가 없음) 아니면 텍스트를 typescript 에서 사용할 수 있도록 변수로 변경하는 것이다. 첫번째 방법 (file을 읽는)은 사용할 의향이 있으나 두번째 방법(텍스트를 typescript에서 사용할 수 있도록 변경)은 내가 원하던 방법이 아니었으므로 패스</p>
+<h2 id="react-componet-로-graphql-함수를-호출">react componet 로 graphql 함수를 호출</h2>
+<p>2번(react componet 로 graphql 함수를 호출)을 달성하기 위해선 apollo-tooling 을 이용해 <code>apollo client:codegen --target typescript --includes=&quot;gql/*.ts&quot; --addTypename types</code> 명령을 통해 한번에 원하는 디렉토리에 query type을 출력할 수 있다. 다만 위 명령어를 호출하기 위해선 <code>gql</code> 로 먼저 쿼리를 짜 둬야한다. 난… 그걸 안하고 싶은데 좀 이상했다. 하지만 그래도 react component 로 바로 호출하는 것도 좋으므로 시도해봄.</p>
+<h2 id="결과물-1">결과물</h2>
+<p>sample.ts:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { UserRole, AuthType } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &quot;./../../types/globalTypes&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// ====================================================</span></span>
+<span class="line"><span style="color:#6A737D">// GraphQL mutation operation: login</span></span>
+<span class="line"><span style="color:#6A737D">// ====================================================</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> interface</span><span style="color:#B392F0"> login_login</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  __typename</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> &quot;User&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  accessToken</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  refreshToken</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  email</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  name</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  nickname</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  id</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  userRole</span><span style="color:#F97583">:</span><span style="color:#B392F0"> UserRole</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  latestPasswordChangedDate</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> any</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  authType</span><span style="color:#F97583">:</span><span style="color:#B392F0"> AuthType</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> interface</span><span style="color:#B392F0"> login</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  login</span><span style="color:#F97583">:</span><span style="color:#B392F0"> login_login</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> null</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> interface</span><span style="color:#B392F0"> loginVariables</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#FFAB70">  email</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#FFAB70">  password</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>위와 같은 파일이 출력되고 이를 react에서 사용하기 위해 바로 component 로 변경해서 쿼리를 호출 할 수 있다. 하지만 이것도 잘 안됐다. 아래 소스코드는 <a href="https://medium.com/open-graphql/automatically-generate-typescript-definitions-for-graphql-queries-with-apollo-codegen-e73eae72b561">참고블로그</a>에서 가져온 코드인데 나는 뭔가 원하는데로 잘 안됐음 -_- 다시 시도해봐야지…</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> PokemonsQuery</span><span style="color:#F97583"> extends</span><span style="color:#B392F0"> Query</span><span style="color:#E1E4E8">&lt;</span><span style="color:#B392F0">Pokemons</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">PokemonsVariables</span><span style="color:#E1E4E8">&gt; {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#F97583"> class</span><span style="color:#B392F0"> App</span><span style="color:#F97583"> extends</span><span style="color:#B392F0"> React</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">Component</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#B392F0">  render</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">      &lt;</span><span style="color:#79B8FF">PokemonsQuery</span></span>
+<span class="line"><span style="color:#B392F0">        query</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{pokemonsQuery}</span></span>
+<span class="line"><span style="color:#B392F0">        variables</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ first: </span><span style="color:#9ECBFF">&#39;10&#39;</span><span style="color:#E1E4E8"> }} </span><span style="color:#6A737D">// Throws an error!</span></span>
+<span class="line"><span style="color:#E1E4E8">      &gt;</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h1 id="3-새로운-시도-gql-generator-node">3. 새로운 시도 gql-generator-node</h1>
+<p>위 프로젝트는 <a href="https://github.com/timqian/gql-generator">gql-generator(gql command)</a>의 fork 프로젝트로써 조금 더 <code>graphql.schema</code> 파일을 이용 아래와 같은 코드로 query, mutation을 할 수 있게 도와주는 툴이다. 아래와 같은 방식으로 쿼리를 호출 할 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#F97583">const</span><span style="color:#E1E4E8"> {</span><span style="color:#79B8FF">queries</span><span style="color:#E1E4E8">} </span><span style="color:#F97583">=</span><span style="color:#B392F0"> generateAll</span><span style="color:#E1E4E8">(schema.</span><span style="color:#B392F0">getMutationType</span><span style="color:#E1E4E8">().signup);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> variables</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> { username: </span><span style="color:#9ECBFF">&quot;I&quot;</span><span style="color:#E1E4E8">, email: </span><span style="color:#9ECBFF">&quot;best_developer@testing.org&quot;</span><span style="color:#E1E4E8">, password: </span><span style="color:#9ECBFF">&#39;1234&#39;</span><span style="color:#E1E4E8"> };</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">test.</span><span style="color:#B392F0">each</span><span style="color:#E1E4E8">(Object.</span><span style="color:#B392F0">entries</span><span style="color:#E1E4E8">(queries))(</span><span style="color:#9ECBFF">&#39;%s&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> ([</span><span style="color:#FFAB70">name</span><span style="color:#E1E4E8">,</span><span style="color:#FFAB70">query</span><span style="color:#E1E4E8">]) </span><span style="color:#F97583">=&gt;</span></span>
+<span class="line"><span style="color:#B392F0">  graphql</span><span style="color:#E1E4E8">(query,{variables})</span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span></code></pre>
+<p>결과적으론 이마저도 실패했고 위 library를 이용해 react 용 gql을 만드는게 나을 것 같다…</p>
+<h1 id="4-딱-맞는게-없어서-만듬">4. 딱 맞는게 없어서 만듬…</h1>
+<p><a href="https://github.com/moltak/react-gql-generator">결과물(react-gql-generator)</a></p>
+<p>위 결과물은 <code>gql-generator-node</code> 의 fork 프로젝트로써 graphql.gql 을 분석해 apollo gql object 를 반환해준다. 이것을 바로 프로젝트에 넣어서 사용할수도 있고 복사해서 쓸수도 있다.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#1-apollo-react-gql-을-이용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="1-apollo-react-gql-을-이용"> 1. apollo react gql 을 이용 </a> </li><li> <a href="#2-react-componet-로-graphql-함수를-호출" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="2-react-componet-로-graphql-함수를-호출"> 2. react componet 로 graphql 함수를 호출 </a> </li><li> <a href="#react-gql" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="react-gql"> react gql </a> </li><li> <a href="#환경-설정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="환경-설정"> 환경 설정 </a> </li><li> <a href="#작업-과정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="작업-과정"> 작업 과정 </a> </li><li> <a href="#결과물" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결과물"> 결과물 </a> </li><li> <a href="#react-componet-로-graphql-함수를-호출" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="react-componet-로-graphql-함수를-호출"> react componet 로 graphql 함수를 호출 </a> </li><li> <a href="#결과물-1" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결과물-1"> 결과물 </a> </li><li> <a href="#3-새로운-시도-gql-generator-node" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="3-새로운-시도-gql-generator-node"> 3. 새로운 시도 gql-generator-node </a> </li><li> <a href="#4-딱-맞는게-없어서-만듬" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="4-딱-맞는게-없어서-만듬"> 4. 딱 맞는게 없어서 만듬… </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

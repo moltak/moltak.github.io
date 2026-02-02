@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/14-clone-successful-app/"><!-- Primary Meta Tags --><title>이미 성공한 앱을 복제해서 MRR 40K | Kh Jung</title><meta name="title" content="이미 성공한 앱을 복제해서 MRR 40K | Kh Jung"><meta name="description" content="조쉬의 뉴스레터에서 본 사무엘의 비즈니스 전략 분석. 이미 성공한 앱을 복제해서 월 4,500만원을 버는 1인 개발자의 방법론을 정리했다."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/14-clone-successful-app/"><meta property="og:title" content="이미 성공한 앱을 복제해서 MRR 40K | Kh Jung"><meta property="og:description" content="조쉬의 뉴스레터에서 본 사무엘의 비즈니스 전략 분석. 이미 성공한 앱을 복제해서 월 4,500만원을 버는 1인 개발자의 방법론을 정리했다."><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/14-clone-successful-app/"><meta property="twitter:title" content="이미 성공한 앱을 복제해서 MRR 40K | Kh Jung"><meta property="twitter:description" content="조쉬의 뉴스레터에서 본 사무엘의 비즈니스 전략 분석. 이미 성공한 앱을 복제해서 월 4,500만원을 버는 1인 개발자의 방법론을 정리했다."><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="15-claude-code-commands" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-13T15:00:00.000Z"> Aug 14, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> 이미 성공한 앱을 복제해서 MRR 40K </div> </div> <div class="relative"> <article class="animate"> <h2 id="비즈니스-따라하기">비즈니스 따라하기</h2>
+<p>나는 여러 비즈니스 메일을 받아 읽는데 오늘 특히 재밌는게 있어서 글을 남겨 본다. 조쉬의 뉴스레터에서 오늘 <a href="https://maily.so/josh/posts/5xrx6lnqr2v">이미 성공한 앱을 복제해서 월 4,500만원을 버는 1인 개발자의 전략</a> 에 대한 내용을 받았다.</p>
+<h2 id="글-분석-사무엘의-비즈니스-실행-방법">글 분석 (사무엘의 비즈니스 실행 방법)</h2>
+<h3 id="전략">전략</h3>
+<p>사무엘은 코딩을 전혀 해본적이 없지만 제품을 만들어서 팔고 있다. 그런데 그 방식이 너무 대단했다. 사무엘의 원칙은 다음과 같다</p>
+<ol>
+<li>이미 존재하고 성공한 것이 아니면 절대 만들지 않는다.
+<ul>
+<li>X의 BUILDINPUBLIC 같은 곳을 주로 본다고 한다</li>
+</ul>
+</li>
+<li>내가 쓸수 있는건가</li>
+<li>이미 성공하고 있는거</li>
+<li>마케팅에 수천달러를 안쓰고도 성장하고 있는가</li>
+<li>유지보수가 간단한가</li>
+</ol>
+<p>위 단계 모두 너무 중요한거 같다. 내 입장에서 다시 설명해보면</p>
+<ol>
+<li>나는 …. 커뮤니티 잘 안함. 근데 x 방금 가입했다 ㅋㅋ</li>
+<li>내가 쓸수 있는건가 → 써야 만들 수 있다. 도구를 만들었는데 나를 위해 만들면 얼마나 좋아? 더 많이 쓰고</li>
+<li>이미 성공하고 있는가 → 좋게 말하면 롤모델, 벤치마킹이고 나쁘게 말하면 배끼는건데. 하늘아래 새로운것은 없음. 성공하고 있다는건 마켓이 있다는것. 이미 반도체 회사도 세상의 수만개는 된다</li>
+<li>마케팅에 수천달러 안쓰나 → 좋은 마케팅 기법을 학습하자</li>
+<li>유지보수가 간단한가 → 어후…… 이거 하다가 세월 다감</li>
+</ol>
+<p>결국 나도 따라할 수 있을거 같다. 더 자세히 보자</p>
+<h3 id="자세히">자세히</h3>
+<ol>
+<li>가장 먼저 보는 건 트랙션입니다.
+<ul>
+<li>엑스(트위터)에서 찾을 수 있는 최고의 신호는, 창업자들이 MRR 스크린샷이나 스트라이프 스크린샷을 공유할 때예요. 그냥 지나칠 수도 있는데, 사실 이게 툴이 작동하고 있고, 사람들이 돈을 내고 있다는 궁극적인 증거거든요.</li>
+<li>그래서 MRR로 검색해서 여러 아이템들을 살피기 시작했다 ㅋㅋ</li>
+</ul>
+</li>
+<li>그들이 어떻게 고객을 확보하고 있는지 분석합니다.
+<ul>
+<li>**Ahrefs(에이치랩스)**를 사용해서 트래픽 소스를 확인해요. 광고로만 고객을 얻고 있는지, 아니면 SEO로도 순위를 매기고 있는지 봅니다.</li>
+<li>만약 광고와 SEO 둘 다로 성장하고 있다면 아주 좋은 신호예요. 강한 수요가 있다는 뜻이고, 그들의 성공을 복제하기도 더 쉽거든요.</li>
+<li>SEO, 광고 다 해야하는구나</li>
+</ul>
+</li>
+<li>세 번째로는 기술적으로 제가 쉽게 만들고 유지보수할 수 있는지 확인해요.
+<ul>
+<li>복잡한 백엔드를 유지하느라 잠을 못 자게 되는 제품은 만들고 싶지 않거든요. 단순함이 저한테는 정말 중요합니다.</li>
+<li>맞는 말. 내가 오래 이렇게 살았잖아. 힘들어</li>
+</ul>
+</li>
+<li>“내가 정말 이 제품을 좋아하는가?” 관심 없는 제품을 만드는 것만큼 최악인 건 없어요.
+<ul>
+<li>제가 직접 사용하는 걸 즐기지 못한다면 장기적으로 계속할 동기가 없을 거예요.</li>
+<li>맞아 맞아</li>
+</ul>
+</li>
+</ol>
+<h3 id="사무엘의-제품">사무엘의 제품</h3>
+<ol>
+<li><a href="http://Useartemis.co">Useartemis.co</a>
+<ul>
+<li>특이하다. 회사 정보나 전화번호 이메일을 찾아주는건가봐. 신기하네?</li>
+<li>나는 전혀 모르는 도메인</li>
+</ul>
+</li>
+<li><a href="http://StoryShort.ai">StoryShort.ai</a>
+<ul>
+<li>페이스리스 비디오 포스팅 도구</li>
+<li>홍보용으로도 쓸 수 있는데 나도 배껴봐도 될듯</li>
+</ul>
+</li>
+<li><a href="http://Capacity.so">Capacity.so</a>
+<ul>
+<li>코딩 도구</li>
+</ul>
+</li>
+</ol>
+<h3 id="워크플로우">워크플로우</h3>
+<ol>
+<li>광고 부터 시작</li>
+<li>SEO 시작</li>
+<li>StoryShort를 이용해서 유튜브 채널도 홍보
+<ul>
+<li>Story Short가 자동으로, 내가 원하는 제품에 대한 유저 리뷰와 같은 AI 비디오를 유튜브 채널, 틱톡, 인스타그램에 매일 게시</li>
+<li>너무 좋은데?</li>
+<li>이걸로 x, youtube, 인스타, 틱톡에서 주목받기</li>
+</ul>
+</li>
+<li>제휴 마케팅
+<ul>
+<li>바이럴 증폭.</li>
+<li>고정가격으로 고객 확보</li>
+</ul>
+</li>
+</ol>
+<p>1번이 자세히 없는데. 제품 없이 광고부터 하는건가?</p>
+<ul>
+<li>가설 1: 제품 없이 광고부터
+<ul>
+<li>이런 전략도 자주 쓰이니까 할만하지만 난 잘 모름</li>
+<li>이걸 해보려면 어떻게 해야할까?</li>
+</ul>
+</li>
+<li>가설 2: 제품 만들고 광고부터 → 이게 내게 익숙</li>
+</ul>
+<h2 id="내-워크플로우">내 워크플로우</h2>
+<ol>
+<li>아이템을 하나 결정했음.</li>
+<li>이것과 똑같은 제품을 찾아보자</li>
+<li>고객 확보 방법을 분석해보자
+<ul>
+<li>광고 SEO 얼마나 잘하는지 보자 → Ahrefs 사용</li>
+<li>SEO로 잘 하고 있다면 좋은 신호다 (라고 사무엘이 그랬음)</li>
+</ul>
+</li>
+<li>프로토타입을 빠르게 만들자
+<ul>
+<li>이메일 - 패스워드 가입</li>
+<li>결제</li>
+</ul>
+</li>
+<li>광고 하자</li>
+<li>SEO 하자
+<ul>
+<li><a href="https://www.outrank.so/">https://www.outrank.so/</a></li>
+<li><a href="https://seo.ai/">https://seo.ai/</a></li>
+</ul>
+</li>
+<li>유튜브 등 홍보 하자</li>
+<li>제휴 마케팅 하자</li>
+</ol>
+<h2 id="기억할-것-정리">기억할 것 정리</h2>
+<h3 id="툴">툴</h3>
+<ol>
+<li>Ahrefs(에이치랩스 사용)</li>
+</ol>
+<h3 id="제품-찾기">제품 찾기</h3>
+<ol>
+<li>이미 성공하고 있는 제품</li>
+<li>고객 확보 방법 분석
+<ul>
+<li>광고와 SEO 둘다로 성장중이라면 좋다. 강한 성장 수요가 있다는 의미 → 복제도 쉽다</li>
+</ul>
+</li>
+<li>적은 마케팅 비용으로 성장하는 제품</li>
+</ol>
+<h3 id="제품-시작하기">제품 시작하기</h3>
+<ol>
+<li>광고부터</li>
+<li>그담 SEO</li>
+<li>유튜브 등 홍보</li>
+<li>제휴 마케팅</li>
+</ol> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#비즈니스-따라하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="비즈니스-따라하기"> 비즈니스 따라하기 </a> </li><li> <a href="#글-분석-사무엘의-비즈니스-실행-방법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="글-분석-사무엘의-비즈니스-실행-방법"> 글 분석 (사무엘의 비즈니스 실행 방법) </a> </li><li> <a href="#전략" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="전략"> 전략 </a> </li><li> <a href="#자세히" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="자세히"> 자세히 </a> </li><li> <a href="#사무엘의-제품" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="사무엘의-제품"> 사무엘의 제품 </a> </li><li> <a href="#워크플로우" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="워크플로우"> 워크플로우 </a> </li><li> <a href="#내-워크플로우" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="내-워크플로우"> 내 워크플로우 </a> </li><li> <a href="#기억할-것-정리" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="기억할-것-정리"> 기억할 것 정리 </a> </li><li> <a href="#툴" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="툴"> 툴 </a> </li><li> <a href="#제품-찾기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="제품-찾기"> 제품 찾기 </a> </li><li> <a href="#제품-시작하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="제품-시작하기"> 제품 시작하기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

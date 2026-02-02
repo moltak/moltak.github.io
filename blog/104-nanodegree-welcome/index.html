@@ -1,0 +1,184 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/104-nanodegree-welcome/"><!-- Primary Meta Tags --><title>Welcome to the Nanodegree Program | Kh Jung</title><meta name="title" content="Welcome to the Nanodegree Program | Kh Jung"><meta name="description" content="Udacity Data Engineering Nanodegree 프로그램 소개와 데이터 엔지니어링 기초 개념"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/104-nanodegree-welcome/"><meta property="og:title" content="Welcome to the Nanodegree Program | Kh Jung"><meta property="og:description" content="Udacity Data Engineering Nanodegree 프로그램 소개와 데이터 엔지니어링 기초 개념"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/104-nanodegree-welcome/"><meta property="twitter:title" content="Welcome to the Nanodegree Program | Kh Jung"><meta property="twitter:description" content="Udacity Data Engineering Nanodegree 프로그램 소개와 데이터 엔지니어링 기초 개념"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="101-elk-stack" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-10-26T15:00:00.000Z"> Oct 27, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Welcome to the Nanodegree Program </div> </div> <div class="relative"> <article class="animate"> <p>학습을 하는데 필요한 스킬들을 말해줌. 예를들어 sql query를 작성할건데, join, sub query를 한다는 것과 python의 loop, pandas 등을 할 줄 알아야한다고 함.</p>
+<p>Careers에 대한 영상이 여러개 나오고 내용도 좀 긴데, 아마 Udacity 프로그램이 비싼 이유가 이런것 때문이 아닐까 싶음. 교육을 마치고 Careers 팀에서 Job을 찾는데 큰 도움을 줄것 같은 느낌을 받았음. 나랑도 관련이 있으려나 싶지만 -_-;</p>
+<p>그 다음엔 어떻게 해야 성공적으로 nano degree를 마치는지에 대한 이야기, 데이터 엔지니어가 하는 일들이 나옴. Apache Spark, Apache Airflow, Hadoop, Cassandra, PostgreSQL을 많이 쓰는것 같다.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://medium.com/analytics-and-data/on-the-evolution-of-data-engineering-c5e56d273e37">ON the evolution of Data Engineering</a></li>
+<li><a href="https://learn.panoply.io/hubfs/Data%20Engineering%20-%20Introduction%20and%20Epochs.pdf">Data Engineering Introduction and Epochs</a></li>
+<li><a href="https://datafloq.com/big-data-open-source-tools/os-home/">The Big Data Open Source Tools Landscape</a></li>
+</ul>
+<p><img src="/_astro/bigdata-tools.CGdH5JXU_1Q8Kv5.webp" alt="Big Data Open Source Tools" loading="lazy" decoding="async" fetchpriority="auto" width="1924" height="1125"></p>
+<ul>
+<li><a href="https://analyticsindiamag.com/data-engineering-101-top-tools-and-framework-resources/">Data Engineering 101: Top Tools And Framework Resources</a></li>
+<li><a href="https://www.burtchworks.com/2018/09/10/the-rise-of-data-engineering-common-skills-and-tools/">The Rise of Data Engineering: Common Skills and Tools</a></li>
+</ul>
+<h2 id="lesson-4-introduction-to-data-engineering">Lesson 4: Introduction to Data Engineering</h2>
+<h3 id="1-what-is-data-engineering">1. What is Data Engineering</h3>
+<p>데이터 엔지니어링은 분석, 모델 구축, 앱 개발 등의 목적으로 최종 사용자가 데이터를 사용할 수 있도록하는 데 필요한 모든 엔지니어링 및 운영 작업으로 구성됩니다.</p>
+<p><img src="/_astro/data-engineering.CKcCGACM_vp4PK.webp" alt="Data Engineering Overview" loading="lazy" decoding="async" fetchpriority="auto" width="3160" height="1586"></p>
+<p><img src="/_astro/data-engineering-2.BUX1UMxq_1UN19h.webp" alt="Data Engineering Stack" loading="lazy" decoding="async" fetchpriority="auto" width="3356" height="1730"></p>
+<p><img src="/_astro/data-engineering-3.C55Dn0N6_JSiOl.webp" alt="Data Engineering Technologies" loading="lazy" decoding="async" fetchpriority="auto" width="3256" height="1632"></p>
+<h4 id="data-warehousedw">Data Warehouse(DW)</h4>
+<p>분석을 위한 데이터 저장소. 운영 시스템으로 부터 많은 데이터가 공급됨. 여러가지 형태를 갖고 있고 RDBMS, NoSQL등 여러 종류로 사용할 수 있음.</p>
+<h4 id="data-lakedl">Data Lake(DL)</h4>
+<p>DW가 운영 시스템으로부터 정제된 데이터를 받는다면 DL은 RAW 데이터를 입력받음. DW는 반드시 데이터 정제를 해야해서 구축할 때 여러 고민이 필요한 반면 DL은 데이터 정제에 대해 고민할 필요가 없으므로 데이터를 모으는데 더 장점이 있음. 다만 분석을 하기 위해선 정제가 필요함. 운영 시스템 → DL → DW 순서로 데이터가 전달되는 경우도 많음.</p>
+<h4 id="hadoop">Hadoop</h4>
+<p>대량의 데이터를 MapReduce하기 위한 분산형 시스템. 막대한 양의 데이터가 디스크에 저장되어 있을 때, 이를 읽어오는데 시간이 오래걸리는데 Hadoop과 HDFS을 사용하면 데이터를 여러 디스크에 나눠 담아 빠르게 읽어올 수 있음</p>
+<h4 id="spark">Spark</h4>
+<p>Hadoop과 마찬가지로 대량의 데이터를 MapReduce 하기 위한 분산형 시스템. 다만 인메모리로 동작하므로 속도가 Hadoop에 비해 매우 빠르다. 단점은 그만큼 메모리가 많이 필요함.</p>
+<h4 id="mapreduce">MapReduce</h4>
+<p><img src="/_astro/mapreduce.NeM6nwYJ_1UXSUd.webp" alt="MapReduce 개념" loading="lazy" decoding="async" fetchpriority="auto" width="763" height="363"></p>
+<p><img src="/_astro/mapreduce-2.DLGKKuSl_1pPW3h.webp" alt="MapReduce 예시" loading="lazy" decoding="async" fetchpriority="auto" width="500" height="375"></p>
+<p>Map: 데이터를 키로 분류
+Reduce: 데이터를 키로 묶어 원하는 결과를 만듬</p>
+<h4 id="airflow">Airflow</h4>
+<p><a href="https://berrrrr.github.io/programming/2020/01/12/what-is-apache-airflow/">사용예</a></p>
+<h3 id="머신러닝을-실행하는-단계를-생각해보자">머신러닝을 실행하는 단계를 생각해보자.</h3>
+<p><img src="/_astro/ml-steps.CW0KRdug_ZgfFTW.webp" alt="ML 실행 단계" loading="lazy" decoding="async" fetchpriority="auto" width="1246" height="306"></p>
+<ol>
+<li>데이터 읽기</li>
+<li>데이터 변환</li>
+<li>트레이닝</li>
+<li>예측</li>
+</ol>
+<p>이런 과정을 아래처럼 DAG(Directed Acyclic Graphs)로 표현. DAG란 방향을 가지는 그래프이고 순환을 허용하지 않음.</p>
+<p><img src="/_astro/dag.BRpl1YpF_ZVazLO.webp" alt="DAG" loading="lazy" decoding="async" fetchpriority="auto" width="634" height="327"></p>
+<h3 id="분석을-위한-data-modeling">분석을 위한 Data Modeling</h3>
+<p>운영을 위한 Database Schema와 분석을 위한 Schema는 형태가 달라야한다.</p>
+<h4 id="3rd-normal-form">3rd Normal Form</h4>
+<p>customer가 어떤 제품을 구입했는지 알려면 어떤 쿼리를 써야할까?</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#F97583">select</span><span style="color:#E1E4E8"> products.</span><span style="color:#F97583">*</span><span style="color:#F97583"> from</span><span style="color:#E1E4E8"> customer c</span></span>
+<span class="line"><span style="color:#F97583">  join</span><span style="color:#E1E4E8"> orders o </span><span style="color:#F97583">on</span><span style="color:#79B8FF"> o</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">customerId</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> c</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">id</span></span>
+<span class="line"><span style="color:#F97583">  join</span><span style="color:#E1E4E8"> orderItems oi </span><span style="color:#F97583">on</span><span style="color:#79B8FF"> oi</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">orderId</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> o</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">id</span></span>
+<span class="line"><span style="color:#F97583">  join</span><span style="color:#E1E4E8"> products p </span><span style="color:#F97583">on</span><span style="color:#79B8FF"> oi</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">productId</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">id</span></span>
+<span class="line"><span style="color:#F97583">where</span><span style="color:#79B8FF"> c</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">email</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &#39;USER_EMAIL&#39;</span><span style="color:#E1E4E8">;</span></span></code></pre>
+<p><img src="/_astro/3nf.O44AO69V_Z2jP2aw.webp" alt="3rd Normal Form" loading="lazy" decoding="async" fetchpriority="auto" width="567" height="161"></p>
+<h4 id="star-schema">Star Schema</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#F97583">select</span><span style="color:#E1E4E8"> products.</span><span style="color:#F97583">*</span><span style="color:#F97583"> from</span><span style="color:#E1E4E8"> sales</span></span>
+<span class="line"><span style="color:#F97583">  join</span><span style="color:#E1E4E8"> products p </span><span style="color:#F97583">on</span><span style="color:#79B8FF"> sales</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">productId</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">id</span></span>
+<span class="line"><span style="color:#F97583">where</span><span style="color:#79B8FF"> sales</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">customerEmail</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &#39;USER_EMAIL&#39;</span><span style="color:#E1E4E8">;</span></span></code></pre>
+<p><img src="/_astro/star-schema.ByTFiWTN_po2rE.webp" alt="Star Schema" loading="lazy" decoding="async" fetchpriority="auto" width="567" height="181"></p>
+<h4 id="snow-flake-schema">Snow Flake Schema</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="sql"><code><span class="line"><span style="color:#F97583">select</span><span style="color:#E1E4E8"> products.</span><span style="color:#F97583">*</span><span style="color:#F97583"> from</span><span style="color:#E1E4E8"> sales</span></span>
+<span class="line"><span style="color:#F97583">  join</span><span style="color:#E1E4E8"> products p </span><span style="color:#F97583">on</span><span style="color:#79B8FF"> sales</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">productId</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> p</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">id</span></span>
+<span class="line"><span style="color:#F97583">where</span><span style="color:#79B8FF"> sales</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">customerEmail</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &#39;USER_EMAIL&#39;</span><span style="color:#E1E4E8">;</span></span></code></pre>
+<p><img src="/_astro/snowflake-schema.B7ZJzcUI_Z19oqx0.webp" alt="Snowflake Schema" loading="lazy" decoding="async" fetchpriority="auto" width="567" height="229"></p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#lesson-4-introduction-to-data-engineering" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="lesson-4-introduction-to-data-engineering"> Lesson 4: Introduction to Data Engineering </a> </li><li> <a href="#1-what-is-data-engineering" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-what-is-data-engineering"> 1. What is Data Engineering </a> </li><li> <a href="#머신러닝을-실행하는-단계를-생각해보자" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="머신러닝을-실행하는-단계를-생각해보자"> 머신러닝을 실행하는 단계를 생각해보자. </a> </li><li> <a href="#분석을-위한-data-modeling" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="분석을-위한-data-modeling"> 분석을 위한 Data Modeling </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

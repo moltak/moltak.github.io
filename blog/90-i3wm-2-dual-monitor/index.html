@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/90-i3wm-2-dual-monitor/"><!-- Primary Meta Tags --><title>i3wm 2 - 듀얼모니터, 랩탑 절전모드 해제 | Kh Jung</title><meta name="title" content="i3wm 2 - 듀얼모니터, 랩탑 절전모드 해제 | Kh Jung"><meta name="description" content="i3wm에서 xrandr로 듀얼모니터 설정하고 랩탑 덮개 절전모드 해제하기"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/90-i3wm-2-dual-monitor/"><meta property="og:title" content="i3wm 2 - 듀얼모니터, 랩탑 절전모드 해제 | Kh Jung"><meta property="og:description" content="i3wm에서 xrandr로 듀얼모니터 설정하고 랩탑 덮개 절전모드 해제하기"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/90-i3wm-2-dual-monitor/"><meta property="twitter:title" content="i3wm 2 - 듀얼모니터, 랩탑 절전모드 해제 | Kh Jung"><meta property="twitter:description" content="i3wm에서 xrandr로 듀얼모니터 설정하고 랩탑 덮개 절전모드 해제하기"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="10-ai-agent-platforms" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-09-29T15:00:00.000Z"> Sep 30, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> i3wm 2 - 듀얼모니터, 랩탑 절전모드 해제 </div> </div> <div class="relative"> <article class="animate"> <p>이번에는 잠깐 i3를 써보며 두번로 남기는 글이다. 나는 랩탑 + 모니터 27인치 두대 해서 총 3대의 모니터가 있고 대부분은 랩탑은 그냥 덮어놓고 사용한다.</p>
+<p><img src="/_astro/desk-setup.lIqWp1w2_Z2i22MD.webp" alt="뚜껑을 다 열고 사용함." loading="lazy" decoding="async" fetchpriority="auto" width="4032" height="3024"></p>
+<p>그래서 대부분은 모니터를 듀얼로 쓰는데 i3wm 을 설치하고 크게 두가지 문제를 겪게됐다. (i3wm을 사용하자 마자 거의 바로 문제가 발생했음 -_- 아오…) 그 문제들은…</p>
+<ol>
+<li>랩탑의 덮개를 덮었기 때문에 바로 절전모드로 들어감. (gnome 에선 절전 모드에 안들어가게 설정할 수 있음.)</li>
+<li>두대의 외장 모니터가 출력이 되질 않음…</li>
+</ol>
+<p>(정말 설정할게 많고 나중에 다시 하려면 무조건 잊어 버릴것 같은데 -_- 이렇게 하면서 까지 새로운 wm으로 옮겨가야하나 현타가 오기 시작함. 하지만 못 멈추겠음.)</p>
+<p>아무튼간에 위 두개의 문제를 각각 살펴보자</p>
+<h2 id="외장-모니터">외장 모니터</h2>
+<p>먼저 외장 모니터를 살펴보자. 이 문제는 간단하게 xrandr을 이용해 해결할 수 있었다. <a href="https://i3wm.org/docs/userguide.html#multi_monitor">Multiple monitors</a> 섹션을 살펴보면 xrandr을 사용해서 문제를 해결하고 있었고 나도 같은 패키지를 사용해서 문제를 해결했다.</p>
+<blockquote>
+<p>xrandr 의 자세한 내용은 <a href="https://wiki.archlinux.org/index.php/Xrandr#Disabling_phantom_monitor">여길</a> 볼 것</p>
+</blockquote>
+<p><strong>1. 모니터 검색</strong></p>
+<p>나는 모니터가 아예 켜지질 않아 xrandr로 모니터를 검색함. 나는 QHD 해상도를 가진 두대의 모니터를 사용하므로 각각 2560x1440까지 출력됨. DP-0은 랩탑의 모니터이므로 나중엔 DP-0도 꺼버리게 따로 해줘야함. gnome에선 자동으로 됐었는디 -0-</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#F97583">&gt;</span><span style="color:#E1E4E8"> xrandr</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">Screen</span><span style="color:#9ECBFF"> 0:</span><span style="color:#9ECBFF"> minimum</span><span style="color:#79B8FF"> 8</span><span style="color:#9ECBFF"> x</span><span style="color:#9ECBFF"> 8,</span><span style="color:#9ECBFF"> current</span><span style="color:#79B8FF"> 5120</span><span style="color:#9ECBFF"> x</span><span style="color:#9ECBFF"> 1440,</span><span style="color:#9ECBFF"> maximum</span><span style="color:#79B8FF"> 32767</span><span style="color:#9ECBFF"> x</span><span style="color:#79B8FF"> 32767</span></span>
+<span class="line"><span style="color:#B392F0">HDMI-0</span><span style="color:#9ECBFF"> connected</span><span style="color:#9ECBFF"> primary</span><span style="color:#9ECBFF"> 2560x1440+0+0</span><span style="color:#E1E4E8"> (normal </span><span style="color:#9ECBFF">left</span><span style="color:#9ECBFF"> inverted</span><span style="color:#9ECBFF"> right</span><span style="color:#9ECBFF"> x</span><span style="color:#9ECBFF"> axis</span><span style="color:#9ECBFF"> y</span><span style="color:#9ECBFF"> axis</span><span style="color:#E1E4E8">) 690mm x 430mm</span></span>
+<span class="line"><span style="color:#B392F0">   2560x1440</span><span style="color:#9ECBFF">     59.95</span><span style="color:#79B8FF">*</span><span style="color:#9ECBFF">+</span><span style="color:#79B8FF">  74.94</span></span>
+<span class="line"><span style="color:#B392F0">   1920x1200</span><span style="color:#79B8FF">     59.88</span></span>
+<span class="line"><span style="color:#B392F0">   1920x1080</span><span style="color:#79B8FF">     60.00</span><span style="color:#79B8FF">    59.94</span><span style="color:#79B8FF">    50.00</span><span style="color:#79B8FF">    60.05</span><span style="color:#79B8FF">    60.00</span><span style="color:#79B8FF">    50.04</span></span>
+<span class="line"><span style="color:#B392F0">DP-0</span><span style="color:#9ECBFF"> connected</span><span style="color:#E1E4E8"> (normal </span><span style="color:#9ECBFF">left</span><span style="color:#9ECBFF"> inverted</span><span style="color:#9ECBFF"> right</span><span style="color:#9ECBFF"> x</span><span style="color:#9ECBFF"> axis</span><span style="color:#9ECBFF"> y</span><span style="color:#9ECBFF"> axis</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">   1920x1080</span><span style="color:#79B8FF">     60.02</span><span style="color:#9ECBFF"> +</span></span>
+<span class="line"><span style="color:#B392F0">DP-1</span><span style="color:#9ECBFF"> connected</span><span style="color:#9ECBFF"> 2560x1440+2560+0</span><span style="color:#E1E4E8"> (normal </span><span style="color:#9ECBFF">left</span><span style="color:#9ECBFF"> inverted</span><span style="color:#9ECBFF"> right</span><span style="color:#9ECBFF"> x</span><span style="color:#9ECBFF"> axis</span><span style="color:#9ECBFF"> y</span><span style="color:#9ECBFF"> axis</span><span style="color:#E1E4E8">) 597mm x 336mm</span></span>
+<span class="line"><span style="color:#B392F0">   2560x1440</span><span style="color:#9ECBFF">     59.95</span><span style="color:#79B8FF">*</span><span style="color:#9ECBFF">+</span></span>
+<span class="line"><span style="color:#B392F0">   1920x1200</span><span style="color:#79B8FF">     59.95</span></span>
+<span class="line"><span style="color:#B392F0">   1920x1080</span><span style="color:#79B8FF">     60.00</span><span style="color:#79B8FF">    60.00</span><span style="color:#79B8FF">    59.94</span><span style="color:#79B8FF">    50.00</span><span style="color:#79B8FF">    50.00</span></span></code></pre>
+<p><strong>2. 모니터 켜기</strong></p>
+<p>나의 외장 모니터는 HDMI-0, DP-1이고 이를 켜기위해 아래 명령어 사용함</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#F97583">&gt;</span><span style="color:#E1E4E8"> xrandr --output HDMI-0 --auto --left-of DP-1</span></span>
+<span class="line"><span style="color:#F97583">&gt;</span><span style="color:#E1E4E8"> xrandr --output DP-1 --auto --right-of HDMI-0</span></span></code></pre>
+<p><strong>3. 랩탑 모니터</strong></p>
+<p>이렇게 해도 랩탑 모니터가 켜져있기 때문에 아래 명령어를 사용해서 랩탑 모니터를 꺼버림</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#F97583">&gt;</span><span style="color:#E1E4E8"> xrandr --output DP-0 --off</span></span></code></pre>
+<p>마음 편해짐 ㅋㅋㅋ 모니터 잘 나옴. 이 글을 우연히 본 사람들은 꼭 자신의 모니터를 잘 검색해보고 사용할 것. 대부분은 한대 쓸거라서 아마 나처럼 복잡하진 않을거임…</p>
+<h2 id="절전모드">절전모드</h2>
+<p>랩탑 모니터를 꺼버리고 외장 모니터를 켰지만 랩탑의 모니터를 덮어버리면… 절전모드에 바로 빠져 버린다. 이를 해결하기 위해 <a href="https://faq.i3wm.org/question/5629/how-to-prevent-sleep-on-laptop-lid-close/index.html">이 글을</a> 참조함</p>
+<p>요약하면 /etc/systemd/logind.conf 를 수정하면됨.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 여기만 변경함</span></span>
+<span class="line"><span style="color:#E1E4E8">HandleLidSwitch</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">ignore</span></span></code></pre>
+<h2 id="결론">결론</h2>
+<p>하루만에 좀 삽질해서 새로운 WindowManager를 설치해봤는데 아직도 여러문제가 있음. 방금 대문자 w를 쓰는데 Shift+w 가 작동을 안한다는걸 알게됨.. 뭐지.. 이럴땐 당황하지말고 <code>~/.config/i3/config</code>을 살펴보면 됨. 아마 해결책이 거기 있겠지… (없음 안되는데 -_-) (있었고 바로 해결함)</p>
+<p>암튼 나름 재밌었고 이걸 이용해서 vim keybinding 으로 완전히 작업하는 환경을 만들려는 나의 노력이 조금은 빛을 보길 바라고 있음 ㅋㅋ</p>
+<h2 id="ps">PS</h2>
+<p>하나 빼먹을 뻔 했는데. 혹시 나처럼 랩탑과 외장 모니터를 사용할 사람을 위해.. 우린 위에서 랩탑 모니터를 꺼버리게 했는데, 외장 모니터의 케이블을 분리하면 자동으로 내장 모니터로 바꿔줘야하잖아? 그 스크립트는 아래 코드고 이를 <code>autorandr</code>과 함께 사용하면 됨. 근데 아직 <code>autorandr</code> 을 어떻게 쓰는지 모름.. -_-</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D">#!/bin/bash</span></span>
+<span class="line"><span style="color:#E1E4E8">intern</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">DP-0</span></span>
+<span class="line"><span style="color:#E1E4E8">extern</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">HDMI-0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#B392F0"> xrandr</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> grep</span><span style="color:#9ECBFF"> &quot;</span><span style="color:#E1E4E8">$extern</span><span style="color:#9ECBFF"> disconnected&quot;</span><span style="color:#E1E4E8">; </span><span style="color:#F97583">then</span></span>
+<span class="line"><span style="color:#B392F0">    xrandr</span><span style="color:#79B8FF"> --output</span><span style="color:#9ECBFF"> &quot;</span><span style="color:#E1E4E8">$extern</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF"> --off</span><span style="color:#79B8FF"> --output</span><span style="color:#9ECBFF"> &quot;</span><span style="color:#E1E4E8">$intern</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF"> --auto</span></span>
+<span class="line"><span style="color:#F97583">else</span></span>
+<span class="line"><span style="color:#B392F0">    xrandr</span><span style="color:#79B8FF"> --output</span><span style="color:#9ECBFF"> &quot;</span><span style="color:#E1E4E8">$intern</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF"> --off</span><span style="color:#79B8FF"> --output</span><span style="color:#9ECBFF"> &quot;</span><span style="color:#E1E4E8">$extern</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF"> --auto</span></span>
+<span class="line"><span style="color:#F97583">fi</span></span></code></pre>
+<p>나는 랩탑에서 외장 모니터를 뽑을일이 거의 없기때문에 일단 다음에 하겠음. 다들 i3를 잘 사용해보자고!</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#외장-모니터" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="외장-모니터"> 외장 모니터 </a> </li><li> <a href="#절전모드" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="절전모드"> 절전모드 </a> </li><li> <a href="#결론" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결론"> 결론 </a> </li><li> <a href="#ps" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ps"> PS </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

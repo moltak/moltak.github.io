@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/45-event-taxonomy-avro/"><!-- Primary Meta Tags --><title>Event Taxonomy, Schema (Avro) | Kh Jung</title><meta name="title" content="Event Taxonomy, Schema (Avro) | Kh Jung"><meta name="description" content="데이터 엔지니어링에서의 이벤트 텍소노미와 Avro를 이용한 스키마 공유 방법 탐구"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/45-event-taxonomy-avro/"><meta property="og:title" content="Event Taxonomy, Schema (Avro) | Kh Jung"><meta property="og:description" content="데이터 엔지니어링에서의 이벤트 텍소노미와 Avro를 이용한 스키마 공유 방법 탐구"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/45-event-taxonomy-avro/"><meta property="twitter:title" content="Event Taxonomy, Schema (Avro) | Kh Jung"><meta property="twitter:description" content="데이터 엔지니어링에서의 이벤트 텍소노미와 Avro를 이용한 스키마 공유 방법 탐구"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="53-spark-basics" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-09-03T15:00:00.000Z"> Sep 4, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 7 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Event Taxonomy, Schema (Avro) </div> </div> <div class="relative"> <article class="animate"> <h1 id="개요">개요</h1>
+<p>데이터 엔지니어링에서의 이벤트 텍사노미를 살펴보고 Avro를 이용해 규칙을 모든 팀이 공유하는 방법을 탐구한다</p>
+<blockquote>
+<p>💡 텍소노미는 <strong>과학적인 분류</strong>라는 뜻
+(그리스어로 “분류하다”라는 “tasse in”과 “법, 과학”이라는 “nomos”의 합성어)</p>
+</blockquote>
+<hr/>
+<h1 id="이벤트-텍소노미-event-taxonomy">이벤트 텍소노미 (Event Taxonomy)</h1>
+<h2 id="예제-및-옛날-기억">예제 및 옛날 기억</h2>
+<ul>
+<li>
+<p>이벤트 수집에서의 텍소노미는 시스템에서 발생하는 이벤트를 정의하고 분류하는 체계를 말한다</p>
+</li>
+<li>
+<p>옛날 생각을 해보면 이 부분에 대해 고통이 많았다.</p>
+<ul>
+<li>추적하고 싶은 이벤트를 설계하고 그걸 다시 코딩하는 일은 엄청난 꼼꼼함이 필요했다.</li>
+</ul>
+<p><img src="/_astro/events.BHKx7yKE_Zqvug0.webp" alt="이벤트 목록(Events)" loading="lazy" decoding="async" fetchpriority="auto" width="2094" height="163"></p>
+<p><img src="/_astro/event-properties.D_ofCkva_Z4ohT2.webp" alt="이벤트 프로퍼티 목록 (Event Properties)" loading="lazy" decoding="async" fetchpriority="auto" width="1949" height="652"></p>
+<p><img src="/_astro/property-dictionary.DSndIJbc_Zuepfu.webp" alt="프로퍼티 설명 (Property Dictionary)" loading="lazy" decoding="async" fetchpriority="auto" width="1389" height="224"></p>
+<p><img src="/_astro/validation-rules.BrOhSjj1_1jH4UK.webp" alt="Validation Rules" loading="lazy" decoding="async" fetchpriority="auto" width="1466" height="436"></p>
+<ul>
+<li>위에 이벤트 텍소노미를 정의해둔건데. 이걸 정의하는 것도 쉽지 않지만 꼼꼼하게 코딩하는건 또 다른 어려움이다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="처음-시작할-때">처음 시작할 때</h2>
+<ul>
+<li>얼마만큼의 텍소노미를 정의하는게 좋을까?
+<ul>
+<li>가장 좋은건 핵심 이벤트이다.</li>
+<li>예를들어 비즈니스에서 가장 중요한 이벤트. signup, add_to_cart, checkout_completed 같은 지표들일 수 있겠다.</li>
+<li>대충 OMTM은 반드시 추가해야겠다.</li>
+<li>대략 20-30개 정도 될거 같다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="활용">활용</h2>
+<ul>
+<li>데이터 거버넌스
+<ul>
+<li>조직 전체가 동일한 정의를 사용한다. 협업이 쉬워지고 보안 준수에도 도움이 된다.</li>
+<li>분석/머신러닝시에도 데이터가 표준화 되어있으므로 전처리 과정에 도움이 된다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="이벤트-정의-후-수집-vs-포괄적-수집-후-etl">이벤트 정의 후 수집 vs 포괄적 수집 후 ETL</h2>
+<ul>
+<li>사실 두가지다 사용하는데, 장단점이 있다.
+<ul>
+<li>아래 두가지 방법 모두 정의해뒀다. 결국 거버넌스를 먼저 확립하고 결정할 일이겠지만, 엔지니어링 부담이 적다면 먼저 수집하는것도 고려해볼만 하다. 하지만 데이터가 많더라도 신뢰성에 대한 문제가 생기므로 이벤트 정의 후 수집이 더 고려할만 하다.</li>
+<li><strong>이벤트 정의 후 수집</strong>
+<ul>
+<li>Google Analytics나 Amplitude 같은 툴을 도입할 때, 이벤트를 명확히 결정한다. 이때의 장점은 수집 데이터의 목적과 스키마가 명확하다는 것이다. 이벤트 명, 속성 등이 미리 합의되므로 분석시 일관된 지표를 얻을 수 있고, 불필요한 데이터가 적어 데이터 품질 관리가 수월하다. 회사 전반의 이벤트 스키마를 엄격히 정의/검수하면 부서별로 발생시키는 이벤트에도 일관성이 높아지고 오류가 감소한다. 후 처리 과정도 당연히 쉬워진다.</li>
+</ul>
+</li>
+<li><strong>포괄적 수집 후 ETL</strong>
+<ul>
+<li>일단 가능한 한 모든 사용자 상호작용 데이터를 수집해 두고, 사후에 ETL 또는 분석 단계에서 유의미한 이벤트로 정의/가공하는 방식이다. Heap같은 서비스가 제공하는 오토 캡처(Auto-capture) 전략의 장점은 놓치는 데이터가 거의 없다는 것이다. 수동 계측에서는 대부분 이벤트를 아예 수집 못하지만, 자동수집을 하면 일단 사용자의 모든 행동 로그가 축적되므로 나중에 예기치 않은 분석 질문이 생겨도 과거 데이터를 활용해 답을 찾을 수 있다. 게다가 제품이 변화해도 자동으로 새 이벤트가 기록되므로, 개발자가 일일이 태깅하지 않아도 데이터 연속성이 유지된다.</li>
+<li>또한 예상 못 한 사용자 행동이 의외의 인사이트를 주는 경우가 많은데, 포괄적 수집은 이런 롱테일 이벤트도 데이터에 남겨둠으로써 새로운 발견을 가능케 한다.</li>
+<li>다만 단점도 분명하다. 방대한 원시 로그 데이터를 다 저장하고 처리해야 하므로 비용과 엔지니어링 부담이 있다. 또 노이즈 데이터(분석 가치가 낮은 이벤트)까지 쌓여서 후처리에 부담이 될 수 있다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>핵심 지표에 대해서는 이벤트를 꼼꼼히 정의하여 추적(예: 구매, 회원가입 등)하고, 그 외의 사용자 행동 데이터는 가급적 폭넓게 수집하여 데이터 레이크에 저장한 후 필요에 따라 가공/분석하는 혼합 전략을 채택하는 경우가 많다. 이렇게 하면 주요 지표는 신뢰성 있게 모니터링하면서도, 예상 밖의 인사이트를 얻을 수 있는 원천데이터도 확보할 수 있기 때문이다.
+<ul>
+<li>이런 하이브리드가 좋은거 같은데. 결국 가용할 수 있는 자원이 얼마나 되냐에 따라 선택 가능하다</li>
+<li>포괄적 수집: 데이터 엔지니어링 리소스가 충분하고 탐색적 분석을 중시하는 조직</li>
+<li>사전 정의: 리소스가 제한적이거나 명확한 KPI 위주 의사결정을 하는 조직
+<ul>
+<li><strong>어떤 접근이든 수집된 데이터의 품질과 일관성을 관리하는 거버넌스 체계</strong>는 반드시 필요하다</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h1 id="프로젝트에서의-활용">프로젝트에서의 활용</h1>
+<h2 id="apache-avro">Apache Avro</h2>
+<p>위에서 봤던 이런 시트를 Avro를 활용에 아래처럼 schema를 만들 수 있다.</p>
+<p><img src="/_astro/event-properties.D_ofCkva_Z4ohT2.webp" alt="이벤트 프로퍼티 목록" loading="lazy" decoding="async" fetchpriority="auto" width="1949" height="652"></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;record&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;namespace&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;com.shop.checkout&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;CheckoutCompleted&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;doc&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;구매 완료 이벤트 v1&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  &quot;fields&quot;</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;event_name&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: {</span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">}, </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;checkout.completed&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;event_version&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;v1&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;event_time&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;source&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;user_id&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">], </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;anonymous_id&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">], </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;session_id&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;order_id&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;currency&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;amount_cents&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;long&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;items&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      &quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;array&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      &quot;items&quot;</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">        &quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;LineItem&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        &quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;record&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        &quot;fields&quot;</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;product_id&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;quantity&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;int&quot;</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;unit_price_cents&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;long&quot;</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">        ]</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;campaign&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">, {</span></span>
+<span class="line"><span style="color:#79B8FF">      &quot;type&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;record&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;Campaign&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">&quot;fields&quot;</span><span style="color:#E1E4E8">:[</span></span>
+<span class="line"><span style="color:#E1E4E8">        {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;utm_source&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">:[</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">],</span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">        {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;utm_medium&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">:[</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">],</span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">        {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">&quot;utm_campaign&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">:[</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">],</span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">:</span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">      ]</span></span>
+<span class="line"><span style="color:#E1E4E8">    }], </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;consent&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;boolean&quot;</span><span style="color:#E1E4E8">], </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span><span style="color:#79B8FF">&quot;name&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;pii_hash_email&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">&quot;type&quot;</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">&quot;null&quot;</span><span style="color:#E1E4E8">,</span><span style="color:#9ECBFF">&quot;string&quot;</span><span style="color:#E1E4E8">], </span><span style="color:#79B8FF">&quot;default&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<hr/>
+<h1 id="apache-avro-workflow">Apache Avro Workflow</h1>
+<h2 id="1-schema-source-of-truth">1. Schema source of truth</h2>
+<ul>
+<li>Avro 스키마는 이벤트 텍소노미의 구현체이며 데이터 거버넌스에 참여하는 모든팀간에 공유가 되야한다</li>
+<li>Git 레포에 PR로 Avro 스키마를 관리한다</li>
+</ul>
+<h2 id="2-ci">2. CI</h2>
+<ul>
+<li>스키마 호환성 검사</li>
+<li>PR마다 github action으로 Confluent SR 또는 AWS Glue SR에 대해 dry-run 등록 가능.
+<ul>
+<li>호환성 모드: BACKWARD_TRANSITIVE</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-자동-코드생성">3. 자동 코드생성</h2>
+<ul>
+<li><strong>Java</strong>: Avro Maven/Gradle 플러그인으로 SpecificRecord 생성</li>
+<li><strong>TypeScript</strong>: avro-to-typescript 등으로 TS 타입/런타임 validator 빌드 산출</li>
+</ul>
+<h2 id="4-샘플-페이로드-테스트">4. 샘플 페이로드 테스트</h2>
+<ul>
+<li>생성된 이벤트 스키마(Avro)에 예시 JSON들을 넣어 보고, 정상/에러가 기대대로 판정되는지 자동으로 확인</li>
+<li>스키마를 협의해서 생성했다고 하더라도 실제 JSON 데이터를 봐야 정확히 이해할 수 있다.
+<ul>
+<li>스키마가 제품에 반영되기 전에 미리 JSON 샘플로 테스트 해보고 팀원들이 스키마의 사용법을 정확하게 이해할 수 있도록 돕는다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-문서화카탈로그-동기화">5. 문서화/카탈로그 동기화</h2>
+<ul>
+<li>Avro 스키마는 사람이 빠르게 이해하기 어려움.</li>
+<li>“이 이벤트에 어떤 필드가 있고, 타입이 뭔지, 어떤 용도인지”를 팀 내/다른 팀과 공유하려면 문서화가 필요함</li>
+<li><a href="https://docusaurus.io/">docusaurus</a>를 이용해 이런 문제를 회피 가능</li>
+<li>Schema를 JSON → MD로 변환 docusaurus를 이용해 검색 가능한 문서로 변환 가능</li>
+</ul>
+<hr/>
+<h1 id="avro-idl-avdl">Avro IDL (AVDL)</h1>
+<p>Avro 스키마를 json 형태가 아닌 자바에 가까운 형태로 작성해서 코드 가독성과 휴먼 에러를 줄일 수 있음. avdl로 작성 한 후 avro java 프로젝트를 사용해 <code>.avsc</code>, <code>.java</code>, json schema로 변환 가능. 이걸 이용해서 maven registry, npm registry, 문서화에 활용 가능</p>
+<h2 id="다운로드-및-사용-법">다운로드 및 사용 법</h2>
+<ol>
+<li>아래 주소와 커맨드를 사용해서 jar 파일을 다운받자.</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -O</span><span style="color:#9ECBFF"> https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.12.0/avro-tools-1.12.0.jar</span></span></code></pre>
+<ol start="2">
+<li>jar 파일을 실행해보면 커맨드 리스트를 볼 수 있는데. 되게 많다.</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#E1E4E8">&gt; </span><span style="color:#9ECBFF">java</span><span style="color:#79B8FF"> -jar</span><span style="color:#9ECBFF"> avro-tools-1.12.0.jar</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">Version</span><span style="color:#79B8FF"> 1.12.0</span></span>
+<span class="line"><span style="color:#B392F0"> of</span><span style="color:#9ECBFF"> Apache</span><span style="color:#9ECBFF"> Avro</span></span>
+<span class="line"><span style="color:#B392F0">Copyright</span><span style="color:#9ECBFF"> 2010-2015</span><span style="color:#9ECBFF"> The</span><span style="color:#9ECBFF"> Apache</span><span style="color:#9ECBFF"> Software</span><span style="color:#9ECBFF"> Foundation</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">This</span><span style="color:#9ECBFF"> product</span><span style="color:#9ECBFF"> includes</span><span style="color:#9ECBFF"> software</span><span style="color:#9ECBFF"> developed</span><span style="color:#9ECBFF"> at</span></span>
+<span class="line"><span style="color:#B392F0">The</span><span style="color:#9ECBFF"> Apache</span><span style="color:#9ECBFF"> Software</span><span style="color:#9ECBFF"> Foundation</span><span style="color:#E1E4E8"> (https://www.apache.org/).</span></span>
+<span class="line"><span style="color:#B392F0">----------------</span></span>
+<span class="line"><span style="color:#B392F0">Available</span><span style="color:#9ECBFF"> tools:</span></span>
+<span class="line"><span style="color:#B392F0">    canonical</span><span style="color:#9ECBFF">  Converts</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> Schema</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> its</span><span style="color:#9ECBFF"> canonical</span><span style="color:#9ECBFF"> form</span></span>
+<span class="line"><span style="color:#B392F0">          cat</span><span style="color:#9ECBFF">  Extracts</span><span style="color:#9ECBFF"> samples</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> files</span></span>
+<span class="line"><span style="color:#B392F0">      compile</span><span style="color:#9ECBFF">  Generates</span><span style="color:#9ECBFF"> Java</span><span style="color:#9ECBFF"> code</span><span style="color:#9ECBFF"> for</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> given</span><span style="color:#9ECBFF"> schema.</span></span>
+<span class="line"><span style="color:#B392F0">       concat</span><span style="color:#9ECBFF">  Concatenates</span><span style="color:#9ECBFF"> avro</span><span style="color:#9ECBFF"> files</span><span style="color:#9ECBFF"> without</span><span style="color:#9ECBFF"> re-compressing.</span></span>
+<span class="line"><span style="color:#B392F0">        count</span><span style="color:#9ECBFF">  Counts</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> records</span><span style="color:#9ECBFF"> in</span><span style="color:#9ECBFF"> avro</span><span style="color:#9ECBFF"> files</span><span style="color:#9ECBFF"> or</span><span style="color:#9ECBFF"> folders</span></span>
+<span class="line"><span style="color:#B392F0">  fingerprint</span><span style="color:#9ECBFF">  Returns</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> fingerprint</span><span style="color:#9ECBFF"> for</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> schemas.</span></span>
+<span class="line"><span style="color:#B392F0">   fragtojson</span><span style="color:#9ECBFF">  Renders</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> binary-encoded</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> datum</span><span style="color:#9ECBFF"> as</span><span style="color:#9ECBFF"> JSON.</span></span>
+<span class="line"><span style="color:#B392F0">     fromjson</span><span style="color:#9ECBFF">  Reads</span><span style="color:#9ECBFF"> JSON</span><span style="color:#9ECBFF"> records</span><span style="color:#9ECBFF"> and</span><span style="color:#9ECBFF"> writes</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">     fromtext</span><span style="color:#9ECBFF">  Imports</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> text</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> into</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">      getmeta</span><span style="color:#9ECBFF">  Prints</span><span style="color:#9ECBFF"> out</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> metadata</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">    getschema</span><span style="color:#9ECBFF">  Prints</span><span style="color:#9ECBFF"> out</span><span style="color:#9ECBFF"> schema</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">          idl</span><span style="color:#9ECBFF">  Generates</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> JSON</span><span style="color:#9ECBFF"> schema</span><span style="color:#9ECBFF"> or</span><span style="color:#9ECBFF"> protocol</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> IDL</span><span style="color:#9ECBFF"> file</span></span>
+<span class="line"><span style="color:#B392F0"> idl2schemata</span><span style="color:#9ECBFF">  Extract</span><span style="color:#9ECBFF"> JSON</span><span style="color:#9ECBFF"> schemata</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> types</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> IDL</span><span style="color:#9ECBFF"> file</span></span>
+<span class="line"><span style="color:#B392F0">       induce</span><span style="color:#9ECBFF">  Induce</span><span style="color:#9ECBFF"> schema/protocol</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> Java</span><span style="color:#9ECBFF"> class/interface</span><span style="color:#9ECBFF"> via</span><span style="color:#9ECBFF"> reflection.</span></span>
+<span class="line"><span style="color:#B392F0">   jsontofrag</span><span style="color:#9ECBFF">  Renders</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> JSON-encoded</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> datum</span><span style="color:#9ECBFF"> as</span><span style="color:#9ECBFF"> binary.</span></span>
+<span class="line"><span style="color:#B392F0">       random</span><span style="color:#9ECBFF">  Creates</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> with</span><span style="color:#9ECBFF"> randomly</span><span style="color:#9ECBFF"> generated</span><span style="color:#9ECBFF"> instances</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> schema.</span></span>
+<span class="line"><span style="color:#B392F0">      recodec</span><span style="color:#9ECBFF">  Alters</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> codec</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">       repair</span><span style="color:#9ECBFF">  Recovers</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> corrupt</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> Data</span><span style="color:#9ECBFF"> file</span></span>
+<span class="line"><span style="color:#B392F0">  rpcprotocol</span><span style="color:#9ECBFF">  Output</span><span style="color:#9ECBFF"> the</span><span style="color:#9ECBFF"> protocol</span><span style="color:#9ECBFF"> of</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> RPC</span><span style="color:#9ECBFF"> service</span></span>
+<span class="line"><span style="color:#B392F0">   rpcreceive</span><span style="color:#9ECBFF">  Opens</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> RPC</span><span style="color:#9ECBFF"> Server</span><span style="color:#9ECBFF"> and</span><span style="color:#9ECBFF"> listens</span><span style="color:#9ECBFF"> for</span><span style="color:#9ECBFF"> one</span><span style="color:#9ECBFF"> message.</span></span>
+<span class="line"><span style="color:#B392F0">      rpcsend</span><span style="color:#9ECBFF">  Sends</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> single</span><span style="color:#9ECBFF"> RPC</span><span style="color:#9ECBFF"> message.</span></span>
+<span class="line"><span style="color:#B392F0">       tether</span><span style="color:#9ECBFF">  Run</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> tethered</span><span style="color:#9ECBFF"> mapreduce</span><span style="color:#9ECBFF"> job.</span></span>
+<span class="line"><span style="color:#B392F0">       tojson</span><span style="color:#9ECBFF">  Dumps</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> as</span><span style="color:#9ECBFF"> JSON,</span><span style="color:#9ECBFF"> record</span><span style="color:#9ECBFF"> per</span><span style="color:#9ECBFF"> line</span><span style="color:#9ECBFF"> or</span><span style="color:#9ECBFF"> pretty.</span></span>
+<span class="line"><span style="color:#B392F0">       totext</span><span style="color:#9ECBFF">  Converts</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> text</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">     totrevni</span><span style="color:#9ECBFF">  Converts</span><span style="color:#9ECBFF"> an</span><span style="color:#9ECBFF"> Avro</span><span style="color:#9ECBFF"> data</span><span style="color:#9ECBFF"> file</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> Trevni</span><span style="color:#9ECBFF"> file.</span></span>
+<span class="line"><span style="color:#B392F0">  trevni_meta</span><span style="color:#9ECBFF">  Dumps</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> Trevni</span><span style="color:#9ECBFF"> file&#39;s metadata as JSON.</span></span>
+<span class="line"><span style="color:#9ECBFF">trevni_random  Create a Trevni file filled with random instances of a schema.</span></span>
+<span class="line"><span style="color:#9ECBFF">trevni_tojson  Dumps a Trevni file as JSON.</span></span></code></pre>
+<ol start="3">
+<li>나는 위 커맨드 중 compile(java code 생성), idl(avdl to json schema), random 을 사용할 수 있을거 같다
+<ul>
+<li>idl과 random을 통해 문서화를 보강할 수 있을거 같음.</li>
+</ul>
+</li>
+</ol> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="개요"> 개요 </a> </li><li> <a href="#이벤트-텍소노미-event-taxonomy" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="이벤트-텍소노미-event-taxonomy"> 이벤트 텍소노미 (Event Taxonomy) </a> </li><li> <a href="#예제-및-옛날-기억" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="예제-및-옛날-기억"> 예제 및 옛날 기억 </a> </li><li> <a href="#처음-시작할-때" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="처음-시작할-때"> 처음 시작할 때 </a> </li><li> <a href="#활용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="활용"> 활용 </a> </li><li> <a href="#이벤트-정의-후-수집-vs-포괄적-수집-후-etl" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="이벤트-정의-후-수집-vs-포괄적-수집-후-etl"> 이벤트 정의 후 수집 vs 포괄적 수집 후 ETL </a> </li><li> <a href="#프로젝트에서의-활용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="프로젝트에서의-활용"> 프로젝트에서의 활용 </a> </li><li> <a href="#apache-avro" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="apache-avro"> Apache Avro </a> </li><li> <a href="#apache-avro-workflow" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="apache-avro-workflow"> Apache Avro Workflow </a> </li><li> <a href="#1-schema-source-of-truth" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-schema-source-of-truth"> 1. Schema source of truth </a> </li><li> <a href="#2-ci" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="2-ci"> 2. CI </a> </li><li> <a href="#3-자동-코드생성" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="3-자동-코드생성"> 3. 자동 코드생성 </a> </li><li> <a href="#4-샘플-페이로드-테스트" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="4-샘플-페이로드-테스트"> 4. 샘플 페이로드 테스트 </a> </li><li> <a href="#5-문서화카탈로그-동기화" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="5-문서화카탈로그-동기화"> 5. 문서화/카탈로그 동기화 </a> </li><li> <a href="#avro-idl-avdl" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="avro-idl-avdl"> Avro IDL (AVDL) </a> </li><li> <a href="#다운로드-및-사용-법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="다운로드-및-사용-법"> 다운로드 및 사용 법 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

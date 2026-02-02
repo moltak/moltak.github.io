@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/48-kafka-topic-partitioning/"><!-- Primary Meta Tags --><title>Kafka 1. Topic Partitioning | Kh Jung</title><meta name="title" content="Kafka 1. Topic Partitioning | Kh Jung"><meta name="description" content="Kafka Topic Partition 변경 방법과 리밸런싱, 데이터 누락/중복 이슈에 대한 학습 정리"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/48-kafka-topic-partitioning/"><meta property="og:title" content="Kafka 1. Topic Partitioning | Kh Jung"><meta property="og:description" content="Kafka Topic Partition 변경 방법과 리밸런싱, 데이터 누락/중복 이슈에 대한 학습 정리"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/48-kafka-topic-partitioning/"><meta property="twitter:title" content="Kafka 1. Topic Partitioning | Kh Jung"><meta property="twitter:description" content="Kafka Topic Partition 변경 방법과 리밸런싱, 데이터 누락/중복 이슈에 대한 학습 정리"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="97-ubuntu-server-network" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-08-23T15:00:00.000Z"> Aug 24, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Kafka 1. Topic Partitioning </div> </div> <div class="relative"> <article class="animate"> <h1 id="참고">참고</h1>
+<ul>
+<li><a href="https://joooootopia.tistory.com/29?category=907957">Apache kafka 의 기본 아키텍쳐</a></li>
+<li><a href="https://kafka.apache.org/documentation/#consumerconfigs_max.poll.interval.ms">Apache kafka 공식문서 (max.poll.interval.ms)</a></li>
+<li><a href="https://ridibooks.com/books/3649000002">카프카, 데이터 플랫폼의 최강자(고승범, 공용준 저)</a></li>
+<li><a href="https://d2.naver.com/helloworld/0974525">KafkaConsumer Client Internals (Naver D2)</a></li>
+<li><a href="https://youtu.be/QaeXDh12EhE?t=388">Consumer Group Internals: Rebalancing - Jason Gustafson &amp; Onur Karaman</a></li>
+</ul>
+<h1 id="개요">개요</h1>
+<p>카프카를 “사용”만 하다가 “운영”을 해야할 일이 생기다보니 AWS의 기본 설정으론 안되는 경우가 생겼다. 지금 겪는 문제는 Consumer Group의 어떤 하나의 Instance 만 커다란 Load를 갖게되는 경우이다. 여러개의 토픽중 한개의 토픽의 트래픽이 다른 토픽보다 100배 이상 많아 발생하는 문제였다. 이 문제를 해결해야할 필요성이 내부적으로 생기게 됐고 실행을 할 수 있도록 학습을 시작했다. Kafka는 그동안 열심히 사용만 했지 설정을 변경한다던지, 아키텍쳐 같은 부분에 대해 전혀 궁금해 하지 않았기때문에 알아야할 지식이 상당히 많았다.</p>
+<p>이번 글은 나처럼 초보가 Kafka Topic Partition에 대해 이해하고 어떤 순서로 작업을 해야하는지 좀 설명할것이다. 상당히 긴 글이 될것같고 부족한 부분도 많겠지만 이 글을 읽는 누군가에게 도움이 됐으면 좋겠다.</p>
+<h1 id="작업-요약">작업 요약</h1>
+<blockquote>
+<p>🚫 주의: 토픽의 파티션은 늘릴수만 있고 줄일수는 없다. 파티션을 줄이고 싶으면 토픽을 삭제 후 다시 만들어야한다. 늘릴때 주의하자.</p>
+</blockquote>
+<p>토픽의 파티션을 나누는건 매우 간단하다. 아래와 같이 <code>--alter</code> 명령어를 사용해주면 된다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 토픽 정보 보기</span></span>
+<span class="line"><span style="color:#B392F0">kafka-topics.sh</span><span style="color:#79B8FF"> --describe</span><span style="color:#79B8FF"> --bootstrap-server</span><span style="color:#9ECBFF"> KAFKA_URL</span><span style="color:#79B8FF"> --topic</span><span style="color:#9ECBFF"> TopicA</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 파티션 변경</span></span>
+<span class="line"><span style="color:#B392F0">kafka-topics.sh</span><span style="color:#79B8FF"> --bootstrap-server</span><span style="color:#9ECBFF"> KAFKA_URL</span><span style="color:#79B8FF"> --alter</span><span style="color:#79B8FF"> --topic</span><span style="color:#9ECBFF"> TopicA</span><span style="color:#79B8FF"> --partitions</span><span style="color:#79B8FF"> 2</span></span></code></pre>
+<h1 id="작업-상세">작업 상세</h1>
+<p>파티션 변경은 매우 쉽지만 다음과 같은 세가지 질문이 떠오를 것이다.</p>
+<ol>
+<li>언제 해야할까? (사용자가 서비스를 많이 사용하는 시간에 파티션을 재조정 해야할까?)</li>
+<li>데이터 누락이 발생하나?</li>
+<li>데이터 중복이 발생하나?</li>
+</ol>
+<p>위와 같은 질문에 답하기 위해선 아래에 이어지는 긴 내용이 필요하다. 하지만 간단히 먼저 답을 보면</p>
+<ol>
+<li><strong>언제 해야할까?</strong>
+<ul>
+<li>파티션이 변경되면 Consumer Group이 Rebalancing 이란 과정에 들어간다. (바로는 아니고 ㅋ)</li>
+<li>이게 조금 시간이 걸리는 작업이기 때문에 트래픽이 적은 시간에 하는게 좋다</li>
+</ul>
+</li>
+<li><strong>데이터 누락이 발생하나?</strong>
+<ul>
+<li>Consume 되지 못한 데이터는 Broker 에 저장되어 있으므로 데이터는 누락되지 않는다</li>
+</ul>
+</li>
+<li><strong>데이터 중복이 발생하나</strong>
+<ul>
+<li><code>카프카, 데이터 플랫폼의 최강자 5.6.1 자동커밋 205p</code>에 자세히 나와있음. (너무 길어 요약이 힘들다. 책을 구해 읽어보자)</li>
+<li>결론부터 말하자면 발생한다.</li>
+<li>ConsumerA가 컨슈밍 중 리밸런스가 일어나 ConsumerB가 추가되었다. 이때, ConsumerA의 offset과 ConsumerB의 offset이 겹칠 가능성이 생기는데, 이때 데이터가 중복된다.</li>
+<li><a href="https://youtu.be/QaeXDh12EhE?t=388">Consumer Group Internals: Rebalancing</a> 이 영상을 보면 중복 문제는 발생하지 않을것 같다.</li>
+<li>이 부분은 아직 좀 애매하다.</li>
+</ul>
+</li>
+</ol>
+<h1 id="번외">번외</h1>
+<p>위와 같이 토픽의 파티션을 조정하는 것에 대해 알아보았다. 설명한대로 실행하는 방법은 쉬우나 언제 실행해야하고 어떤 문제가 발생하는지에 대해서는 더 많은 학습이 필요했다. 위에 적은 내용은 내가 여러 자료를 읽으며 찾은 자료들이지만 아직도 <code>중복 문제</code> 처럼 제대로 이해하지 못한 부분도 존재한다. 자세한 내용을 알고 싶다면 Kafka Consumer Group Rebalancing 글을 이어서 읽어보자.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#참고" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="참고"> 참고 </a> </li><li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="개요"> 개요 </a> </li><li> <a href="#작업-요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="작업-요약"> 작업 요약 </a> </li><li> <a href="#작업-상세" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="작업-상세"> 작업 상세 </a> </li><li> <a href="#번외" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="번외"> 번외 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

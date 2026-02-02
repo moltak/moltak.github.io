@@ -1,0 +1,766 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/23-growth-hacking/"><!-- Primary Meta Tags --><title>북클럽 - 그로스 해킹 - 양승화 | Kh Jung</title><meta name="title" content="북클럽 - 그로스 해킹 - 양승화 | Kh Jung"><meta name="description" content="AARRR 프레임워크와 그로스 해킹 학습 노트"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/23-growth-hacking/"><meta property="og:title" content="북클럽 - 그로스 해킹 - 양승화 | Kh Jung"><meta property="og:description" content="AARRR 프레임워크와 그로스 해킹 학습 노트"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/23-growth-hacking/"><meta property="twitter:title" content="북클럽 - 그로스 해킹 - 양승화 | Kh Jung"><meta property="twitter:description" content="AARRR 프레임워크와 그로스 해킹 학습 노트"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="42-cross-origin-data-rest" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-08T15:00:00.000Z"> Aug 9, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 16 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> 북클럽 - 그로스 해킹 - 양승화 </div> </div> <div class="relative"> <article class="animate"> <h1 id="개요">개요</h1>
+<p>스타트업에서 일을하며 얻을 수 있는것 중 장점은 처음부터 끝까지 다 해볼 수 있다는거 아닐까? 대기업을 다닐때는 위에서 내려온 일의 의도를 생각없이 진행해야했고 (의도를 갖고 계신 분은 저 위에 계셔서 아예 못봄…) 다 하고 싶어서 시작했던 사업들과 스타트업은 너무 많이 해야해서 어려웠다. 그래도 여러 회사를 다니며 주먹구구식으로 마케팅도 해보고 지표도 수집해보고 조금씩 지표를 바꾸려고 노력도 해보며 작은 경험과 지식을 갖긴했다.</p>
+<p>사업을 준비했고 여전히 또 준비하고 실행하는 입장에서 안중요한게 있을까만은 마케팅도 너무 중요하다. 마케팅의 마켓이 어떤 곳에서 내 제품을 팔것이냐 같고 장소(물리적인 장소만 의미하진 않지만..)를 정했으면 방법도 정해야한다. 소리를 치기도 해야할거고 깎아주기도 해야할거고 웃어?주기도 해야할거고 등등.</p>
+<p>AARRR은 언젠가 어떤 회사에서 잠깐 해봤던거 같은데. 잘 기억나지 않는다. 재직중인 회사에서 필요하기도 하고 내 사업에도 필요하기때문에 이참에 많이 익혀두면 좋겠다고 싶어. 북클럽 파트너에게 제안했다. 그분도 흔쾌히 받아들임.</p>
+<p>책은 얇지만 어려운부분이 많아 부분은 잘 읽히지 않더라. 그래도 내 식대로 정리해보고 따라해보고. 능숙해지면 내 방법으로 조금 바꿀 수 있겠지 싶어 기대가 된다. 요새 따로 혼자 학습중인 비즈니스 스터디도 있는데, 그것도 언젠가 공개 할 수 있겠지?</p>
+<hr/>
+<h1 id="part-1">PART 1</h1>
+<h1 id="1장-그로스-해킹-이란">1장 그로스 해킹 이란?</h1>
+<p>밑에서 나오지만 자주봐야하니 적어두자</p>
+<blockquote>
+<p>그로스 해킹이란?</p>
+<ul>
+<li>크로스펑셔널한 직군의 멤버들이 모여서</li>
+<li>핵심지표를 중심으로</li>
+<li>실험을 통해 배움을 얻고, 이를 빠르게 반복하면서</li>
+<li>제품이나 서비스를 성장시키는 것</li>
+</ul>
+</blockquote>
+<h2 id="1112-소개">1.1~1.2 소개?</h2>
+<ul>
+<li>문자 그대로의 해석 - 성장하는 방법을 해킹</li>
+<li>린 스타트업 - 에릭 리스
+<ul>
+<li>예전에 스타트업에서 큰 유행이었지. ㅋㅋ 너도나도 저 책을 들고 다녔던 기억이 있다. 물론 나도 들고 다님 ㅋㅋ</li>
+<li>피드백 순환고리: 아이디어 - 개발 - 측정 - 개선</li>
+<li>를 최대한 빠르게 진행하며 작은 성공을 쌓는다</li>
+</ul>
+</li>
+<li>그로스 해킹의 베스트프랙티스가 있을까?
+<ul>
+<li>책에선 핫메일, 에어비엔비, 드롭박스를 예로 든다</li>
+<li>핫메일: 티모시 드레이퍼(투자자) - 핫메일을 통해 발송되는 모든 이메일의 하단에 <code>( P .S .: I love you. Get your free e-mail at Hotmail .)</code>
+<ul>
+<li>이메일이 필요한 유저들이 엄청 가입함</li>
+</ul>
+</li>
+<li>에어비엔비
+<ul>
+<li>고품질 사진을 업로드 - 그런곳들은 3배의 예약율</li>
+<li>A/B 테스트 아녀?</li>
+</ul>
+</li>
+<li>드롭박스
+<ul>
+<li>500MB를 추가 지급하는 referer 링크로 유저를 모음</li>
+<li>나도 이걸 얻으려고 엄청 노력했던 기억이 있다.</li>
+</ul>
+</li>
+<li>아쉽게도 그로스 해킹은 답은 없다. 맥락이나, 시장 상황을 반영해서 진행해야함.
+<ul>
+<li>너무 상대론적이지 ㅋㅋ</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="13-그로스-해킹-팀---좋은-내용이므로-붉은색으로-해본다">1.3 그로스 해킹 팀 - 좋은 내용이므로 붉은색으로 해본다</h2>
+<ul>
+<li>팀 구성
+<ul>
+<li>크로스펑셔널 팀 - 디자이너, 개발자, 마케터, 데이터 분석가가 한팀
+<ul>
+<li>내가 이런 조직에서 일을 많이 했음</li>
+</ul>
+</li>
+<li>린 스타트업
+<ul>
+<li>제품개발 → 지표 측정 → 학습 및 개선 사이클을 돌리는 개발 프로세스</li>
+</ul>
+</li>
+<li>Minumum Viable Product - 최소 기능 제품
+<ul>
+<li>우리가 자주 이야기하는 MVP</li>
+<li>PMF(Product Market Fit)을 빠르게 찾기 위한 적절한 작은 제품 사이즈</li>
+</ul>
+</li>
+<li>AARRR
+<ul>
+<li>해적지표 - 5단계의 지표 수집. 단순한데. 기대보단 어려움</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>그로스 해킹이란?</p>
+<ul>
+<li>크로스펑셔널한 직군의 멤버들이 모여서</li>
+<li>핵심지표를 중심으로</li>
+<li>실험을 통해 배움을 얻고, 이를 빠르게 반복하면서</li>
+<li>제품이나 서비스를 성장시키는 것</li>
+</ul>
+</blockquote>
+<h1 id="2장-pmf">2장 PMF</h1>
+<h2 id="22-정말-많은-제품-관리자가-하는-실수">2.2 정말 많은 제품 관리자가 하는 실수</h2>
+<h3 id="1-제품을-먼저-만들고-고객-찾기">1) 제품을 먼저 만들고 고객 찾기</h3>
+<p>이건 나도 잘안다. 내가 가장 많이 했던. 그리고 우리가 가장 많이 했던 실수. 2011년쯤 스타텁 붐이 불때 (나도 이때부터 시작) 다들 그런것에 미쳐있었다. 좋은 제품을 만들면 팔릴거라고. 이게 착각이었던걸 깨닫는데. 난 6-7년정도 걸린거 같다. 뭔가 진절머리가 났었다. 돈도 못 버는 애들 (마켓도 못 찾은 애들)이 멋진거 만들어서 투자받아서 사업하는 사람들이 많다고 생각했다. (물론 너무 잘하는 사람도 많음) 그리고 몇년쯤 있다가 그런 회사 다 정리됨.</p>
+<h3 id="2-기능을-추가추가추가">2) 기능을 추가추가추가</h3>
+<p>이건 정말 클리셰고 진부함. 근데 여기서 재밌는 포인트는 아직도 이렇게함. 이런 상황이 닥치면 여러 수단을 써서 생각을 돌리려 애쓰지만 참 쉽지 않다.</p>
+<ul>
+<li>제품은 <strong>가설의 조합으로</strong> 이뤄져야 하며, 그러한 가설을 테스트하기 위한 최소한의 기능으로 이뤄져야한다. → 너무 공감되는 말</li>
+</ul>
+<h3 id="3-pmf---제품-시장-적합성">3) PMF - 제품 시장 적합성</h3>
+<ol>
+<li>우리가 생각하는 그 문제가 진짜 있긴 한가?</li>
+</ol>
+<ul>
+<li>모르지 그러니 가설을 세우고 검증한다.</li>
+</ul>
+<ol start="2">
+<li>우리가 만든 제품이 그 문제를 해결한 게 맞나?</li>
+</ol>
+<ul>
+<li>모르지 그러니 가설을 세우고 검증한다.</li>
+</ul>
+<ol start="3">
+<li>이 제품을 만들면서 세운 가설이 무엇인가? 그 가설이 검증됐는가?</li>
+</ol>
+<ul>
+<li>강조하기 위해 쓴 말인듯</li>
+</ul>
+<h2 id="23-pmf를-찾은건가">2.3 PMF를 찾은건가?</h2>
+<p>리텐션, 전환율이 나오고 내가 잘 모르는 순수 추천지수 (Net Promoter Score, NPS)가 나오네.</p>
+<p>NPS = (적극적 추천 그룹 - 비추천 그룹) / 전체응답자</p>
+<blockquote>
+<p>순수 추천 지수는 양수가 나오면 괜찮은거라고 한다.</p>
+</blockquote>
+<p>정말 꿀팁이다. 다른 친구들에게도 꼭 책 추천해야지</p>
+<hr/>
+<h1 id="part-2">PART 2</h1>
+<h1 id="3장-그로스-해킹의-프레임워크---aarrr">3장 그로스 해킹의 프레임워크 - AARRR</h1>
+<h2 id="1-2">1-2)</h2>
+<p>두가지 관점</p>
+<ul>
+<li>과업기반 - task based
+<ul>
+<li>각 조직별로 담당하는 업무에 대한 수치를 지표</li>
+<li>이런경우 문제
+<ul>
+<li>서비스 관점에서 어떤 지표가 가장 중요한가</li>
+<li>각 팀마다 중요한 지표가 다르다. 이런 경우 서로 이게 맞네 저게 맞네하며 싸울수밖에 없음</li>
+<li>팀의 업무가 달라질 수 있음. 그럼 중요한 지표는 또 바뀜</li>
+<li>듣고보니 이거 참 동작 안할거 같네?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>User Flow 별로 나누기 - AARRR
+<ul>
+<li>funnel을 만들고 각 단계에서 핵심이 되는 지표가 무엇인지 찾기</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-aarrr">3) AARRR</h2>
+<h3 id="오해">오해</h3>
+<ol>
+<li>순서대로 있으니 Acquisition 부터 높여야하나?
+<ol>
+<li>창시자 데이브 맥클루어 - Activation과 Retention 부터 높이고 Acquisition → Referral → Revenue 순으로 높여라</li>
+</ol>
+</li>
+<li>각 지표를 모니터링 하라?
+<ol>
+<li>그건 아무나 함. 서비스별로 어떤 지표를 높여야하는지 찾고 그걸 개선하는 것</li>
+<li>찾는것, 개선하는것 이게 AARRR의 목표</li>
+</ol>
+</li>
+</ol>
+<h3 id="aarrr-활용법">AARRR 활용법</h3>
+<ul>
+<li>각 단계별로 풀어야 하는 문제를 확인</li>
+<li>각 단계의 핵심이 되는 주요 지표를 선정하고, 해당 지표의 현재 수준을 측정한다.</li>
+<li>측정된 지표가 가지는 의미를 이해한다.</li>
+<li>개선해야 하는 목표 수준을 정하고, 실험을 통해 단계적으로 개선한다.</li>
+</ul>
+<h2 id="acquisition---paid-organic-나누기">Acquisition - PAID, ORGANIC 나누기</h2>
+<ul>
+<li>여기서 충격받은거 - ORGANIC은 오가닉이라기 보다는 유입경로가 명확하게 식별되지 않은 UNKNOWN으로 봐야하는게 맞음
+<ul>
+<li>지표수집 서비스의 동작을 보면 UTM 값을 보는데. 이게 제대로 설정 안되어 있으면 오가닉이라고 표시한다고</li>
+<li>광고 플랫폼은 당연히 UTM이 제대로 설정되어 있다. 이게 안되어있으면 광고주에게 돈을 못받잖아?</li>
+</ul>
+</li>
+<li>우린 여기서 Organic을 최대한 줄이는 방법을 생각해야한다. 말하니 좀 이상한데. 언노운을 줄여야지</li>
+</ul>
+<h3 id="cac-customer-acquisition-cost-고객-유치-비용">CAC (Customer Acquisition Cost) 고객 유치 비용</h3>
+<ul>
+<li>회사들은 정확한 CAC이 있어 이걸로 마케팅 한다
+<ul>
+<li>토스도 이 비용을 줄이기 위해 무진장 노력을 했다. 무료 송금을 도입하고. 만보기??를 갑자기 넣어서 돈을 몇십원씩 준다던가</li>
+<li>CAC이 명확하면 회사는 별 유인책을 다 쓸 수 있다.</li>
+</ul>
+</li>
+<li>이때 우린 채널, 캠페인, 광고, 날짜별 데이터를 나눠 봐야한다.</li>
+</ul>
+<h3 id="고객-유치-정리">고객 유치 정리</h3>
+<ul>
+<li>피터틸 - 많은 마케팅팀에서 빠지기 쉬운 함정 중 하나가, 고객 유치 성과가 정체된 것처럼 느껴질 때 기존 채널에 대한 최적화를 고민하기보다는 새로운 채널을 찾고 테스트하는 데 지나치게 많은 리소스를 쓰는 것이다.
+<ul>
+<li>나도 너무 많이 했던 실수.</li>
+<li>크 공감됨. 새로운 채널 하나 운영하는게 얼마나 어려운지…….</li>
+</ul>
+</li>
+<li>채널 확장은 예산이 아니라 채널의 포화도(Saturation)을 바탕으로 결정할 것</li>
+<li>마케팅 팀의 목표가 단순히 페이스북 광고관리자 화면에서 보이는 ROAS를 20% 더 올리는 것이나 고객 획득 비용(CAC)을 1,000원 낮추는 것에 그쳐서는 안 된다.
+<ul>
+<li>나무와 숲을 한번에 봐라. → 와 너무 어려운 주문 아니냐고</li>
+</ul>
+</li>
+</ul>
+<h2 id="activation---활성화">Activation - 활성화</h2>
+<ul>
+<li>활성화는 뭘까?
+<ul>
+<li>이 책을 읽기 전 - 회원가입? 혹시 서비스 써보는것?</li>
+<li>정답은 → 우리 핵심 기능을 써보는 것</li>
+</ul>
+</li>
+<li>핵심
+<ul>
+<li>Funnel 분석 - 크 어렵고도 멀고 할것도 많은 길이지 - 그래도 꼭 필요한 길이다</li>
+</ul>
+</li>
+<li>퍼널 설계 - 이건 곧 서야하니 전체 녹색이다. 설계부터 잘 해보자
+<ul>
+<li>핵심 가치를 경험하는 시점과 그곳으로 연결되는 각 단계를 잘 정의했는가?</li>
+<li>각 단계별 전환율을 어떤 기준으로 측정하는가?</li>
+<li>코호트(Cohort)에 따른 퍼널별 전환율을 보고 있는가?</li>
+</ul>
+</li>
+<li>우리가 줄 수 있는 핵심가치를 경험하는 정확한 순간을 정의하는 것
+<ul>
+<li>핵심 가치 = 아하 모먼트, 머스트해브 (도대체 풀고 싶은 문제가 뭐고 그걸 제대로 풀고 있는지)</li>
+<li>사용자 입장에서 정의</li>
+</ul>
+</li>
+<li>핵심 가치를 경험하는 정확한 순간을 정의했다면 다음으로는 거기까지 연결되는 단계를 정확하게 그릴것 → 이건 내가 좀 하지. 다이어그램 잘짬. 도식화 하자
+<ul>
+<li>그걸 크리티컬 패스라고 한다. 크 외울단어가 넘…..</li>
+</ul>
+</li>
+<li>다음은 전환율 측정인데. 이게 상당히 복잡함
+<ul>
+<li>나는 기억을 더듬어 보면 트래픽기준으로 측정했었는데 이게 기술적으로 어려웠던거 같다. 구현만 된다면 이게 좋을듯?</li>
+<li>(작가의 말) 사용자를 기준으로 한 전환율은 UX/UI를 포함한 다양한 요소(상품의 매력도나 가격 등)의 영향력이 종합적으로 반영되는 지표라고 할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="코호트">코호트</h3>
+<ul>
+<li>나는 이걸 성별, 나이, 직업 이런것의 구분인줄 알았다. 하지만 책의 예제는 이런것도 코호트라고 하더라 👇👇
+<ul>
+<li>‘페이스북 광고를 통해 가입한 사용자의 결제 전환율은 40%고, 친구 초대를 통해 가입한 사용자의 결제 전환율은 60%다’</li>
+<li>공통적인 특성에 따라 여러 집단으로 분류한것</li>
+<li>결국 코호트를 나눠 퍼널을 분석하다보면 이런 질문에 다다르게 된다 (책 내에서는 논리적으로 맞는데, 나중에 직접할때도 맞을지는? ㅋㅋ)
+<ul>
+<li>코호트와 전환율에 대해 깊이 있게 데이터를 살펴보다 보면 결국 ‘전환된 사용자와 전환되지 않은 사용자는 무엇이 다른가?‘라는 질문과 마주한다.</li>
+<li>둘이 무엇이 달랐기에 같은 코호트 (그룹)인데 다른 결과가 있었을까?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>퍼널 전환율 높이기
+<ul>
+<li>개인화</li>
+<li>UI, UX 개선</li>
+<li>적절한 개입 (쿠폰, 푸쉬등)</li>
+</ul>
+</li>
+<li>근데 반전
+<ul>
+<li>전환율을 높이는 것 보단 퍼널의 단계를 줄이는게 더 효과적인 경우가 많음
+<ul>
+<li>50% 5개인 퍼널 = 1/(2^5) = 1/32</li>
+<li>20% 2개인 퍼널 = 1/(5^2) = 1/25</li>
+<li>가 낫다. 그러므로 단계를 줄이자</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="리텐션">리텐션</h2>
+<ul>
+<li>클래식 리텐션, 범위 리텐션, 롤링 리텐션이 있다 …
+<ul>
+<li>나는 그냥 리텐션만 있는 줄?</li>
+<li>자세한 건 어렵다. 여기선 일단 인게이지먼트만 챙긴다</li>
+<li><code>Engagement = DAU/MAU</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="revenue-수익화">Revenue (수익화)</h2>
+<ul>
+<li>ARPU(Average Revenue Per User) = 인당 평균 매출 = Revenue / User</li>
+<li>ARPDAU(Average Revenue Per Daily Active User) = 일 매출 / DAU</li>
+<li>ARPWAU(Average Revenue Per Weekly Active User) = 주간 매출 / WAU</li>
+<li>ARPPU(Average Revenue Per Paying User) = 결제자 인당 평균 매출 = Revenue / Paying User</li>
+</ul>
+<h2 id="ltv-대신-ltr">LTV 대신 LTR</h2>
+<ul>
+<li>LTV는 구하기 어렵다. 대신 LTR을 구하자. 아래와 같이 LTR 표를 만들면 LTR을 구할 수 있다. (근데 이조차도 매우 어려워보인다?) 흠 이건 이 시점에 다시 고민해야겠다</li>
+</ul>
+<h2 id="mrr-monthly-recurring-revenue-내가-좋아하는-mrr">MRR (Monthly Recurring Revenue) 내가 좋아하는 MRR</h2>
+<ul>
+<li>나는 이걸로 글을 쓴적이 있다 이정도로 좋아함</li>
+<li>그렇다고 내가 이 값을 잘 구하는건 아님.
+<ul>
+<li>내가 구한다고 하면 그냥 이렇게 구할거 같다.</li>
+<li>최근 3개월 MRR = 10월 매출 300만원 / 11월 매출 200만원 / 12월 매출 100만원
+→ 600/3 = 200만원</li>
+<li>하지만 더 복잡한 식이 있다. 맘에 들어 첨부해본다.</li>
+<li>이렇게 쪼개서 매출을 분석해보면 전월 대비 매출이 증가했을 때 그 원인이 신규 사용자의 증가 때문인지, 기존 사용자들의 업셀링 때문인지, 혹은 이탈 고객이 감소하면서 얻은 효과 때문인지를 알 수 있다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="referral">Referral</h2>
+<ul>
+<li>추천 프로그램 같은 일회성 이벤트가 아니라 “서비스 내에 입소문을 통한 선순환 구조를 어떻게 구축할 것인가”라는 구조적인 문제</li>
+<li>나도 레퍼럴이라고 하면 드롭박스의 이벤트가 먼저 떠오른다. 저자는 그게 중요한게 아니라 (물론 그런 이벤트도 중요하겠지만) 선순환 구조를 어떻게 만드는가가 더 중요하다고 말한다.</li>
+</ul>
+<h1 id="4장-지표">4장 지표</h1>
+<h2 id="지표-명확하게-정의하기">지표 명확하게 정의하기</h2>
+<ul>
+<li>우리 서비스의 MAU가 얼마인가요?
+<ul>
+<li>이 질문이 난감한 이유. MAU의 개념적 정의는 명확하지만. MAU를 측정하는 구체적인 조작적 정의가 명확하지 않다면 어떤 기준으로 MAU를 해야할까?</li>
+<li>MAU?
+<ul>
+<li>30일간 우리 서비스에 로그인한 사용자?
+<ul>
+<li>그럼 단순 방문자는 집계되지 않음</li>
+<li>회원가입을 하지 않고 둘러보다가 이탈한 사용자는 집계 안됨</li>
+<li>두달전에 가입하고 한 달 사이에 방문만 하고 로그인 하지 않으면 집계 안됨</li>
+</ul>
+</li>
+<li>그럼 로그인과 상관없이 방문한 사용자 전체를 집계?
+<ul>
+<li>사용자가 앱과 웹 모두 왔다면 이를 한명으로 세야할까?</li>
+<li>한 사람이 여러 브라우저로 접속 한다면?</li>
+<li>오전에는 모바일로 하고 오후에는 PC 웹으로 접속한 경우라면?</li>
+</ul>
+</li>
+<li>이런 것 처럼 명확한 기준이 필요</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="좋은-지표">좋은 지표</h2>
+<ul>
+<li>actionable 가능해야한다
+<ul>
+<li>아무런 행동도 이끌어내지 못하는 지표 = 허무 지표(Vanity metric)</li>
+</ul>
+</li>
+<li>지표 개선은 부분 최적화가 아닌 전체 관점에서의 최적화에 초점을 맞춰야한다.
+<ul>
+<li>CPR을 올리기 위해 왼쪽 CPC 1천원 / 오른쪽 CPC 500원 무엇을 써야할까?</li>
+<li>이렇듯 하나의 지표에만 초점을 맞추면 오른쪽 CPC 를 선택할수도 있다.</li>
+</ul>
+</li>
+<li>심슨 패러독스
+<ul>
+<li>쪼개진 데이터에서 성립하는 관계가 합쳐진 데이터에서는 반대로 나타난다.</li>
+</ul>
+<blockquote>
+<p>이거 예시가 참 좋은데 내용이 많다. 다 여기에 넣기도 그렇고. 직접 보는게 좋겠다. 대충 156페이지에 있다.</p>
+</blockquote>
+</li>
+<li>대표값
+<ul>
+<li>평균이 항상 좋은가?
+<ul>
+<li>데이터가 정규분포에 가까우면 평균도 좋음. 하지만 아웃라이어가 있는 평균은 그 데이터를 대표하지 못하는 경우가 많음</li>
+<li>아래 그림에서 평균을 뽑으면 14일인데. 180일 이라는 outlier가 있음. 이런 경우 평균은 그 데이터를 대표하지 못함</li>
+<li>일반적인 경우에도 이런 일이 많은듯
+<ul>
+<li>GDP가 그렇지 않을까? 우리나라 총 생산 / 인구하면 대충 3.5? 4만불이 된다고 들었다. (한국 돈으론 4-5천만원?)</li>
+<li>하지만 중위값은 2400만원 언저리</li>
+<li>이런 경우가 outlier가 많은거 아닐까? 누군가는 100억 벌고. 누군가는 1천만원 벌고..</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>대표값을 잘 찾기 위해 데이터가 어떻게 분산되어 있는지
+<ul>
+<li>산점도, 상자 수염 그림을 고려하는게 좋다</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>OMTM (One Metric That Matter)
+<ul>
+<li>지금 가장 중요한 지표
+<ul>
+<li>팀간의 경쟁</li>
+<li>A팀은 결제 비율 높이기</li>
+<li>B팀은 ARPPU를 높이기</li>
+<li>이런 경우 서로 목표를 지키기 위해 A팀은 가격을 낮춰야함. B팀은 가격을 높여야함</li>
+<li>이때 OMTM을 결정해야한다. → 가장 중요한 지표가 무엇인가</li>
+<li>NSM (North Star Metric)</li>
+<li>모든 구성원의 방향성 맞추기</li>
+</ul>
+</li>
+<li>OMTM은 프로젝트의 단계에 따라 뭘 결정해야할지 다르기 때문에 잘 정의해야한다.</li>
+<li>이때 피해야하는 패턴
+<ul>
+<li>매출을 OMTM으로 정하기
+<ul>
+<li>매출은 서비스의 핵심 가치가 잘 전달됐는지와 비례해서 증가하지 않음
+<ul>
+<li>일시적인 이벤트나 꼼수를 통해 얼마든지 높일 수 있음</li>
+</ul>
+</li>
+<li>후행지표
+<ul>
+<li>원인이 아니라 결과임</li>
+<li>매출이 떨어지거나 오른다고 우리가 뭘 할 수 있는게 아니다</li>
+<li>결국 actionable 한가를 따질것</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h1 id="part-3">PART 3</h1>
+<h1 id="5장-그로스-해킹-시작부터-성장-실험까지">5장 그로스 해킹 시작부터, 성장 실험까지</h1>
+<h2 id="작은-회사에서-그로스-해킹-할-수-있을까">작은 회사에서 그로스 해킹 할 수 있을까?</h2>
+<ul>
+<li>성장 실험이 핵심</li>
+<li>OMTM을 정의 → 가설 설정 → 실험 → 데이터 분석 과정을 반복</li>
+<li>조직은 배움을 축적하고 서비스는 성장</li>
+<li>구성원 개개인이 데이터를 활용할 수 있는 역량과 문화를 갖춰야함</li>
+</ul>
+<h2 id="행동-로그-설계-적재">행동 로그 설계 적재</h2>
+<ul>
+<li>무작정 많은 이벤트를 수집하려기 보다 “필요한” 이벤트를 “정확하게” 수집해야한다</li>
+<li>발생하는 모든 이벤트를 기록해야한다는 생각을 버리고 분석에 필요한 이벤트를 정확하게 적재
+<ul>
+<li>많은 회사가 이벤트 로그가 없어서 분석을 못하는게 아니라 이벤트 로그가 있지만 필요한 내용이 없거나 데이터 정합성을 신뢰할 수 없는 문제가 있음</li>
+</ul>
+</li>
+</ul>
+<h2 id="-ab-테스트">✅✅ A/B 테스트</h2>
+<p>기초적인 개념 외우기</p>
+<ul>
+<li>가설
+<ul>
+<li>예시) 서비스 소개를 텍스트로 보여주는 화면보다 이미지로 보여주는 화면에서의 가입 전환율이 10% 더 높을 것이다</li>
+</ul>
+</li>
+<li>실험 집단/통제 집단
+<ul>
+<li>여기서 플랫폼 필요</li>
+<li>10%는 실험 집단 / 나머지는 통제 집단</li>
+</ul>
+</li>
+<li>독립 변수 (예측 변수)
+<ul>
+<li>인과 관계에서 원인이 되는 변수. 즉 종속 변수에 영향을 줄거라고 기대되는 변수</li>
+</ul>
+</li>
+<li>종속 변수
+<ul>
+<li>독립 변수(랜딩페이지를 어떻게 바꾸면) “가입 전환율”이 오를 것이다.</li>
+</ul>
+</li>
+<li>통제 변수
+<ul>
+<li>실험/통제 집단에서 모두 동등한 조건을 가져야하는 변수</li>
+<li>독립 변수가 아니지만 종속 변수에 영향을 줄 수 있는 제3의 변수?</li>
+<li>랜딩페이지를 예로 든다면 가입 경로(유료 광고, 친구 추천 등)이 통제 변수가 될것</li>
+</ul>
+</li>
+<li>샘플크기
+<ul>
+<li>계산이 중요함</li>
+</ul>
+</li>
+<li>실험 기간
+<ul>
+<li>정확하게 정하자. 임의로 중단하지 말자</li>
+</ul>
+</li>
+</ul>
+<h2 id="-ab-테스트-유의사항-197p">✅ A/B 테스트 유의사항 (197p)</h2>
+<ul>
+<li>
+<p>랜덤 추출을 하면 될까?</p>
+<ul>
+<li>편의 추출(convenient sampling)과 랜덤 채팅을 혼동함</li>
+</ul>
+<blockquote>
+<p><code>정말 좋은 지식이다</code></p>
+<ul>
+<li>랜덤 추출은 통제 변수가 잘 관리된 것을 전제로 모든 표본이 동일한 확률을 가진 상태에서 뽑는 무작위 추출을 의미한다. 즉, 통제 변수 관리가 잘 되지 않은 상태라 면 랜덤 추출이라는 말을 써서는 안 된다.</li>
+<li>가입 경로라는 통제 변수가 고려되지 않았기 때문이다. 만약 회원번호가 홀수인 가입자 중에서 유료 광고를 통해 유입된 사용자가 많았고 짝수 가입자 중에서 친구 초대를 통해 유입된 사용자가 많았다면 독립 변수(서비스 소개를 보여주는 방식)와 무관하게 짝수 가입자의 가입 전환율이 더 높게 나타날 수 있다.</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>샘플 크기 계산기</p>
+<ul>
+<li>샘플 크기를 반드시 미리 결정해야함</li>
+<li><a href="http://www.evanmiller.org/ab-testing/sample-size.html">http://www.evanmiller.org/ab-testing/sample-size.html</a></li>
+<li><a href="https://docs.adobe.com/content/target-microsite/testcalculator.html">https://docs.adobe.com/content/target-microsite/testcalculator.html</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="4-ab-테스트-결과를-분석하는-방법">4) A/B 테스트 결과를 분석하는 방법</h2>
+<ul>
+<li>이게 굉장히 어렵다는 것을 이제야 알았다. (근데 결과 비교를 내가 할 수 있다는 건 아니다)</li>
+<li>p-value 에 대한 이해가 필요하다는데, 이건 통계학에서 사용한다.
+<ul>
+<li>정확한 의미를 모르겠다. 그러므로 201페이지를 보자</li>
+</ul>
+</li>
+<li>그리고 계산기를 쓰자 ㅋㅋ
+<ul>
+<li>종속 변수가 범주형(예: 클릭 여부, 가입 여부) – 로지스틱 회귀, 카이 제곱 검정
+<ul>
+<li><a href="https://www.evanmiller.org/ab-testing/chi-squared.html">https://www.evanmiller.org/ab-testing/chi-squared.html</a></li>
+<li><a href="http://www.abtestcalculator.com/">http://www.abtestcalculator.com/</a></li>
+</ul>
+</li>
+<li>종속 변수가 이산형(예: 클릭 횟수, 결제 금액) – T검증, 분산분석
+<ul>
+<li><a href="https://www.evanmiller.org/ab-testing/t-test.html">https://www.evanmiller.org/ab-testing/t-test.html</a></li>
+<li><a href="https://mathcracker.com/t-test-for-two-means">https://mathcracker.com/t-test-for-two-means</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>이걸 알았다는게 너무 다행이다.</li>
+</ul>
+<h2 id="-ab-테스트-진행-시-주의사항204p">✅ A/B 테스트 진행 시 주의사항(204p)</h2>
+<ul>
+<li>무가설
+<ul>
+<li>이건 안할거 같다. 가설이 가장 중요한데</li>
+</ul>
+</li>
+<li>통제 변수 관리 실패
+<ul>
+<li>이건……. 어렵다. 통제 변수 흐으으으음</li>
+</ul>
+</li>
+<li>단순 평균 비교
+<ul>
+<li>이것도 조심해야돼. 특히 아웃라이어 조심하자.</li>
+<li>위에서 이야기한 산점도, 상자수염을 먼저 고려하자</li>
+</ul>
+</li>
+<li>엿보기+조기 중지
+<ul>
+<li>하지말자</li>
+</ul>
+</li>
+<li>시간의 흐름에 따른 차이를 살펴보지 않는 것
+<ul>
+<li>종속변수가 처음엔 유의미한 차이를 보이지만 후반엔 그렇지 않을 가능성</li>
+<li>실험 집단 샘플링 실패거나</li>
+<li>특정 시점에 오류 발생</li>
+<li>혹은 데이터 수집에서의 오류</li>
+</ul>
+</li>
+<li>과거의 A/B 테스트 경험을 지나치게 신뢰</li>
+<li>국지적 최적화의 함정
+<ul>
+<li>흠. 이건 다시 읽어 보는게.</li>
+<li>요약하면 A/B 테스트는 Local Optimzation을 찾는 실험인데, 항상 B가 무조건 더 좋다는걸 찾는게 아니라는거</li>
+<li>지역적으로 좋은걸 찾는 실험이라는 걸 기억해야한다</li>
+</ul>
+</li>
+</ul>
+<h1 id="6장-그로스-조직과-업무-프로세스">6장 그로스 조직과 업무 프로세스</h1>
+<ul>
+<li>그로스 해커는 없다.
+<ul>
+<li>그로스 해킹 팀이 있는 것</li>
+</ul>
+</li>
+<li>그로스 해킹 팀의 목표는 - OMTM을 개선하는 것</li>
+<li>크로스펑션 팀
+<ul>
+<li>이건 좀 어렵대</li>
+</ul>
+</li>
+<li>독립 팀 구조
+<ul>
+<li>흠 우리인가?</li>
+<li>우린 VP가 없구나. 그래서 어려운가봐 ㅋㅋ</li>
+</ul>
+</li>
+<li>Mixed Structure
+<ul>
+<li>이건 있다는 것 정도만?</li>
+</ul>
+</li>
+<li>일하는 방식
+<ul>
+<li>넘 좋은데?</li>
+</ul>
+</li>
+</ul>
+<h2 id="그로스는-톱-다운">그로스는 톱-다운</h2>
+<ul>
+<li>경영진의 의지와 역할이 중요
+<ul>
+<li>그럴거 같다. 그로스 조직이 있어야되는데. 이걸 누가 만듬?</li>
+<li>결국 경영진이 결정해야함</li>
+</ul>
+</li>
+<li>제품 개발과 Growth의 조화
+<ul>
+<li>제품 개발할 때, 보통 새로운 피처를 위해 열심히 작업한다</li>
+<li>이때 그로쓰는 전환율을 높이는 방법이나, 잠재 고객을 데려올 수 있는 부분에 대해 기여한다.</li>
+<li>결국 개발과 그로쓰는 서로의 대체제가 아닌 보완재다</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h1 id="기타">기타</h1>
+<h2 id="후기">후기</h2>
+<p>방금 책을 다 읽고 정리도 마쳤다. 어떤 부분은 한번 어떤 부분은 여러번 읽었다. 그럼에도 내가 감히 이 많은 내용을 이해했다고 말할 수 없다. 책이 내 지식이 되기 위해선 여러 단계의 다양한 인출이 필요하다. 책을 요약하며 한번 인출이 되었고 북클럽을 하며 또 한번 인출이 될것이다.</p>
+<p>내가 잘못 알았던 내용을 제대로 알게된게 큰 소득이다. 예를들면 “많은 회사가 이벤트 로그가 없어서 분석을 못하는게 아니라 이벤트 로그가 있지만 필요한 내용이 없거나 데이터 정합성을 신뢰할 수 없는 문제가 있음” 이런건데. 제대로 모아야한다는 것을 알았다. 텍소노미가 관련이 있다</p>
+<p>또, 랜덤 추출이 실제론 랜덤이 아닌 편의(Convinent) 추출이라는 것도 알게되었다. 내 기억이 얼마나 잘못되었는지 이 책을 읽으며 참 여러번 깨달았다. 그만큼 좋았다. 하지만 어려운 부분이 더 많아 당장 이걸 다 적용할 수는 없다.</p>
+<p>다행인건 회사에서 이런 작업을 할 수 있는 기회를 얻었다는 거고. 그 길에 이 책이 계속 두고두고 도움이 될것이다. 기대된다.</p>
+<h2 id="utm">🐋UTM?</h2>
+<p>이거 재밌음. UTM은 Urchin Tracking Module의 약자임. 여기서 Urchin은 나무위키에선 아래 처럼 고슴도치 성게를 뜻한다. 그래서 처음에 난 이단어를 처음보고 으잉? 하는 생각을 했다. 이 부분이 재밌는데</p>
+<p>Urchin이라는 회사가 있었고. 그걸 구글이 인수했고. 그냥 그대로 쓰이고 있음 ㅋㅋ (나만 재밌나?)</p>
+<h2 id="단어집">단어집</h2>
+<blockquote>
+<p>잊기 싫은거 적어보자</p>
+</blockquote>
+<ul>
+<li>cohort - 공통 속성을 가진 사용자 집단. “가입 시기”, “첫 구매 시기” 등</li>
+<li>ARPPU - Average Revenue Per Paying User</li>
+<li>Churn Rate - 일정 기간 동안 기존 고객(또는 구독자, 유료 사용자) 중에서 서비스/상품 사용을 중단한 비율.</li>
+<li>Bounce Rate - 웹페이지 방문자가 첫 페이지(랜딩)만 보고 아무 상호작용 없이 바로 나간 비율</li>
+<li>CTR - Click-Through Rate - 광고 1,000번 노출당 누른 비율 = (클릭수 / 노출수) * 100%</li>
+<li>LTR - Life Time Revenue</li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="개요"> 개요 </a> </li><li> <a href="#part-1" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="part-1"> PART 1 </a> </li><li> <a href="#1장-그로스-해킹-이란" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="1장-그로스-해킹-이란"> 1장 그로스 해킹 이란? </a> </li><li> <a href="#1112-소개" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1112-소개"> 1.1~1.2 소개? </a> </li><li> <a href="#13-그로스-해킹-팀---좋은-내용이므로-붉은색으로-해본다" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="13-그로스-해킹-팀---좋은-내용이므로-붉은색으로-해본다"> 1.3 그로스 해킹 팀 - 좋은 내용이므로 붉은색으로 해본다 </a> </li><li> <a href="#2장-pmf" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="2장-pmf"> 2장 PMF </a> </li><li> <a href="#22-정말-많은-제품-관리자가-하는-실수" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="22-정말-많은-제품-관리자가-하는-실수"> 2.2 정말 많은 제품 관리자가 하는 실수 </a> </li><li> <a href="#1-제품을-먼저-만들고-고객-찾기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-제품을-먼저-만들고-고객-찾기"> 1) 제품을 먼저 만들고 고객 찾기 </a> </li><li> <a href="#2-기능을-추가추가추가" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-기능을-추가추가추가"> 2) 기능을 추가추가추가 </a> </li><li> <a href="#3-pmf---제품-시장-적합성" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="3-pmf---제품-시장-적합성"> 3) PMF - 제품 시장 적합성 </a> </li><li> <a href="#23-pmf를-찾은건가" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="23-pmf를-찾은건가"> 2.3 PMF를 찾은건가? </a> </li><li> <a href="#part-2" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="part-2"> PART 2 </a> </li><li> <a href="#3장-그로스-해킹의-프레임워크---aarrr" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="3장-그로스-해킹의-프레임워크---aarrr"> 3장 그로스 해킹의 프레임워크 - AARRR </a> </li><li> <a href="#1-2" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-2"> 1-2) </a> </li><li> <a href="#3-aarrr" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="3-aarrr"> 3) AARRR </a> </li><li> <a href="#오해" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="오해"> 오해 </a> </li><li> <a href="#aarrr-활용법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="aarrr-활용법"> AARRR 활용법 </a> </li><li> <a href="#acquisition---paid-organic-나누기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="acquisition---paid-organic-나누기"> Acquisition - PAID, ORGANIC 나누기 </a> </li><li> <a href="#cac-customer-acquisition-cost-고객-유치-비용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="cac-customer-acquisition-cost-고객-유치-비용"> CAC (Customer Acquisition Cost) 고객 유치 비용 </a> </li><li> <a href="#고객-유치-정리" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="고객-유치-정리"> 고객 유치 정리 </a> </li><li> <a href="#activation---활성화" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="activation---활성화"> Activation - 활성화 </a> </li><li> <a href="#코호트" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="코호트"> 코호트 </a> </li><li> <a href="#리텐션" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="리텐션"> 리텐션 </a> </li><li> <a href="#revenue-수익화" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="revenue-수익화"> Revenue (수익화) </a> </li><li> <a href="#ltv-대신-ltr" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ltv-대신-ltr"> LTV 대신 LTR </a> </li><li> <a href="#mrr-monthly-recurring-revenue-내가-좋아하는-mrr" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="mrr-monthly-recurring-revenue-내가-좋아하는-mrr"> MRR (Monthly Recurring Revenue) 내가 좋아하는 MRR </a> </li><li> <a href="#referral" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="referral"> Referral </a> </li><li> <a href="#4장-지표" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="4장-지표"> 4장 지표 </a> </li><li> <a href="#지표-명확하게-정의하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="지표-명확하게-정의하기"> 지표 명확하게 정의하기 </a> </li><li> <a href="#좋은-지표" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="좋은-지표"> 좋은 지표 </a> </li><li> <a href="#part-3" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="part-3"> PART 3 </a> </li><li> <a href="#5장-그로스-해킹-시작부터-성장-실험까지" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="5장-그로스-해킹-시작부터-성장-실험까지"> 5장 그로스 해킹 시작부터, 성장 실험까지 </a> </li><li> <a href="#작은-회사에서-그로스-해킹-할-수-있을까" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="작은-회사에서-그로스-해킹-할-수-있을까"> 작은 회사에서 그로스 해킹 할 수 있을까? </a> </li><li> <a href="#행동-로그-설계-적재" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="행동-로그-설계-적재"> 행동 로그 설계 적재 </a> </li><li> <a href="#-ab-테스트" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="-ab-테스트"> ✅✅ A/B 테스트 </a> </li><li> <a href="#-ab-테스트-유의사항-197p" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="-ab-테스트-유의사항-197p"> ✅ A/B 테스트 유의사항 (197p) </a> </li><li> <a href="#4-ab-테스트-결과를-분석하는-방법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="4-ab-테스트-결과를-분석하는-방법"> 4) A/B 테스트 결과를 분석하는 방법 </a> </li><li> <a href="#-ab-테스트-진행-시-주의사항204p" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="-ab-테스트-진행-시-주의사항204p"> ✅ A/B 테스트 진행 시 주의사항(204p) </a> </li><li> <a href="#6장-그로스-조직과-업무-프로세스" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="6장-그로스-조직과-업무-프로세스"> 6장 그로스 조직과 업무 프로세스 </a> </li><li> <a href="#그로스는-톱-다운" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="그로스는-톱-다운"> 그로스는 톱-다운 </a> </li><li> <a href="#기타" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="기타"> 기타 </a> </li><li> <a href="#후기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="후기"> 후기 </a> </li><li> <a href="#utm" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="utm"> 🐋UTM? </a> </li><li> <a href="#단어집" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="단어집"> 단어집 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

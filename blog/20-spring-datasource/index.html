@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/20-spring-datasource/"><!-- Primary Meta Tags --><title>Spring Data Source 헷갈리지 않고 설정하기 | Kh Jung</title><meta name="title" content="Spring Data Source 헷갈리지 않고 설정하기 | Kh Jung"><meta name="description" content="spring.datasource vs spring.datasource.hikari — DataSource 설정의 두 가지 방법 완벽 정리"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/20-spring-datasource/"><meta property="og:title" content="Spring Data Source 헷갈리지 않고 설정하기 | Kh Jung"><meta property="og:description" content="spring.datasource vs spring.datasource.hikari — DataSource 설정의 두 가지 방법 완벽 정리"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/20-spring-datasource/"><meta property="twitter:title" content="Spring Data Source 헷갈리지 않고 설정하기 | Kh Jung"><meta property="twitter:description" content="spring.datasource vs spring.datasource.hikari — DataSource 설정의 두 가지 방법 완벽 정리"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="89-arch-nimf" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-08T15:00:00.000Z"> Aug 9, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Spring Data Source 헷갈리지 않고 설정하기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="data-source-설정이-어려운-이유">Data Source 설정이 어려운 이유</h2>
+<p>Data Source 설정은 한번 설정하고 나면 다시 볼일이 없다. 보통은 다른 동료가 설정을 해주고 나면 문제가 생길때까진 볼일이없다. (우리도 마찬가지였고…) 그래서 Cache, Spring Security 도 Data Source 처럼 설정할때마다 어렵고 헷갈린다.</p>
+<p>하지만 <a href="/blog/18-spring-relaxed-binding">Relaxed Binding</a>에서 적은 것 처럼 Data Source 설정 또한 간단한 내용이므로 조금만 학습하면 쉽게 설정할 수 있다. Data Source를 학습하며 어려웠던 url과 jdbc-url 같이 같아 보이는 필드가 왜 따로 존재하는지 url 필드는 어디서 오는건지 이런게 어려운데. 그건 아래 다 정리 해놨다.</p>
+<h2 id="미리-알아야하는-지식">미리 알아야하는 지식</h2>
+<blockquote>
+<p>DataSource를 설정하는 방법은 크게 두개다</p>
+</blockquote>
+<p>👆👆👆 이게 정말 중요하다. 두개가 뭐가 있냐면</p>
+<blockquote>
+<p><code>spring.datasource</code>
+<code>spring.datasource.hikari</code></p>
+</blockquote>
+<p><code>spring.datasource</code>는 <code>DataSourceProperties</code> class 를 사용한다.
+<code>spring.datasource.hikari</code>는 <code>HikariConfig</code> class 를 사용한다.</p>
+<p>위 두개를 잘 기억하고 예시를 확인해보자</p>
+<h3 id="예시로-살펴보기">예시로 살펴보기</h3>
+<p>개인적으로 재밌었는데, 우리가 yaml에 적은 필드와 같은 필드 이름이 이미 자바 클래스로 만들어져있다. 생각해보면 당연히 만들어져있어야한다. 😌😌</p>
+<p>또 재밌는 포인트는 이미 위에있는 필드들이 이미 <a href="https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data">아래 문서</a>에 다 적혀있다. 더 자세히보고 싶다면 클래스를 보면 좋겠지만 간단히 보려면 문서만 봐도 어떤 필드가 있는지 이미 다 확인이 가능하다. (코멘트도 잘 적혀있다)</p>
+<p>yaml과 자바 클래스가 어떻게 연결되고 어떤 문서를 봐야하는지 이해했다면 이제 쉽게 Data Source를 설정할 수 있다.</p>
+<h2 id="data-source-설정하기">Data Source 설정하기</h2>
+<p>위에서 언급한 spring.datasource, spring.datasource.hikari 두개의 설정 방법을 모두 살펴보자.</p>
+<blockquote>
+<p>아래 내용은 <a href="https://docs.spring.io/spring-boot/how-to/data-access.html">이 문서를</a> 기반으로 만들었다.</p>
+</blockquote>
+<h3 id="1-springdatasource">1. spring.datasource</h3>
+<p>아래와 같은 yaml 일때 오른쪽 처럼 DataSourceProperties Bean을 생성하면 yaml의 설정값을 가져올 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">app</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  datasource</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    url</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;jdbc:mysql://localhost/test&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    username</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbuser&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    password</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbpass&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    pool-size</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">30</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">Bean</span></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">ConfigurationProperties</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">prefix</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;spring.datasource&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#E1E4E8"> DataSourceProperties </span><span style="color:#B392F0">headDataSourceProperties</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> DataSourceProperties</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="2-springdatasourcehikari">2. spring.datasource.hikari</h3>
+<p>만약 hikari (아마 대부분 hikari 쓰겠지만…..)를 쓰고 싶다면 다음과 같이 설정할 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">app</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  datasource</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    hikari</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">      jdbc-url</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;jdbc:mysql://localhost/test&quot;</span></span>
+<span class="line"><span style="color:#85E89D">      username</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbuser&quot;</span></span>
+<span class="line"><span style="color:#85E89D">      password</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbpass&quot;</span></span>
+<span class="line"><span style="color:#85E89D">      maximum-pool-size</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">30</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">Bean</span></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">ConfigurationProperties</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;app.datasource&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#E1E4E8"> HikariDataSource </span><span style="color:#B392F0">dataSource</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#E1E4E8"> DataSourceBuilder.</span><span style="color:#B392F0">create</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">type</span><span style="color:#E1E4E8">(HikariDataSource.class).</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>위에 자세히 보면 <code>url → jdbc-url</code> , <code>pool-size → maximum-pool-size</code> 로 바꼈다. 바뀐 이유는 위에 언급했던 class, <a href="https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data">data properties</a>에서 오는 것이므로 정확한 필드를 알고 싶다면 문서에서 필드 이름을 확인하면 된다.</p>
+<p>보통은 위와 같이 각 상황에 맞게 Data Source를 생성하는데, 우리가 사용하는 것 처럼 두가지 방식을 조합할 수도 있다. (<a href="https://docs.spring.io/spring-boot/how-to/data-access.html">SpringBoot 공식문서</a>에서 이 방식을 추천한다)</p>
+<h3 id="3-springdatasource--named-property">3. spring.datasource + named property</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">app</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  datasource</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    url</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;jdbc:mysql://localhost/test&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    username</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbuser&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    password</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;dbpass&quot;</span></span>
+<span class="line"><span style="color:#85E89D">    hikari</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">      maximum-pool-size</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">30</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">Bean</span></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">Primary</span></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">ConfigurationProperties</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;app.datasource&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#E1E4E8"> DataSourceProperties </span><span style="color:#B392F0">dataSourceProperties</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> DataSourceProperties</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">Bean</span></span>
+<span class="line"><span style="color:#E1E4E8">@</span><span style="color:#F97583">ConfigurationProperties</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;app.datasource.hikari&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">public</span><span style="color:#E1E4E8"> HikariDataSource </span><span style="color:#B392F0">dataSource</span><span style="color:#E1E4E8">(DataSourceProperties properties) {</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#E1E4E8"> properties.</span><span style="color:#B392F0">initializeDataSourceBuilder</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">type</span><span style="color:#E1E4E8">(HikariDataSource.class).</span><span style="color:#B392F0">build</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>3번째 방식을 살펴보면 1번째에 있는 datasource namespace에서 hikari namespace를 따로 빼서 조합하는걸 볼 수 있다. 이렇게하게 되면 공통으로 쓸 수 있는 필드와 3rd party에 필요한것만 따로 나눌 수 있으므로 특정 모듈에 종속되지 않을 수 있다.</p>
+<h2 id="사실을-말하자면">사실을 말하자면</h2>
+<p>설정하는 방법은 더 많다. <a href="https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data">여기서 보면</a> 20개 정도 되는 DB를 설정할 수 있다. 하지만 겁먹지 마라 결국 다 같다. 2개를 이해했다면 20개도 이해할 수 있다.</p>
+<h2 id="결론">결론</h2>
+<p>이렇게 Data Source를 설정하는 방법과 어떤 필드가 있는지 살펴봤다. Data Source를 설정하는 방법은 <a href="https://docs.spring.io/spring-boot/how-to/data-access.html">공식문서에</a> 아주 자세히 나와있으므로 내가 쓴 설정방법은 자세히 읽어보지 않아도 좋다(🥹). 하지만 위에 있는 <code>미리 알아야하는 지식</code> 은 반드시 자세히 한번 보길 바란다. 왜냐면 위 정보들이 흩어져있어 정보를 모으기가 쉽지 않기 때문이다. 시간을 꽤 소모하게 되므로 한번 보길 권한다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/how-to/data-access.html">Data Access 3.3.3</a></li>
+<li><a href="https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.data">Appendix Common Application Properties</a></li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#data-source-설정이-어려운-이유" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="data-source-설정이-어려운-이유"> Data Source 설정이 어려운 이유 </a> </li><li> <a href="#미리-알아야하는-지식" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="미리-알아야하는-지식"> 미리 알아야하는 지식 </a> </li><li> <a href="#예시로-살펴보기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="예시로-살펴보기"> 예시로 살펴보기 </a> </li><li> <a href="#data-source-설정하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="data-source-설정하기"> Data Source 설정하기 </a> </li><li> <a href="#1-springdatasource" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-springdatasource"> 1. spring.datasource </a> </li><li> <a href="#2-springdatasourcehikari" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-springdatasourcehikari"> 2. spring.datasource.hikari </a> </li><li> <a href="#3-springdatasource--named-property" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="3-springdatasource--named-property"> 3. spring.datasource + named property </a> </li><li> <a href="#사실을-말하자면" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="사실을-말하자면"> 사실을 말하자면 </a> </li><li> <a href="#결론" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결론"> 결론 </a> </li><li> <a href="#참고" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="참고"> 참고 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

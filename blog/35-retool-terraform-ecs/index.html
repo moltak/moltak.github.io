@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/35-retool-terraform-ecs/"><!-- Primary Meta Tags --><title>Retool - Terraform + AWS ECS 설치하기 | Kh Jung</title><meta name="title" content="Retool - Terraform + AWS ECS 설치하기 | Kh Jung"><meta name="description" content="Retool을 AWS ECS Fargate에 Terraform으로 Self-hosted 설치하는 방법"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/35-retool-terraform-ecs/"><meta property="og:title" content="Retool - Terraform + AWS ECS 설치하기 | Kh Jung"><meta property="og:description" content="Retool을 AWS ECS Fargate에 Terraform으로 Self-hosted 설치하는 방법"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/35-retool-terraform-ecs/"><meta property="twitter:title" content="Retool - Terraform + AWS ECS 설치하기 | Kh Jung"><meta property="twitter:description" content="Retool을 AWS ECS Fargate에 Terraform으로 Self-hosted 설치하는 방법"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="43-mcp-server" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2025-08-29T15:00:00.000Z"> Aug 30, 2025 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Retool - Terraform + AWS ECS 설치하기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="개요">개요</h2>
+<p>리툴을 사용할 때, cloud로 쓰면 쉽지만, 회사의 데이터를 외부로 보내기 싫은 찝찝함이 존재한다. 거기다가 retool서버가 한국 로케이션이 없어서 느리기도 하고.. 또 사내 보안정책때문에 어쩔 수 없이 내부망에 설치해야하는 경우가 있다.</p>
+<p>나는 AWS ECS에 Terraform으로 올려서 운영중인데, 처음은 좀 어렵지만 ECS니까 운영하기도 쉽고 terraform에 익숙하면 retool 업데이트도 쉬워서 추천할만 하다.</p>
+<h2 id="설치방법">설치방법</h2>
+<blockquote>
+<p>리툴은 공식적으로 ecs terraform 파일을 지원한다. 나도 <a href="https://docs.retool.com/self-hosted/tutorials/ecs-fargate/terraform">공식문서</a>를 참고했다.</p>
+</blockquote>
+<h3 id="요구사항">요구사항</h3>
+<ol>
+<li>리툴을 설치한 후 라이센스 키를 받아야함</li>
+<li>Temporal
+<ul>
+<li>retool workflow를 실행하려면 temporal이 필요한데, 이건 운영이 힘들어 나는 설치하지 않았음</li>
+</ul>
+</li>
+<li>AWS 계정 - access token id, access secret key를 aws init 명령어로 저장해둬야함</li>
+<li>terraform도 설치해두고..</li>
+</ol>
+<h3 id="tf-file">tf file</h3>
+<p>retool에서 tf파일을 꽤 잘만들어둬서.. 쉽게 된다. 우린 여기에 추가적으로 vpc, subnet, region, alb 설정을 추가하면된다. 아래는 내가 만들어 사용중인 <code>retool-module.tf</code>인데 필요한 수정하고 싶은 부분은 <a href="https://github.com/tryretool/terraform-retool-modules/blob/main/modules/aws_ecs/variables.tf">retool-github-variables</a>를 참고하면 된다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">module</span><span style="color:#9ECBFF"> &quot;retool&quot;</span><span style="color:#9ECBFF"> {</span></span>
+<span class="line"><span style="color:#79B8FF">  source</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> &quot;git@github.com:tryretool/terraform-retool-modules.git//modules/aws_ecs&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # Basic Configuration</span></span>
+<span class="line"><span style="color:#B392F0">  aws_region</span><span style="color:#9ECBFF">          =</span><span style="color:#9ECBFF"> var.aws_region</span></span>
+<span class="line"><span style="color:#B392F0">  vpc_id</span><span style="color:#9ECBFF">              =</span><span style="color:#9ECBFF"> aws_vpc.retool_vpc.id</span></span>
+<span class="line"><span style="color:#B392F0">  public_subnet_ids</span><span style="color:#9ECBFF">   =</span><span style="color:#9ECBFF"> aws_subnet.retool_public_subnets[</span><span style="color:#79B8FF">*</span><span style="color:#9ECBFF">].id</span></span>
+<span class="line"><span style="color:#B392F0">  private_subnet_ids</span><span style="color:#9ECBFF">  =</span><span style="color:#9ECBFF"> aws_subnet.retool_private_subnets[</span><span style="color:#79B8FF">*</span><span style="color:#9ECBFF">].id</span></span>
+<span class="line"><span style="color:#B392F0">  ssh_key_name</span><span style="color:#9ECBFF">        =</span><span style="color:#9ECBFF"> var.ssh_key_name</span></span>
+<span class="line"><span style="color:#B392F0">  retool_license_key</span><span style="color:#9ECBFF">  =</span><span style="color:#9ECBFF"> var.retool_license_key</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">  additional_env_vars</span><span style="color:#9ECBFF"> =</span><span style="color:#E1E4E8"> [{</span></span>
+<span class="line"><span style="color:#B392F0">    name</span><span style="color:#9ECBFF">  =</span><span style="color:#9ECBFF"> &quot;BASE_DOMAIN&quot;</span></span>
+<span class="line"><span style="color:#B392F0">    value</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> &quot;${</span><span style="color:#E1E4E8">var</span><span style="color:#9ECBFF">.</span><span style="color:#E1E4E8">subdomain</span><span style="color:#9ECBFF">}.${</span><span style="color:#E1E4E8">var</span><span style="color:#9ECBFF">.</span><span style="color:#E1E4E8">base_domain</span><span style="color:#9ECBFF">}&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # ECS Configuration</span></span>
+<span class="line"><span style="color:#B392F0">  ecs_retool_image</span><span style="color:#9ECBFF">    =</span><span style="color:#9ECBFF"> var.ecs_retool_image</span></span>
+<span class="line"><span style="color:#B392F0">  launch_type</span><span style="color:#9ECBFF">         =</span><span style="color:#9ECBFF"> &quot;FARGATE&quot;</span><span style="color:#6A737D"> # 나는 fargate로 사용하도록 설정했음.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # RDB</span></span>
+<span class="line"><span style="color:#B392F0">  rds_instance_class</span><span style="color:#9ECBFF">    =</span><span style="color:#9ECBFF"> var.db_instance_class</span></span>
+<span class="line"><span style="color:#B392F0">  rds_instance_engine_version</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> var.db_engine_version</span></span>
+<span class="line"><span style="color:#B392F0">  rds_storage_type</span><span style="color:#9ECBFF">      =</span><span style="color:#9ECBFF"> var.db_storage_type</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # instance_count</span></span>
+<span class="line"><span style="color:#B392F0">  min_instance_count</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 2</span></span>
+<span class="line"><span style="color:#B392F0">  max_instance_count</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # temporal 설정을 안했으므로 Workflows 비활성화</span></span>
+<span class="line"><span style="color:#B392F0">  workflows_enabled</span><span style="color:#9ECBFF">             =</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"><span style="color:#B392F0">  use_existing_temporal_cluster</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # ALB 설정</span></span>
+<span class="line"><span style="color:#B392F0">  alb_http_redirect</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"><span style="color:#B392F0">  cookie_insecure</span><span style="color:#9ECBFF">   =</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  # log</span></span>
+<span class="line"><span style="color:#B392F0">  log_retention_in_days</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"><span style="color:#B392F0">  ecs_insights_enabled</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> &quot;disabled&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">  alb_ingress_rules</span><span style="color:#9ECBFF"> =</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#B392F0">      description</span><span style="color:#9ECBFF">      =</span><span style="color:#9ECBFF"> &quot;Global HTTPS inbound&quot;</span></span>
+<span class="line"><span style="color:#B392F0">      from_port</span><span style="color:#9ECBFF">        =</span><span style="color:#9ECBFF"> &quot;443&quot;</span></span>
+<span class="line"><span style="color:#B392F0">      to_port</span><span style="color:#9ECBFF">          =</span><span style="color:#9ECBFF"> &quot;443&quot;</span></span>
+<span class="line"><span style="color:#B392F0">      protocol</span><span style="color:#9ECBFF">         =</span><span style="color:#9ECBFF"> &quot;tcp&quot;</span></span>
+<span class="line"><span style="color:#B392F0">      cidr_blocks</span><span style="color:#9ECBFF">      =</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">&quot;0.0.0.0/0&quot;</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#B392F0">      ipv6_cidr_blocks</span><span style="color:#9ECBFF"> =</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">&quot;::/0&quot;</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h2 id="주의할점">주의할점</h2>
+<ol>
+<li>retool은 전용 디비가 필요한데, 이때 패스워드가 auto generate 되므로 저장을 잘 해둬야한다. 만약 패스워드를 잊었다면 ecs task definition을 살펴봐라</li>
+</ol>
+<p><img src="/_astro/task-definition.CXd3NaCv_2quuqc.webp" alt="ECS task definition 화면" loading="lazy" decoding="async" fetchpriority="auto" width="1832" height="740"></p>
+<h2 id="관련-링크">관련 링크</h2>
+<ul>
+<li><a href="https://docs.retool.com/self-hosted/tutorials/ecs-fargate/terraform">Deploy Self-hosted Retool on AWS Fargate and ECS with Terraform</a></li>
+<li><a href="https://github.com/tryretool/terraform-retool-modules/tree/main/modules/aws_ecs">AWS ECS + EC2 Module github terraform module</a></li>
+<li><a href="https://github.com/tryretool/terraform-retool-modules/blob/main/modules/aws_ecs/variables.tf">변수명 참고</a></li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="개요"> 개요 </a> </li><li> <a href="#설치방법" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="설치방법"> 설치방법 </a> </li><li> <a href="#요구사항" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="요구사항"> 요구사항 </a> </li><li> <a href="#tf-file" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="tf-file"> tf file </a> </li><li> <a href="#주의할점" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="주의할점"> 주의할점 </a> </li><li> <a href="#관련-링크" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="관련-링크"> 관련 링크 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

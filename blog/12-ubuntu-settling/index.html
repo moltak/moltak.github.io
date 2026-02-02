@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/12-ubuntu-settling/"><!-- Primary Meta Tags --><title>우분투 정착기 | Kh Jung</title><meta name="title" content="우분투 정착기 | Kh Jung"><meta name="description" content="라이젠 4700u 랩탑에 만자로, 우분투를 설치하며 겪은 삽질기. 커널 업데이트, suspend, 한글 입력 등 리눅스 데스크탑 사용기."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/12-ubuntu-settling/"><meta property="og:title" content="우분투 정착기 | Kh Jung"><meta property="og:description" content="라이젠 4700u 랩탑에 만자로, 우분투를 설치하며 겪은 삽질기. 커널 업데이트, suspend, 한글 입력 등 리눅스 데스크탑 사용기."><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/12-ubuntu-settling/"><meta property="twitter:title" content="우분투 정착기 | Kh Jung"><meta property="twitter:description" content="라이젠 4700u 랩탑에 만자로, 우분투를 설치하며 겪은 삽질기. 커널 업데이트, suspend, 한글 입력 등 리눅스 데스크탑 사용기."><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="39-custom-bean-validator" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-07-13T15:00:00.000Z"> Jul 14, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> 우분투 정착기 </div> </div> <div class="relative"> <article class="animate"> <p>이 글은 누군가가 리눅스를 선택할 때, 조금이라도 도움이 됐으면 싶어서 쓰는 글이며 나의 일기이기도 하다. 나는 개발자로 일하고 있고 리눅스 → 맥 → 윈도우 순으로 좋아한다. 지금 이 글도 우분투 20.04 Kernel 5.7.8에서 쓰고 있다. 리눅스를 PC에서 주력으로 사용하게 된건 3년~4년쯤 된 것 같고 아직도 제대로 못 쓰지만 여러가지 갖고 놀기가 너무 좋아서 잘 쓴다. 회사에서는 여전히 맥을 쓰지만 이건 순전히 팀원들과의 협업때문이고 집에 있는 내 PC엔 리눅스만 깔려있다. 심지어 게임도 리눅스에서 함 (이거 언젠가 글 써봐야지)</p>
+<p>한달 전 쯤 나는 라이젠에 꽂혀 지마켓에서 판매되었던 4700u acer 랩탑을 구매하게 되었다. 너무나 써보고 싶었던 CPU라서 엄청 신나서 주문했고 받아서 바로 만자로를 깔았다.</p>
+<p><img src="/_astro/distrowatch.WphNXQWf_1V2NqH.webp" alt="distrowatch 2위의 위엄" loading="lazy" decoding="async" fetchpriority="auto" width="377" height="152"></p>
+<p>만자로는 distrowatch에서 2위나 하고 있는 엄청 인기가 많은 배포판 중 하나다. 아치 리눅스 기반이고 롤링 업데이트로 되게 유명하다. 빠르게 최신 커널이나 최신 패키지들을 설치해볼 수 있고. 배포판을 뭘 선택해야할지 고민하고 있다면 매우 좋은 선택지다.</p>
+<p>PC를 처음 갖게 되면 여러 벤치마킹을 해보겠지만 나는 내가 하고있던 프로젝트의 테스트코드를 돌려보며 나름 벤치마킹을 해봤는데 주력으로 쓰고 있는 7700hq와 비교해봤을 때, 800개의 자바 테스트코드가 실행되는데 10초 정도의 차이밖에 나지 않았다. 물론 4700u가 10초가량 느렸으나 7700hq는 TDP가 45w이고 4700u는 15w밖에 되지 않으므로 절반 미만의 전력 소모로 이 정도의 성능차라니 정말 감격스러웠다. 역시 기술은 발전해야돼…</p>
+<p>다만 여러가지 문제들이 있었는데, 리눅스 커널에서 라이젠을 제대로 지원하지 않아서 밝기 조절이나 suspend같은 기능이 잘 되지 않았다. (현재 5.7.8 최신 커널을 쓰는데 지금도 suspend 후 안깨어난다). 이 때 dmesg 나 pm 메세지들을 보면 분명 깨어났는데 x.org가 실행이 잘 안되는것으로 여겨질만한 로그가 많아서 우분투로의 전환을 하게 되었다. 만자로도 너무 좋았으나 나는 pacman 이나 aur이 좀 적응이 안되더라. 지금 생각해보면 apt 보다 분명 다루기가 더 쉬운것을 -_-</p>
+<p>암튼 우분투 20.04를 깔면서 zfs를 선택했고 (아오 이거 실수임) 부팅해서 보니 커널이 5.4.x가 깔려 있더라. 여기서도 마찬가지로 suspend 후 깨어나지가 않고 밝기 조절도 안되고 외장 모니터도 인식을 못해서 커널을 업데이트하기로 마음먹었다. 모두 세팅하고 코딩을 하다가 모니터 없이 코딩을 할 수가 없어서 커널을 업데이트 했는데 자꾸 부팅이 안되서 보니 내가 사용하고 있는 zfs에서 커널을 5.4까지밖에 지원을 안하고 (하…) zfs는 어떻게 업데이트를 하는지도 모르겠고 고민하다가 또 재설치를 하게 되었다. 이렇게 3번째 리눅스 세팅을 시작…</p>
+<p>지금은 결과적으로 매우 잘 쓰고 있다. 중간에 input method에서 (아 이거 정말 왜케 설정이 불편한건지…) 좀 헤메다가 ibus → 벼루 → fcitx 로 옮겨왔다. fcitx는 메인 랩탑에서도 사용하는데 몇 년간 한번도 불편하지 않았다 (snap에서 설치한 패키지는 또 종종 문제가 있다 -_-). 암튼 지금도 lotion(linux notion app)에서 글을 쓰는데 잘 써지고 있다.</p>
+<h3 id="리눅스는-뭔가-조금-어렵긴-하다">리눅스는 뭔가 조금 어렵긴 하다!</h3>
+<p>사실 리눅스를 쓰는 것은 일반 사용자에게 추천할만한 것은 아니다. 커뮤니티 기반으로 만들어지는 프로젝트가 많아서 상용제품만큼 완벽하게 작동하는 경우는 많지 않다. 뭔가 2% 쯤 애매하게 동작하기 때문에 공부해서 직접 고치거나 우회하거나 해야한다. 나도 아직 suspend는 해결을 못해서 랩탑을 안쓸때는 꺼버린다. 하지만 리눅스는 거의 모든 정보가 오픈되어 있으므로 알고 싶다면 충분히 알아낼 수 있다. 그렇게 하나하나 고쳐나가는 재미들을 느낄 수 있다면 써봐도 좋을것 같다.</p>
+<p><img src="/_astro/neofetch.CKaoqFbY_Z1jsg9k.webp" alt="neofetch로 본 세팅환경" loading="lazy" decoding="async" fetchpriority="auto" width="917" height="382"></p>
+<h3 id="윈도우-깔아봄">윈도우 깔아봄</h3>
+<p>방금 외장 ssd를 이용해서 윈도우10을 깔아봤는데 너무 완벽히 잘되서 놀라웠다… 윈도우 갓이다. 모든 하드웨어가 원할하게 동작된다. 윈도우만 딱 깔았는데, 디스플레이, 한글입력, 절전모드, 마이크, 카메라까지 모든것이 너무 완벽하게 동작한다. 이 랩탑은 현재 문서 작성 혹은 웹 브라우징, 가끔 출장 때 코딩을 하는 용도인데, 집에서는 윈도우만 쓰고 있다 ㅋㅋ 아니 너무 완벽하게 잘 되서 놀랍네… 개발은 물론 리눅스가 훨씬 편한데… 암튼… 리눅스 사용하실 분들 오늘도 화이팅이다.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#리눅스는-뭔가-조금-어렵긴-하다" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="리눅스는-뭔가-조금-어렵긴-하다"> 리눅스는 뭔가 조금 어렵긴 하다! </a> </li><li> <a href="#윈도우-깔아봄" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="윈도우-깔아봄"> 윈도우 깔아봄 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

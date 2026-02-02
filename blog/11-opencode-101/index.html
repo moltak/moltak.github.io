@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/11-opencode-101/"><!-- Primary Meta Tags --><title>OpenCode 101 (with oh-my-opencode) | Kh Jung</title><meta name="title" content="OpenCode 101 (with oh-my-opencode) | Kh Jung"><meta name="description" content="오픈소스 코딩 에이전트 OpenCode와 oh-my-opencode를 설치하고 사용해본 후기. Claude Code 대안으로 다양한 LLM을 자유롭게 쓸 수 있다."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/11-opencode-101/"><meta property="og:title" content="OpenCode 101 (with oh-my-opencode) | Kh Jung"><meta property="og:description" content="오픈소스 코딩 에이전트 OpenCode와 oh-my-opencode를 설치하고 사용해본 후기. Claude Code 대안으로 다양한 LLM을 자유롭게 쓸 수 있다."><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/11-opencode-101/"><meta property="twitter:title" content="OpenCode 101 (with oh-my-opencode) | Kh Jung"><meta property="twitter:description" content="오픈소스 코딩 에이전트 OpenCode와 oh-my-opencode를 설치하고 사용해본 후기. Claude Code 대안으로 다양한 LLM을 자유롭게 쓸 수 있다."><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="62-crypto-zombie-4-6" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2026-01-15T15:00:00.000Z"> Jan 16, 2026 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> OpenCode 101 (with oh-my-opencode) </div> </div> <div class="relative"> <article class="animate"> <h2 id="개요">개요</h2>
+<p>요새 정말 AI쪽 기술 발전속도가 너무 빠르다. 현업에 있어도 이리 따라가기 벅찬데, 이 참… 계속 해보는 수밖에 없지. 요새 나는 claude code를 많이 쓰고 있었는데, 대체로 맘에 들었지만 좀 아쉬운건. claude code를 쓰다보면 계속 claude의 구독 등급을 올려야했다는 거다. plus는 너무 짧고 $100 max 를 써도. 좀 아쉽고… $200는 좀 무섭고.</p>
+<p>이때 <a href="https://opencode.ai/">opencode</a>가 도움이된다. opensource agent니까 다양한 llm을 쉽게 지원하고 google, openai, claude 연동도 쉽다. 여기에 그제부터 화제가 된 <a href="https://github.com/code-yeongyu/oh-my-opencode">oh-my-opencode</a>를 곁들이면 여러 agent들이 생기며(Sisyphus, oracle, librarian 등 ? 아니 네이밍이…) 특정 상황에 특화된 에이전트를 호출 할 수 있다.</p>
+<h2 id="설치">설치</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># opencode</span></span>
+<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -fsSL</span><span style="color:#9ECBFF"> https://opencode.ai/install</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> bash</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># oh-my-opencode</span></span>
+<span class="line"><span style="color:#B392F0">npx</span><span style="color:#9ECBFF"> oh-my-opencode</span><span style="color:#9ECBFF"> install</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 코딩 도움되는 툴킷 필수 아님</span></span>
+<span class="line"><span style="color:#6A737D"># serena - 코딩 도움 툴킷</span></span>
+<span class="line"><span style="color:#B392F0">opencode</span><span style="color:#9ECBFF"> mcp</span><span style="color:#9ECBFF"> add</span><span style="color:#6A737D"> # 이렇게 하면 TUI 창이 열림</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># serena를 global로 install</span></span>
+<span class="line"><span style="color:#B392F0">uvx</span><span style="color:#79B8FF"> --from</span><span style="color:#9ECBFF"> git+https://github.com/oraios/serena</span><span style="color:#9ECBFF"> serena</span><span style="color:#9ECBFF"> start-mcp-server</span><span style="color:#79B8FF"> --context=claude-code</span><span style="color:#79B8FF"> --project-from-cwd</span></span></code></pre>
+<h2 id="opencode">Opencode</h2>
+<p>코딩 agent로 claude code 같은거. TUI가 참 좋다. opencode는 lsp가 연동되어 있어서 java, ts, eslint 가 자동으로 실행되어 agent에게 전달하는 피드백이 훨씬 빠르다.</p>
+<p><img src="/_astro/opencode-tui.DftDwf05_1NeaJC.webp" alt="OpenCode TUI" loading="lazy" decoding="async" fetchpriority="auto" width="1824" height="1488"></p>
+<h3 id="command">Command</h3>
+<p>아래와 같은 커맨드를 제공하는데 leader key = <code>ctrl+x</code> 로 기본 지정되어있고 leader key + l,n 등 다양한 단축키가 제공됨.</p>
+<p><img src="/_astro/opencode-commands.B-8SfN96_1q9CaG.webp" alt="OpenCode 커맨드" loading="lazy" decoding="async" fetchpriority="auto" width="505" height="639"></p>
+<h3 id="그-외">그 외</h3>
+<p>아직 많이 안써봤지만 claude code에 있는것과 상당히 흡사해서 <code>wrap(컨텍스트 압축), session resume</code> 같은 그런 기능은 기본 제공하니 claude code 를 많이 써본 사람은 따라가기 쉽다.</p>
+<h3 id="문서화">문서화</h3>
+<p><a href="https://opencode.ai/docs/tools/">문서</a>가.. 좀 많은데. 아직 다 못 읽어봄 ㅋㅋㅋ</p>
+<p><img src="/_astro/opencode-docs.D-eGECKP_RFBt8.webp" alt="OpenCode 문서" loading="lazy" decoding="async" fetchpriority="auto" width="275" height="1027"></p>
+<h2 id="oh-my-opencode">Oh-my-opencode</h2>
+<p>위에서 같이 설치한 oh-my-opencode인데 이걸 설치하면 agent 선택 창이 바뀐다. 그리고 <code>@oracle, @librarian</code> 처럼 agent를 직접 호출해서 특화 기능을 사용할수도 있다.</p>
+<p><img src="/_astro/omo-agents.uQngyIQ7_Z222bwL.webp" alt="Oh-my-opencode Agent 선택" loading="lazy" decoding="async" fetchpriority="auto" width="419" height="139"></p>
+<h3 id="sub-agents">Sub agents</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span># Agents: Your Teammates</span></span>
+<span class="line"><span>## Sisyphus (anthropic/claude-opus-4-5):</span></span>
+<span class="line"><span>The default agent. A powerful AI orchestrator for OpenCode.</span></span>
+<span class="line"><span>Plans, delegates, and executes complex tasks using specialized subagents</span></span>
+<span class="line"><span>with aggressive parallel execution.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## oracle (openai/gpt-5.2):</span></span>
+<span class="line"><span>Architecture, code review, strategy.</span></span>
+<span class="line"><span>Uses GPT-5.2 for its stellar logical reasoning and deep analysis.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## librarian (opencode/glm-4.7-free):</span></span>
+<span class="line"><span>Multi-repo analysis, doc lookup, implementation examples.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## explore (opencode/grok-code, google/gemini-3-flash, or anthropic/claude-haiku-4-5):</span></span>
+<span class="line"><span>Fast codebase exploration and pattern matching.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## frontend-ui-ux-engineer (google/gemini-3-pro-preview):</span></span>
+<span class="line"><span>A designer turned developer. Builds gorgeous UIs.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## document-writer (google/gemini-3-flash):</span></span>
+<span class="line"><span>Technical writing expert.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>## multimodal-looker (google/gemini-3-flash):</span></span>
+<span class="line"><span>Visual content specialist. Analyzes PDFs, images, diagrams.</span></span></code></pre>
+<p>설치 후 ultrawork(ulw)를 하면 열심히 병렬로 마법같이 동작한다니.. 잘 써보면 좋겠다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>◇  🪄 The Magic Word ─────────────────────────────────────────────╮</span></span>
+<span class="line"><span>│                                                                   │</span></span>
+<span class="line"><span>│  Include ultrawork (or ulw) in your prompt.                       │</span></span>
+<span class="line"><span>│  All features work like magic—parallel agents, background tasks,  │</span></span>
+<span class="line"><span>│  deep exploration, and relentless execution until completion.     │</span></span>
+<span class="line"><span>│                                                                   │</span></span>
+<span class="line"><span>├───────────────────────────────────────────────────────────────────╯</span></span></code></pre>
+<p>oh-my-opencode 설치 후 status를 보면 활성화된 plugin이 보이는데, antigravity, openai 플러그인은 내가 설치하지 않았다. oh-my-opencode가 스스로 설치한건데, 아래 플러그인을 통해 각 계정을 쉽게 연동할 수 있다.</p>
+<p><img src="/_astro/omo-plugins.CaHc4W30_7jeiS.webp" alt="Oh-my-opencode 플러그인" loading="lazy" decoding="async" fetchpriority="auto" width="826" height="759"></p>
+<h2 id="후기">후기</h2>
+<p>claude-code에서 opencode로 변경하고 있다. 나는 여러 llm을 자유롭게 쓸 수 있는 opencode가 더 맘에 들고 여러 google antigravity 기능을 묶어서 사용량을 늘려 쓸 수 있는데, 이것도 맘에 들었다. 벤더들에 종속되는 것 보단 그렇지 않은게 나으니까.. 그리고 가격도 싸고. 암튼 더 사용해보려한다.</p>
+<h2 id="관련자료">관련자료</h2>
+<ul>
+<li><a href="https://opencode.ai/">OpenCode | The open source AI coding agent</a></li>
+<li><a href="https://github.com/code-yeongyu/oh-my-opencode">oh-my-opencode GitHub</a></li>
+<li><a href="https://news.hada.io/topic?id=24978">Oh-My-OpenCode: 혼자서 $24,000 어치의 토큰을 사용했고 모든 경험을 녹여 | GeekNews</a></li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="개요"> 개요 </a> </li><li> <a href="#설치" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="설치"> 설치 </a> </li><li> <a href="#opencode" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="opencode"> Opencode </a> </li><li> <a href="#command" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="command"> Command </a> </li><li> <a href="#그-외" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="그-외"> 그 외 </a> </li><li> <a href="#문서화" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="문서화"> 문서화 </a> </li><li> <a href="#oh-my-opencode" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="oh-my-opencode"> Oh-my-opencode </a> </li><li> <a href="#sub-agents" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="sub-agents"> Sub agents </a> </li><li> <a href="#후기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="후기"> 후기 </a> </li><li> <a href="#관련자료" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="관련자료"> 관련자료 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

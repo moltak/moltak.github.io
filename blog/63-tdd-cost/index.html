@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/63-tdd-cost/"><!-- Primary Meta Tags --><title>TDD 시리즈 1 - 비용 | Kh Jung</title><meta name="title" content="TDD 시리즈 1 - 비용 | Kh Jung"><meta name="description" content="TDD를 하면 정말 비용이 줄어드는가? 체화, 비용, 디버깅 시간 비교"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/63-tdd-cost/"><meta property="og:title" content="TDD 시리즈 1 - 비용 | Kh Jung"><meta property="og:description" content="TDD를 하면 정말 비용이 줄어드는가? 체화, 비용, 디버깅 시간 비교"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/63-tdd-cost/"><meta property="twitter:title" content="TDD 시리즈 1 - 비용 | Kh Jung"><meta property="twitter:description" content="TDD를 하면 정말 비용이 줄어드는가? 체화, 비용, 디버깅 시간 비교"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="56-apollo-graphql-react" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-04-03T15:00:00.000Z"> Apr 4, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 6 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> TDD 시리즈 1 - 비용 </div> </div> <div class="relative"> <article class="animate"> <h1 id="references">References</h1>
+<ul>
+<li><a href="https://www.imagicle.com/it/blog/o/tdd-why-i-decided-that-debugging-wasnt-worth-my-time/">TDD: why I decided that debugging wasn’t worth my time.</a></li>
+<li><a href="https://medium.com/@joantolos/the-real-reason-why-you-dont-like-tdd-a65b26d2805e">The real reason why you don’t like TDD</a></li>
+<li><a href="https://medium.com/crowdbotics/tdd-roi-is-test-driven-development-worth-the-money-d535c8d5a5f">TDD ROI: Is Test-Driven Development Worth the Money?</a></li>
+<li><a href="https://medium.com/javascript-scene/the-outrageous-cost-of-skipping-tdd-code-reviews-57887064c412">The Outrageous Cost of Skipping TDD &amp; Code Reviews</a></li>
+<li><a href="https://www.e-point.com/blog/how-tdd-reduces-costs-case-study">How TDD Reduces Costs - Case Study</a></li>
+</ul>
+<h1 id="들어가며">들어가며</h1>
+<p>개발을 업으로 삼은지 10년이 지났고 개발을 처음 공부한지는 벌써 20년 가까이 되었다. 긴 시간동안 다양한 개발자들을 만나 함께 작업을 하며 여러가지를 배우고 나도 여러가지를 주려고 노력을 많이했다. 특히 난 TDD의 중요성을 많이 강조했고 그건 대학교를 다닐때도 마찬가지였다. 사회에서도 TDD에 대해 강의를 많이했고 이때(<a href="https://www.youtube.com/watch?v=qwhIVi88pt4">DroidKnights</a>)에서도 여전히 난 TDD를 전파하려 애썼다.</p>
+<p>위 링크와 같은 강의들로 내가 몇사람이나 TDD로 이끌었는지 잘 모르겠지만 큰 성공을 거두지 못한건 맞는것 같다. 내 주위에 있는 친한 개발자들도 거의 TDD를 하지 않는게 현실이니까. 예전에 쓰다가 지웠던, <code>TDD에 부정적인 개발자들</code> 에서는 왜 사람들이 그렇게 TDD를 싫어하는지에 대해 내 나름의 추측을 담고 싶었다. 다만, TDD에 부정적인 개발자들 치고 TDD를 <strong>체화한</strong> 사람은 없었다. 아쉬운 부분이다.</p>
+<p>이 글은 TDD를 도입하고자 하는데 고민이 많은 개인과 단체를 위한 글이다. 여러 시리즈가 될 수도 있지만 첫 글에서는 비용에 대해 말해보고자 한다. 아래쪽 두 그래프가 내가 하고 싶은 말의 전부다. TDD를 할 때, 기능을 추가하는 속도가 증가하고 그 비용이 낮아진다. 아마 믿기지 않을 텐데, 그 내용에 대해선 아래에서 후술하겠다.</p>
+<p><img src="/_astro/tdd-speed.DagBbZ89_Z1XjWcp.webp" alt="TDD 기능 추가 속도" loading="lazy" decoding="async" fetchpriority="auto" width="474" height="350"></p>
+<p><img src="/_astro/tdd-cost.BIxStfMB_Ze9oyF.webp" alt="TDD 비용 비교" loading="lazy" decoding="async" fetchpriority="auto" width="482" height="348"></p>
+<h1 id="체화">체화</h1>
+<p>이 글을 통해 몇명이 TDD 세계로의 여행을 떠날 수 있을지 모르겠다. 다만 내가 하고 싶은말은 그 열매는 매우 달다는 것이다. TDD를 <strong>체화</strong>할 경우 얻을 수 있는건 정말 많다. 다만 쉽지 않다. 나는 TDD를 수영이나, 자전거 같은 스포츠와 비교한다. 수영을 배우고 싶다고 상상해보자. 책을 볼건가? 그보단 아마 수영장에 찾아가서 강의를 끊을거다. 선생님이 옆에서 숨쉬는 법, 발차는법, 팔돌리는 법을 가르칠거다. 근데 그게 엄청난 지식이 필요한 일일까? 너무 어려워서 외우기 위해 시험도 봐야하는 그런 지식일까? 아니다 몸에 익혀야한다. 이를 <strong>체화</strong>라고 하고 TDD는 그런 개발방법이다. 당장 TDD를 구글에 쳐보면 몇단계를 알려줄거다. 그게 TDD의 전부다. 다만 선생님이 알려준 숨쉬는 방법이 쉬워보여도, 당장 혼자해보면 잘 모르겠는것 처럼 TDD도 마찬가지다. 혼자 접형을 할 수 있을때까지 혹은 그 너머까지 부던히 노력해야만 한다. 이 과정은 절대 쉽지 않다. 그리고 이걸 넘은 사람은 많이 보지 못했다. 혹시 TDD를 배워보고 싶다면 이규원님의 <a href="https://fastcampus.co.kr/dev_red_ygw">이 강의</a>를 들으면 될 것 같다.</p>
+<p>TDD를 체화하고 나면 무엇을 얻을 수 있을까? 두가지 정도 적자면 다음과 같다</p>
+<ol>
+<li>빠른 퇴근</li>
+<li>좋은 냄새의 코드</li>
+</ol>
+<h1 id="비용">비용</h1>
+<p>위에서 말한 <code>1. 빠른 퇴근</code> 이 바로 비용이다. 비용 부분을 먼저 알아보자. 다음과 같은 코드가 있을 때, 나는 여러분에게 이런 질문을 할 것 같다. 만약, <code>result.success</code> 가 boolean이 아닌 여러 값을 가질 수 있다면 <code>기존 로직에 어떤 영향을 줄까? 그리고 그것을 어떻게 검증할까?</code> 그 방법에 대해 설명해 봐라.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> payment</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">userName</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">planName</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> this</span><span style="color:#E1E4E8">.paymentService.</span><span style="color:#B392F0">payment</span><span style="color:#E1E4E8">(userName, planName)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">!</span><span style="color:#E1E4E8">result.success) {</span></span>
+<span class="line"><span style="color:#F97583">        throw</span><span style="color:#E1E4E8"> {msg: </span><span style="color:#9ECBFF">&#39;결제 실패&#39;</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">    this</span><span style="color:#E1E4E8">.userPlan.</span><span style="color:#B392F0">grantItem1</span><span style="color:#E1E4E8">(userName)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>위 코드는 결제를 성공했을 때, 단순이 item1 번을 승인해주는 역할을 한다. 하지만 우리가 기능 개선이 필요해 위 질문처럼 result가 500, 1000, 2000 같은 true/false 가 아닌 값들이 반환이 된다면 출시된 제품과 영향이 없을지 어떻게 알 수 있을까. TDD를 하지 않는 상황이면 이렇게 한다.</p>
+<ol>
+<li>비즈니스 코드를 추가한다.</li>
+<li>개발자가 코드를 테스트한다. (화면에서 한땀한땀 눌러본다.)</li>
+<li>QA가 열심히 제품을 쭉 테스트한다.</li>
+<li>수정한다.</li>
+<li>출시한다.</li>
+</ol>
+<p>하지만 TDD를 하면 이렇게 바뀐다.</p>
+<ol>
+<li>테스트 코드를 추가한다.</li>
+<li>비즈니스 코드를 추가한다.</li>
+<li>테스트 코드를 실행한다.</li>
+<li>QA가 열심히 제품을 쭉 테스트한다.</li>
+<li>수정한다.</li>
+<li>출시한다.</li>
+</ol>
+<p>TDD를 하면 개발자가 해야할일이 한단계 더 늘어난다. 하지만 이때, 개발자는 엄청나게 빠른 속도로 피드백을 얻을 수 있다. 이미 변경전 비즈니스 로직에 맞춰진 테스트는, 새로운 비즈니스 로직이 추가되지마자 실패하게 된다. 이 부분이 변경해야하는 지점이며 새로운 Feature(기능)이다. 개발자 앞에 그려진 red-line은 개발자에게 빨리 수정하라고 소리친다. 개발자는 보통은 쉽게 수정할 수 있고 이 과정에서 출시된 로직과 추가된 Feature 로직에 대해 한번에 검증이 끝난다. 그리고 QA는 이를 쉽게 확인할 수 있다.</p>
+<p>가장 큰 차이는 개발자가 웹페이지(혹은 앱화면)에서 하나씩 누르며 테스트하는지 아니면 자동으로 로직을 테스트하는지에 대한 차이다. 이 부분이 비용을 줄이게 만들고 여러분이 일찍 퇴근할 수 있게 만든다.</p>
+<p><img src="/_astro/tdd-graph.DK13cvFQ_Z1Q5k9e.webp" alt="TDD 비용 그래프" loading="lazy" decoding="async" fetchpriority="auto" width="2504" height="1533"></p>
+<p>비슷한 그래프를 <a href="https://www.imagicle.com/it/blog/o/tdd-why-i-decided-that-debugging-wasnt-worth-my-time/">여기</a>에서도 볼 수 있다. TDD를 하는게 어떤 순간엔 전통적인 방법보다 비용이 더 든다. 하지만 서비스가 커질 수록 그리고 오래될 수록 TDD는 빛을 발한다. 서비스가 프로토타입이고 지속성이 없다면 당연히 TDD를 하지 않아도 좋다. 하지만 보통은 내가 작성하는 코드는 내 회사와 함께 오랫동안 지속된다. 1년 혹은 몇년간은 함께 하게 된다. 그때, TDD가 함께 하게 된다면 내가 그 회사를 떠나도 새로운 로직을 추가하고 평가하는데 1초의 시간만 있으면 된다.</p>
+<p>아래와 같은 글로 마무리 하고자 한다. 요약해보면 <code>code-test-debug</code> 방법을 쓴 팀은 전체 시간의 56%를 디버깅하는데 썼고, TDD를 한 팀은 8%만 썼다는 내용이다.</p>
+<p>개발시간은 TDD가 더 많이 걸렸으나, 전체 라인수, 복잡도, 블록의 중첩도 또한 훨씬 적게 사용되었다고 아래 표는 말한다.</p>
+<p><img src="/_astro/tdd-debug-table.Cck9VsUG_ZaSrkO.webp" alt="TDD vs Debug 비교 표" loading="lazy" decoding="async" fetchpriority="auto" width="2500" height="687"></p>
+<blockquote>
+<p>The results were quite impressive: the teams working with code-test-debug approach spent 56% of time debugging, while the group which adopted Test Driven Development practice spent less than 8% of its time in debug activities, and this happened especially during the refactoring phase, in order to fix unexpected failing tests (pointing out the necessity to add new tests for these scenarios).</p>
+</blockquote>
+<h1 id="마무리">마무리</h1>
+<p>이 글을 쓰며 어차피 나는 <code>기존방법보다 TDD가 낫다. TDD를 하지 않는건 바보같은 일이다.</code> 라는걸 주장하고 싶었을 뿐이고 거기에 맞는 문서들만 찾은 것일지도 모른다. 내가 이 글을 쓰게된 진짜 이유는 <a href="https://www.google.com/search?q=tdd+cost">tdd cost</a> 라는 검색어를 구글에 쳐보면서 시작되었다. 모든 글을 확인해보지 않았지만 TDD가 프로젝트 비용을 절감한다는 내용이다. 사실 TDD에 대한 연구는 꽤 오래되었고 많은 자료가 있다. 그렇기에 <code>답정너</code> 같이 원래 하고 다녔던 말을 다시 했을 뿐이다. 이 글을 읽는 사람은 고구마를 먹는 것 처럼 답답했을지 모르겠지만, 그래도 TDD에 대해 약간이나마 흥미가 생겼다면 다행이다.</p>
+<p>다시 말하지만 배우고 싶다면 <a href="https://fastcampus.co.kr/dev_red_ygw">이 강의</a>를 살펴보자. (이규원씨와는 지나가며 여러 세미나에서 본적은 있지만 개인적인 친분은 없다. 광고는 아니라는 거다 ㅋ)</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="references"> References </a> </li><li> <a href="#들어가며" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="들어가며"> 들어가며 </a> </li><li> <a href="#체화" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="체화"> 체화 </a> </li><li> <a href="#비용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="비용"> 비용 </a> </li><li> <a href="#마무리" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="마무리"> 마무리 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

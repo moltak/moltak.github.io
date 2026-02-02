@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/09-amd-archlinux-setup/"><!-- Primary Meta Tags --><title>AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기 | Kh Jung</title><meta name="title" content="AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기 | Kh Jung"><meta name="description" content="102만원짜리 레노버 Yoga Slim7 14AKP10에 아치리눅스를 설치하고, Suspend·한글입력·스피커 문제를 해결한 과정을 정리했다."><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/09-amd-archlinux-setup/"><meta property="og:title" content="AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기 | Kh Jung"><meta property="og:description" content="102만원짜리 레노버 Yoga Slim7 14AKP10에 아치리눅스를 설치하고, Suspend·한글입력·스피커 문제를 해결한 과정을 정리했다."><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/09-amd-archlinux-setup/"><meta property="twitter:title" content="AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기 | Kh Jung"><meta property="twitter:description" content="102만원짜리 레노버 Yoga Slim7 14AKP10에 아치리눅스를 설치하고, Suspend·한글입력·스피커 문제를 해결한 과정을 정리했다."><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="46-kafka-install" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2026-01-06T15:00:00.000Z"> Jan 7, 2026 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> AMD 아치리눅스 세팅기 - 레노버 Yoga Slim7에 Archlinux 올리기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="개요">개요</h2>
+<p>맥북프로 14가 너무 무거워서 (1.5kg) 맥북에어 M5를 사려고 기다리고 있었는데, 엄청난 가성비의 레노버 랩탑이 있어서 일단 결제했다.</p>
+<h3 id="가성비-대박">가성비 대박!</h3>
+<ul>
+<li><strong>가격</strong>: 102만원</li>
+<li><strong>제품명</strong>: 레노버 요가 Slim7 14AKP10</li>
+<li><strong>CPU</strong>: AMD 라이젠 AI7 350 - 8core 16thread</li>
+<li><strong>RAM</strong>: LPDDR5x 32GB 7500MHz</li>
+<li><strong>SSD</strong>: 500GB</li>
+<li><strong>Display</strong>: 2880x1800, OLED, 120Hz</li>
+<li><strong>Speaker</strong>: Dolby Atmos, Realtek ALC287</li>
+<li><strong>무게</strong>: 1.19kg</li>
+<li><strong>OS</strong>: Windows11 Home 포함</li>
+</ul>
+<p>OLED, Dolby, 32GB, Windows까지 어떻게 100만원이 되는지 참 신기하다. 이거 애플에서 나오면 바로 300만원은 할거 같음… 암튼 윈도우에서 테스트해보니 스피커, 디스플레이 너무 훌륭해서 개발 머신으로 쓰면 딱 좋겠다 싶어 아치리눅스를 설치했다.</p>
+<p>그런데 절전모드와 Speaker가 제대로 지원되지 않아 (ACPI와 Dolby 드라이버는 리눅스에서 제대로 지원 안됨) 좀 세팅해야하는 부분들이 있는데, 그걸 해결하는 과정을 적어본다.</p>
+<h2 id="해결해야할거-1순위-suspend">해결해야할거 1순위: Suspend</h2>
+<p>suspend가 안된다… 요새 신형 노트북은 s2idle(S0ix, 마소의 Modern Standby)만 지원하기 때문이다. s3가 지원되야하는데… 이 랩탑은 BIOS에도 없다. suspend 하면 화면이 안깨어나는 문제가 있다.</p>
+<h3 id="자주-쓰는-디버깅-명령어-journalctl-dmesg">자주 쓰는 디버깅 명령어 (journalctl, dmesg)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 가장 최근 부팅의 로그만 보기</span></span>
+<span class="line"><span style="color:#B392F0">journalctl</span><span style="color:#79B8FF"> -b</span></span>
+<span class="line"><span style="color:#6A737D"># 이전 부팅</span></span>
+<span class="line"><span style="color:#B392F0">journalctl</span><span style="color:#79B8FF"> -b</span><span style="color:#79B8FF"> -1</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 실시간으로 로그 따라가기</span></span>
+<span class="line"><span style="color:#B392F0">journalctl</span><span style="color:#79B8FF"> -f</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 특정 시간 이후</span></span>
+<span class="line"><span style="color:#B392F0">journalctl</span><span style="color:#79B8FF"> --since</span><span style="color:#9ECBFF"> &quot;10 min ago&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 특정 서비스만</span></span>
+<span class="line"><span style="color:#B392F0">journalctl</span><span style="color:#79B8FF"> -u</span><span style="color:#9ECBFF"> nginx.service</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 커널 메시지 (시간 표시)</span></span>
+<span class="line"><span style="color:#B392F0">dmesg</span><span style="color:#79B8FF"> -T</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 실시간으로 따라가기</span></span>
+<span class="line"><span style="color:#B392F0">dmesg</span><span style="color:#79B8FF"> -w</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 에러와 경고만</span></span>
+<span class="line"><span style="color:#B392F0">dmesg</span><span style="color:#79B8FF"> --level=err,warn</span></span></code></pre>
+<h3 id="s3-suspend-to-ram-vs-s2idle-문제">S3 (Suspend to RAM) vs s2idle 문제</h3>
+<p>최신 노트북들은 Windows의 “Modern Standby”를 위해 전통적인 ACPI S3를 비활성화하고 s2idle만 지원한다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">cat</span><span style="color:#9ECBFF"> /sys/power/mem_sleep</span></span>
+<span class="line"><span style="color:#6A737D"># [s2idle] 이렇게 출력됨 -&gt; Modern Standby를 지원하는 중</span></span></code></pre>
+<blockquote>
+<p><strong>s2idle = Suspend to idle = S0ix</strong></p>
+<p>Intel은 <a href="https://www.intel.com/content/www/us/en/docs/vtune-profiler/user-guide/2023-0/s0ix-states.html">S0ix</a>, Microsoft는 <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby">Modern Standby</a>, 커널은 <a href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#suspend-to-idle">S2Idle</a>이라고 부른다. S3를 대체하도록 설계되었으며, 동일한 에너지 절약에 훨씬 빠른 웨이크업을 제공한다.</p>
+</blockquote>
+<h3 id="시도-1-amdgpu-fix-스크립트-동작-안함">시도 1. amdgpu-fix 스크립트 (동작 안함)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> vim</span><span style="color:#9ECBFF"> /usr/lib/systemd/system-sleep/amdgpu-fix</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">#!/bin/sh</span></span>
+<span class="line"><span style="color:#F97583">case</span><span style="color:#FFAB70"> $1</span><span style="color:#F97583"> in</span></span>
+<span class="line"><span style="color:#DBEDFF">  pre</span><span style="color:#F97583">)</span></span>
+<span class="line"><span style="color:#6A737D">    # suspend 전</span></span>
+<span class="line"><span style="color:#E1E4E8">    ;;</span></span>
+<span class="line"><span style="color:#DBEDFF">  post</span><span style="color:#F97583">)</span></span>
+<span class="line"><span style="color:#6A737D">    # resume 후 - amdgpu 강제 리셋</span></span>
+<span class="line"><span style="color:#79B8FF">    echo</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> &gt;</span><span style="color:#9ECBFF"> /sys/bus/pci/devices/</span><span style="color:#79B8FF">*</span><span style="color:#9ECBFF">/reset</span><span style="color:#F97583"> 2&gt;</span><span style="color:#9ECBFF">/dev/null</span><span style="color:#F97583"> ||</span><span style="color:#79B8FF"> true</span></span>
+<span class="line"><span style="color:#E1E4E8">    ;;</span></span>
+<span class="line"><span style="color:#F97583">esac</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> chmod</span><span style="color:#9ECBFF"> +x</span><span style="color:#9ECBFF"> /usr/lib/systemd/system-sleep/amdgpu-fix</span></span></code></pre>
+<h3 id="시도-2-systemd-boot-수정-해결">시도 2. systemd-boot 수정 (해결!)</h3>
+<blockquote>
+<p>⚠️ <code>amdgpu.dc=0</code> 추가 후 부팅 안됨 — 이건 하지 말 것</p>
+</blockquote>
+<blockquote>
+<p>✅ entries 설정에 <code>amd_iommu=off</code> 추가 후 suspend 동작!
+(iommu = I/O Memory Management Unit)</p>
+</blockquote>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 현재 엔트리 확인</span></span>
+<span class="line"><span style="color:#B392F0">ls</span><span style="color:#9ECBFF"> /boot/loader/entries/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 기본 엔트리 편집</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> nano</span><span style="color:#9ECBFF"> /boot/loader/entries/arch.conf</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># options 줄에 amd_iommu=off 추가</span></span>
+<span class="line"><span style="color:#B392F0">options</span><span style="color:#9ECBFF"> root=UUID=xxx-xxx</span><span style="color:#9ECBFF"> rw</span><span style="color:#9ECBFF"> quiet</span><span style="color:#9ECBFF"> amd_iommu=off</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 재부팅 후 확인</span></span>
+<span class="line"><span style="color:#B392F0">cat</span><span style="color:#9ECBFF"> /proc/cmdline</span></span>
+<span class="line"><span style="color:#6A737D"># amd_iommu=off 들어갔는지 확인</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">systemctl</span><span style="color:#9ECBFF"> suspend</span></span>
+<span class="line"><span style="color:#6A737D"># 깨워보기</span></span></code></pre>
+<h3 id="추가-s3로-변경-시도">추가: s3로 변경 시도</h3>
+<p>s2idle 대신 s3(Suspend to RAM)로 변경하는게 나을수도 있겠다 싶어 시도했다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#79B8FF">echo</span><span style="color:#9ECBFF"> deep</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> sudo</span><span style="color:#9ECBFF"> tee</span><span style="color:#9ECBFF"> /sys/power/mem_sleep</span></span></code></pre>
+<p>하지만 <code>cat /sys/power/mem_sleep</code> 결과 s2idle만 출력된다. BIOS에서 S3 옵션이 없으면 강제 전환이 불가능하다. s2idle 상태에서도 배터리 소모가 거의 없어서 여기서 마무리.</p>
+<h2 id="해결해야할거-2순위-한글-입력">해결해야할거 2순위: 한글 입력</h2>
+<p>nimf로 먼저 시도했는데, Arch 최신버전에선 설치 스크립트가 동작 안한다. Wayland 환경에서 nimf가 제대로 동작하지 않는 문제도 있었다. Gnome이 Wayland만 지원하는데 다른 세팅된 DM이 없어서 예전부터 잘 쓰던 <strong>fcitx</strong>로 변경 → Wayland에서 잘 된다.</p>
+<p>한글키 매핑이 안돼서 <code>input-remapper-gtk</code> 설치 후 key remapping으로 해결!</p>
+<h2 id="해결해야할거-3순위-speaker---dolby-atmos">해결해야할거 3순위: Speaker - Dolby Atmos</h2>
+<p>이 랩탑은 Realtek ALC287 사운드 칩을 사용한다. 이 칩은 리눅스에서 제대로 지원이 안되는데, 정확히는 pin 0x17이 활성화가 안된다. 이 랩탑의 스피커는 좌우 2개씩 4개가 있어서 일반 스피커 설정으론 안됨.</p>
+<blockquote>
+<p>Realtek ALC287 linux로 검색하면 관련 내용이 많이 나온다.</p>
+</blockquote>
+<p><strong>HDAJackRetask</strong>로 결국 해결. 별의별 것 다 시도하다가 이 앱을 설치하고 pin 0x17을 설정하니 소리 잘 나온다.</p>
+<h2 id="후기">후기</h2>
+<p>아직도 좀 문제가 있지만 많이 해결됐다. 소리도 나름 잘나오고 suspend도 잘 된다. sway, swaylock, waybar를 이용해 화면을 잘 구성했고, 가볍게 실행할 수 있는 환경이다. 지금도 슬랙, 노션, zen, claude 등 여러가지 실행해놨는데 메모리는 9GB 정도 사용 중.</p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="개요"> 개요 </a> </li><li> <a href="#가성비-대박" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="가성비-대박"> 가성비 대박! </a> </li><li> <a href="#해결해야할거-1순위-suspend" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="해결해야할거-1순위-suspend"> 해결해야할거 1순위: Suspend </a> </li><li> <a href="#자주-쓰는-디버깅-명령어-journalctl-dmesg" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="자주-쓰는-디버깅-명령어-journalctl-dmesg"> 자주 쓰는 디버깅 명령어 (journalctl, dmesg) </a> </li><li> <a href="#s3-suspend-to-ram-vs-s2idle-문제" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="s3-suspend-to-ram-vs-s2idle-문제"> S3 (Suspend to RAM) vs s2idle 문제 </a> </li><li> <a href="#시도-1-amdgpu-fix-스크립트-동작-안함" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="시도-1-amdgpu-fix-스크립트-동작-안함"> 시도 1. amdgpu-fix 스크립트 (동작 안함) </a> </li><li> <a href="#시도-2-systemd-boot-수정-해결" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="시도-2-systemd-boot-수정-해결"> 시도 2. systemd-boot 수정 (해결!) </a> </li><li> <a href="#추가-s3로-변경-시도" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="추가-s3로-변경-시도"> 추가: s3로 변경 시도 </a> </li><li> <a href="#해결해야할거-2순위-한글-입력" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="해결해야할거-2순위-한글-입력"> 해결해야할거 2순위: 한글 입력 </a> </li><li> <a href="#해결해야할거-3순위-speaker---dolby-atmos" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="해결해야할거-3순위-speaker---dolby-atmos"> 해결해야할거 3순위: Speaker - Dolby Atmos </a> </li><li> <a href="#후기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="후기"> 후기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

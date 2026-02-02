@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/97-ubuntu-server-network/"><!-- Primary Meta Tags --><title>Ubuntu Server Network(유선 → 무선) | Kh Jung</title><meta name="title" content="Ubuntu Server Network(유선 → 무선) | Kh Jung"><meta name="description" content="Ubuntu Server에서 유선 연결 후 무선 WiFi 설정하기"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/97-ubuntu-server-network/"><meta property="og:title" content="Ubuntu Server Network(유선 → 무선) | Kh Jung"><meta property="og:description" content="Ubuntu Server에서 유선 연결 후 무선 WiFi 설정하기"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/97-ubuntu-server-network/"><meta property="twitter:title" content="Ubuntu Server Network(유선 → 무선) | Kh Jung"><meta property="twitter:description" content="Ubuntu Server에서 유선 연결 후 무선 WiFi 설정하기"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="15-claude-code-commands" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-11-21T15:00:00.000Z"> Nov 22, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 4 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Ubuntu Server Network(유선 → 무선) </div> </div> <div class="relative"> <article class="animate"> <h2 id="references">References</h2>
+<ul>
+<li><a href="https://linuxhint.com/ubuntu_20-04_network_configuration/">유선설정하기</a></li>
+<li><a href="https://www.linuxbabe.com/ubuntu/connect-to-wi-fi-from-terminal-on-ubuntu-18-04-19-04-with-wpa-supplicant">무선설정하기</a></li>
+<li><a href="https://askubuntu.com/questions/972215/a-start-job-is-running-for-wait-for-network-to-be-configured-ubuntu-server-17-1">빠르게 부팅하기 (부팅시 네트워크 연결 기다리는 데몬 해제하기)</a></li>
+<li><a href="https://askubuntu.com/questions/141866/keep-ubuntu-server-running-on-a-laptop-with-the-lid-closed">Keep Ubuntu Server running on a laptop with the lid closed?</a></li>
+</ul>
+<hr/>
+<h2 id="시작">시작</h2>
+<p>내 노트북을 서버용으로 사용하려고 ubuntu 20.04 server를 설치했다. 근데 이 상태로 wifi를 연결하는 방법을 도무지 모르겠더라. 일단 nmtui, iwconfig, wpa_supplicant를 다 사용못하기 때문이다. (왜냐면 이런 패키지들이 모두 설치가 안되있거든…)</p>
+<p>그래서 wire → wireless 로 하는 방법으로 진행했다.</p>
+<h2 id="1-유선-설정하기">1. 유선 설정하기</h2>
+<ol>
+<li>ip 확인하기
+<ul>
+<li><code>ip a</code></li>
+<li>아마 아래 그림과는 다르게 아무런 ip가 나타나지 않을 것이다.</li>
+<li>유선 장치 이름을 저장해놓자. 아래 그림에선 <code>ens33</code> 같아 보인다. (내 우분투에선 enp34s0, wlp37s0 으로 나타난다)</li>
+</ul>
+</li>
+</ol>
+<p><img src="/_astro/ip-a.GTOi3qmw_Z262zNP.webp" alt="ip a 결과" loading="lazy" decoding="async" fetchpriority="auto" width="888" height="350"></p>
+<ol start="2">
+<li>/etc/netplan에 netplan용 파일 만들기
+<ul>
+<li><code>sudo vim /etc/netplan/01-network-manager-all.yaml</code></li>
+</ul>
+</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">network</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    ethernets</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">        eth0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">            dhcp4</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#85E89D">            optional</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#85E89D">    version</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">2</span></span></code></pre>
+<ol start="3">
+<li>
+<p>netplan try</p>
+<ul>
+<li><code>sudo netplan --debug try</code></li>
+<li>error가 안나오면 다음 단계로. 에러가 나오면 에러메세지를 잘 읽어서 문제를 해결하자. 나 같은 경우 indent가 틀려서 문제가 종종 발생했음</li>
+</ul>
+</li>
+<li>
+<p>netplan apply</p>
+<ul>
+<li><code>sudo netplan --debug apply</code></li>
+<li>try가 잘 됐으면 이 부분은 별 문제 없을 것이다.</li>
+</ul>
+</li>
+<li>
+<p>ip a 명령어로 ip address 확인</p>
+<ul>
+<li><code>ip a</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="2-무선-설정하기">2. 무선 설정하기</h2>
+<ol>
+<li>
+<p>유선이 연결 됐다면 wpa_supplicant를 이용해 wireless에도 연결하자</p>
+<ul>
+<li><code>ip a</code> 명령어로 wifi 장치 찾기 - <code>wlp37s0</code> 이런 비슷한 포멧으로 생겼음</li>
+</ul>
+</li>
+<li>
+<p><code>sudo vim /etc/netplan/01-network-manager-all.yaml</code></p>
+</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">network</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    ethernets</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">        eth0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">            dhcp4</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#85E89D">            optional</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#85E89D">    version</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">2</span></span>
+<span class="line"><span style="color:#85E89D">    wifis</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">        wlp37s0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">            optional</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#85E89D">            access-points</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#9ECBFF">                &quot;SSID-NAME-HERE&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">                    password</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">&quot;PASSWORD-HERE&quot;</span></span>
+<span class="line"><span style="color:#85E89D">            dhcp4</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span></code></pre>
+<ol start="3">
+<li>install wpasupplicant</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 설치</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> wpasupplicant</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 설치 후 conf 파일 생성하기</span></span>
+<span class="line"><span style="color:#B392F0">wpa_passphrase</span><span style="color:#9ECBFF"> your-ESSID</span><span style="color:#9ECBFF"> your-wifi-passphrase</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> sudo</span><span style="color:#9ECBFF"> tee</span><span style="color:#9ECBFF"> /etc/wpa_supplicant.conf</span></span></code></pre>
+<ol start="4">
+<li>wifi 연결하기</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> wpa_supplicant</span><span style="color:#79B8FF"> -c</span><span style="color:#9ECBFF"> /etc/wpa_supplicant.conf</span><span style="color:#79B8FF"> -i</span><span style="color:#9ECBFF"> wlp4s0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 아래와 같은 메세지들이 출력된다면 성공</span></span>
+<span class="line"><span style="color:#B392F0">Successfully</span><span style="color:#9ECBFF"> initialized</span><span style="color:#9ECBFF"> wpa_supplicant</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> SME:</span><span style="color:#9ECBFF"> Trying</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> authenticate</span><span style="color:#9ECBFF"> with</span><span style="color:#9ECBFF"> c5:4a:21:53:ac:eb</span><span style="color:#E1E4E8"> (SSID=</span><span style="color:#9ECBFF">&#39;LinuxBabe.Com Network&#39;</span><span style="color:#9ECBFF"> freq=</span><span style="color:#79B8FF">2437</span><span style="color:#9ECBFF"> MHz</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> Trying</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> associate</span><span style="color:#9ECBFF"> with</span><span style="color:#9ECBFF"> c5:4a:21:53:ac:eb</span><span style="color:#E1E4E8"> (SSID=</span><span style="color:#9ECBFF">&#39;LinuxBabe.Com Network&#39;</span><span style="color:#9ECBFF"> freq=</span><span style="color:#79B8FF">2437</span><span style="color:#9ECBFF"> MHz</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> Associated</span><span style="color:#9ECBFF"> with</span><span style="color:#9ECBFF"> c5:4a:21:53:ac:eb</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> CTRL-EVENT-SUBNET-STATUS-UPDATE</span><span style="color:#9ECBFF"> status=</span><span style="color:#79B8FF">0</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> WPA:</span><span style="color:#9ECBFF"> Key</span><span style="color:#9ECBFF"> negotiation</span><span style="color:#9ECBFF"> completed</span><span style="color:#9ECBFF"> with</span><span style="color:#9ECBFF"> c5:4a:21:53:ac:eb</span><span style="color:#E1E4E8"> [PTK=CCMP </span><span style="color:#9ECBFF">GTK=CCMP]</span></span>
+<span class="line"><span style="color:#B392F0">wlp4s0:</span><span style="color:#9ECBFF"> CTRL-EVENT-CONNECTED</span><span style="color:#9ECBFF"> -</span><span style="color:#9ECBFF"> Connection</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> c5:4a:21:53:ac:eb</span><span style="color:#9ECBFF"> completed</span><span style="color:#E1E4E8"> [id=0 </span><span style="color:#9ECBFF">id_str=]</span></span></code></pre>
+<ol start="5">
+<li>
+<p>ip 확인하기</p>
+<ul>
+<li><code>ip a</code></li>
+</ul>
+</li>
+<li>
+<p>부팅할 때, 자동으로 wifi에 연결하기</p>
+</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># service 파일 복사</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> cp</span><span style="color:#9ECBFF"> /lib/systemd/system/wpa_supplicant.service</span><span style="color:#9ECBFF"> /etc/systemd/system/wpa_supplicant.service</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 수정</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> vim</span><span style="color:#9ECBFF"> /etc/systemd/system/wpa_supplicant.service</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 이 라인을 찾아서</span></span>
+<span class="line"><span style="color:#E1E4E8">ExecStart</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">/sbin/wpa_supplicant</span><span style="color:#B392F0"> -u</span><span style="color:#79B8FF"> -s</span><span style="color:#79B8FF"> -O</span><span style="color:#9ECBFF"> /run/wpa_supplicant</span></span>
+<span class="line"><span style="color:#6A737D"># 이렇게 변경(아까 만든 wpa_supplicant 주소와 장치 이름을 묶어주기)</span></span>
+<span class="line"><span style="color:#E1E4E8">ExecStart</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">/sbin/wpa_supplicant</span><span style="color:#B392F0"> -u</span><span style="color:#79B8FF"> -s</span><span style="color:#79B8FF"> -c</span><span style="color:#9ECBFF"> /etc/wpa_supplicant.conf</span><span style="color:#79B8FF"> -i</span><span style="color:#9ECBFF"> wlp4s0</span></span>
+<span class="line"><span style="color:#6A737D"># 그 아래줄에 이거 추가</span></span>
+<span class="line"><span style="color:#E1E4E8">Restart</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">always</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 이런 라인이 있다면 주석 처리하기 (Alias 앞에 # 추가)</span></span>
+<span class="line"><span style="color:#E1E4E8">Alias</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">dbus-fi.w1.wpa_supplicant1.service</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># daemon 등록</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> enable</span><span style="color:#9ECBFF"> wpa_supplicant.service</span></span></code></pre>
+<h2 id="결론">결론</h2>
+<p>netplan과 wpa_supplicant를 이용해 wireless, wired 설정을 할 수 있었지만 둘의 관계가 뭔지 잘 모르겠다. <a href="https://netplan.io/">netplan</a>은 <code>network configuration abstraction renderer</code>라는데 이게 도대체 뭔말인지 싶다. 그냥 네트워크를 좀 더 쉽게 설정할 수 있는거라고 이해하면 되려나? <a href="https://gist.github.com/austinjp/9b968c75c3e54004be7cd7a134881d85">Wifi on Ubuntu 18 server</a>도 있는데 이것도 wpasupplicant를 사용해서 wifi 설정을 하고 있다.</p>
+<h2 id="bonus">Bonus</h2>
+<h3 id="1-빠르게-부팅하기">1. 빠르게 부팅하기</h3>
+<p>ubuntu daemon 중 <code>systemd-networkd-wait-online.service</code>가 있는데 이는 네트워크에 접속될때까지 shell을 띄워주지 않게 기다리는 기능을 한다. 그다지 쓸모가 없으므로 아래 명령어로 정지시키자.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">systemctl</span><span style="color:#9ECBFF"> disable</span><span style="color:#9ECBFF"> systemd-networkd-wait-online.service</span></span>
+<span class="line"><span style="color:#B392F0">systemctl</span><span style="color:#9ECBFF"> mask</span><span style="color:#9ECBFF"> systemd-networkd-wait-online.service</span></span></code></pre>
+<h3 id="2-ip-address-대신-호스트-이름-사용하기">2. ip address 대신 호스트 이름 사용하기</h3>
+<p>avahi-daemon는 mDNS를 이용해 ip address를 hostname으로 사용하게 해준다. 예를들어 서버가 192.168.0.100 이라면 이것을 ubuntu-server.local 로 변경해준다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 호스트 네임 설정</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> hostnamectl</span><span style="color:#9ECBFF"> set-hostname</span><span style="color:#9ECBFF"> ubuntu-server</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 설치</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> avahi-daemon</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 실행 및 auto start</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> start</span><span style="color:#9ECBFF"> avahi-daemon</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> enable</span><span style="color:#9ECBFF"> avahi-daemon</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># firewall 설정</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> ufw</span><span style="color:#9ECBFF"> allow</span><span style="color:#9ECBFF"> 5353/udp</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 확인</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> status</span><span style="color:#9ECBFF"> avahi-daemon</span></span></code></pre>
+<p><img src="/_astro/avahi-status.Fl3YrfRt_1Qaz1A.webp" alt="avahi-daemon 상태" loading="lazy" decoding="async" fetchpriority="auto" width="991" height="195"></p>
+<h3 id="3-랩탑에서-화면이-닫혀도-sleep-모드에-들어가지-않게-하기">3. 랩탑에서 화면이 닫혀도 sleep 모드에 들어가지 않게 하기</h3>
+<p>서버 노트북은 화면이 닫혀 있어도 슬립모드로 들어가선 안된다. <code>logind.conf</code>를 편집해 화면이 닫혀도 sleep 모드가 되지 않도록 설정할 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> vim</span><span style="color:#9ECBFF"> /etc/systemd/logind.conf</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 아래 두 부분을 주석을 없애고 내용도 변경</span></span>
+<span class="line"><span style="color:#E1E4E8">HandleLidSwitch</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">ignore</span></span>
+<span class="line"><span style="color:#E1E4E8">LidSwitchIgnoreInhibited</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">no</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 데몬 재시작</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> restart</span><span style="color:#9ECBFF"> systemd-logind</span></span></code></pre> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#references" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="references"> References </a> </li><li> <a href="#시작" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="시작"> 시작 </a> </li><li> <a href="#1-유선-설정하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-유선-설정하기"> 1. 유선 설정하기 </a> </li><li> <a href="#2-무선-설정하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="2-무선-설정하기"> 2. 무선 설정하기 </a> </li><li> <a href="#결론" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결론"> 결론 </a> </li><li> <a href="#bonus" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="bonus"> Bonus </a> </li><li> <a href="#1-빠르게-부팅하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-빠르게-부팅하기"> 1. 빠르게 부팅하기 </a> </li><li> <a href="#2-ip-address-대신-호스트-이름-사용하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-ip-address-대신-호스트-이름-사용하기"> 2. ip address 대신 호스트 이름 사용하기 </a> </li><li> <a href="#3-랩탑에서-화면이-닫혀도-sleep-모드에-들어가지-않게-하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="3-랩탑에서-화면이-닫혀도-sleep-모드에-들어가지-않게-하기"> 3. 랩탑에서 화면이 닫혀도 sleep 모드에 들어가지 않게 하기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

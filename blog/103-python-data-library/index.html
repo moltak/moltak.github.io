@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/103-python-data-library/"><!-- Primary Meta Tags --><title>Python Data Library Cook Book | Kh Jung</title><meta name="title" content="Python Data Library Cook Book | Kh Jung"><meta name="description" content="Pandas, matplotlib, numpy, sklearn, keras 등 파이썬 데이터 라이브러리 사용법 정리"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/103-python-data-library/"><meta property="og:title" content="Python Data Library Cook Book | Kh Jung"><meta property="og:description" content="Pandas, matplotlib, numpy, sklearn, keras 등 파이썬 데이터 라이브러리 사용법 정리"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/103-python-data-library/"><meta property="twitter:title" content="Python Data Library Cook Book | Kh Jung"><meta property="twitter:description" content="Pandas, matplotlib, numpy, sklearn, keras 등 파이썬 데이터 라이브러리 사용법 정리"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="17-spring-cacheable" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2020-11-27T15:00:00.000Z"> Nov 28, 2020 </time> </div>
+&bull;
+<div class="font-base text-sm"> 3 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Python Data Library Cook Book </div> </div> <div class="relative"> <article class="animate"> <h2 id="pandas">Pandas</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> pandas </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> pd</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># read</span></span>
+<span class="line"><span style="color:#E1E4E8">df </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> pd.read_csv(</span><span style="color:#9ECBFF">&#39;csv_path&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">names</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[</span><span style="color:#9ECBFF">&#39;column1&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&#39;column2&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&#39;column&#39;</span><span style="color:#E1E4E8">])</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># info</span></span>
+<span class="line"><span style="color:#E1E4E8">df.info() </span><span style="color:#6A737D"># 정보</span></span>
+<span class="line"><span style="color:#E1E4E8">df.describe() </span><span style="color:#6A737D"># 자세한 정보</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(df[[</span><span style="color:#9ECBFF">&#39;column1&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&#39;column2&#39;</span><span style="color:#E1E4E8">]]) </span><span style="color:#6A737D"># 일부 컬럼만 보고 싶을 때</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">df[[</span><span style="color:#9ECBFF">&#39;column1&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">&#39;colum2&#39;</span><span style="color:#E1E4E8">]]</span></span>
+<span class="line"><span style="color:#E1E4E8">    .groupby([</span><span style="color:#9ECBFF">&#39;column1&#39;</span><span style="color:#E1E4E8">], </span><span style="color:#FFAB70">as_index</span><span style="color:#F97583">=</span><span style="color:#79B8FF">False</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    .mean()</span></span>
+<span class="line"><span style="color:#E1E4E8">    .sort_values(</span><span style="color:#FFAB70">by</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&#39;column1&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">ascending</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">) </span><span style="color:#6A737D"># group by</span></span></code></pre>
+<h2 id="matplotlib">matplotlib</h2>
+<h3 id="heat-map">heat map</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> matplotlib.pyplot </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> plt</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> seaborn </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> sns</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">plt.figure(</span><span style="color:#FFAB70">figsize</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">12</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">12</span><span style="color:#E1E4E8">)) </span><span style="color:#6A737D"># 그래프 크기</span></span>
+<span class="line"><span style="color:#E1E4E8">sns.heatmap(</span></span>
+<span class="line"><span style="color:#E1E4E8">    df.corr(),</span></span>
+<span class="line"><span style="color:#FFAB70">    linewidths</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.1</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    vmax</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.5</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    cmap</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">plt.cm.gist_heat,</span></span>
+<span class="line"><span style="color:#FFAB70">    linecolor</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&#39;white&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    annot</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">plt.show()</span></span></code></pre>
+<h3 id="두-항목의-그래프를-막대로-표시">두 항목의 그래프를 막대로 표시</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> matplotlib.pyplot </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> plt</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> seaborn </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> sns</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">grid </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> sns.FacetGrid(df, </span><span style="color:#FFAB70">col</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&#39;column&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">grid.map(plt.hist, </span><span style="color:#9ECBFF">&#39;plasma&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">bins</span><span style="color:#F97583">=</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">plt.show()</span></span></code></pre>
+<h3 id="전체를-한번에-보는-pairplot">전체를 한번에 보는 pairplot</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> matplotlib.pyplot </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> plt</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> seaborn </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> sns</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">sns.pairplot(df, </span><span style="color:#FFAB70">hue</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&#39;column&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">plt.show()</span></span></code></pre>
+<h2 id="numpy">numpy</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> numpy </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> np</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># read</span></span>
+<span class="line"><span style="color:#E1E4E8">Data_set </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> np.loadtxt(</span><span style="color:#9ECBFF">&#39;csv path&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">delimiter</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&#39;,&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># X, Y로 나누기</span></span>
+<span class="line"><span style="color:#E1E4E8">X </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Data_set[:, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">:</span><span style="color:#79B8FF">17</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">Y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Data_set[:, </span><span style="color:#79B8FF">17</span><span style="color:#E1E4E8">]</span></span></code></pre>
+<h2 id="sklearn">sklearn</h2>
+<h3 id="어떤-값에-문자가-있을-때">어떤 값에 문자가 있을 때</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># LabelEncoder</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> sklearn.preprocessing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> LabelEncoder</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">Y_obj </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> dataset[:, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">e </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> LabelEncoder()</span></span>
+<span class="line"><span style="color:#E1E4E8">e.fit(Y_obj)</span></span>
+<span class="line"><span style="color:#E1E4E8">Y </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> e.transform(Y_obj)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Using category codes approach</span></span>
+<span class="line"><span style="color:#6A737D"># converting type of columns to &#39;category&#39;</span></span>
+<span class="line"><span style="color:#E1E4E8">bridge_df[</span><span style="color:#9ECBFF">&#39;Bridge_Types&#39;</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> bridge_df[</span><span style="color:#9ECBFF">&#39;Bridge_Types&#39;</span><span style="color:#E1E4E8">].astype(</span><span style="color:#9ECBFF">&#39;category&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#6A737D"># Assigning numerical values and storing in another column</span></span>
+<span class="line"><span style="color:#E1E4E8">bridge_df[</span><span style="color:#9ECBFF">&#39;Bridge_Types_Cat&#39;</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> bridge_df[</span><span style="color:#9ECBFF">&#39;Bridge_Types&#39;</span><span style="color:#E1E4E8">].cat.codes</span></span></code></pre>
+<p><a href="https://towardsdatascience.com/categorical-encoding-using-label-encoding-and-one-hot-encoder-911ef77fb5bd">category approach</a></p>
+<h3 id="학습셋-테스트셋-나누기">학습셋 테스트셋 나누기</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> sklearn.model_selection </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> train_test_split</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">X_train, X_test, Y_train, Y_test</span></span>
+<span class="line"><span style="color:#F97583">    =</span><span style="color:#E1E4E8"> train_test_split(X, Y, </span><span style="color:#FFAB70">test_size</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.3</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">random_state</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">seed)</span></span></code></pre>
+<h3 id="k겹-교차-검증">k겹 교차 검증</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> sklearn.model_selection </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> StratifiedKFold</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">n_fold </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 10</span></span>
+<span class="line"><span style="color:#E1E4E8">skf </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> StratifiedKFold(</span><span style="color:#FFAB70">n_splits</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">n_fold, </span><span style="color:#FFAB70">shuffle</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">random_state</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">seed)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> train, test </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> skf.split(X, Y):</span></span>
+<span class="line"><span style="color:#E1E4E8">    model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Sequential() </span><span style="color:#6A737D"># 딥러닝 세팅 후 시작</span></span></code></pre>
+<h2 id="keras">keras</h2>
+<h3 id="원핫-인코딩">원핫 인코딩</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># 활성화 함수를 적용하기 위해 0과 1로만 구성된 데이터 구조로 변경해야함</span></span>
+<span class="line"><span style="color:#6A737D"># [1, 2, 3] 을 [[1, 0, 0], [0, 1, 0], [0, 0, 1]] 로 변환</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> tensorflow.keras.utils </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> np_utils</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">Y_encoded </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> tf.keras.utils.to_categorical(Y)</span></span></code></pre>
+<h3 id="모델-저장과-재사용">모델 저장과 재사용</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> keras.models </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> load_model</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">model.save(</span><span style="color:#9ECBFF">&#39;my_model.h5&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> load_model(</span><span style="color:#9ECBFF">&#39;my_model.h5&#39;</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="mnist-데이터-불러오기">MNIST 데이터 불러오기</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> keras.datasets </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> mnist</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">(X_train, Y_class_train), (X_test, Y_class_test) </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> mnist.load_data()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;학습셋 이미지 수: </span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF"> 개&#39;</span><span style="color:#F97583"> %</span><span style="color:#E1E4E8"> (X_train.shape[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">]))</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;테스트셋 이미지 수: </span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF"> 개&#39;</span><span style="color:#F97583"> %</span><span style="color:#E1E4E8"> (X_test.shape[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">]))</span></span></code></pre> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#pandas" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="pandas"> Pandas </a> </li><li> <a href="#matplotlib" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="matplotlib"> matplotlib </a> </li><li> <a href="#heat-map" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="heat-map"> heat map </a> </li><li> <a href="#두-항목의-그래프를-막대로-표시" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="두-항목의-그래프를-막대로-표시"> 두 항목의 그래프를 막대로 표시 </a> </li><li> <a href="#전체를-한번에-보는-pairplot" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="전체를-한번에-보는-pairplot"> 전체를 한번에 보는 pairplot </a> </li><li> <a href="#numpy" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="numpy"> numpy </a> </li><li> <a href="#sklearn" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="sklearn"> sklearn </a> </li><li> <a href="#어떤-값에-문자가-있을-때" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="어떤-값에-문자가-있을-때"> 어떤 값에 문자가 있을 때 </a> </li><li> <a href="#학습셋-테스트셋-나누기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="학습셋-테스트셋-나누기"> 학습셋 테스트셋 나누기 </a> </li><li> <a href="#k겹-교차-검증" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="k겹-교차-검증"> k겹 교차 검증 </a> </li><li> <a href="#keras" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="keras"> keras </a> </li><li> <a href="#원핫-인코딩" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="원핫-인코딩"> 원핫 인코딩 </a> </li><li> <a href="#모델-저장과-재사용" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="모델-저장과-재사용"> 모델 저장과 재사용 </a> </li><li> <a href="#mnist-데이터-불러오기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="mnist-데이터-불러오기"> MNIST 데이터 불러오기 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

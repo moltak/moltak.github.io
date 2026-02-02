@@ -1,0 +1,327 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/61-hardhat-tutorial/"><!-- Primary Meta Tags --><title>Hardhat Tutorial - 컨트랙트 개발부터 배포까지 | Kh Jung</title><meta name="title" content="Hardhat Tutorial - 컨트랙트 개발부터 배포까지 | Kh Jung"><meta name="description" content="hardhat과 typechain을 사용한 이더리움 스마트 컨트랙트 개발, 테스트, 배포, Etherscan 검증"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/61-hardhat-tutorial/"><meta property="og:title" content="Hardhat Tutorial - 컨트랙트 개발부터 배포까지 | Kh Jung"><meta property="og:description" content="hardhat과 typechain을 사용한 이더리움 스마트 컨트랙트 개발, 테스트, 배포, Etherscan 검증"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/61-hardhat-tutorial/"><meta property="twitter:title" content="Hardhat Tutorial - 컨트랙트 개발부터 배포까지 | Kh Jung"><meta property="twitter:description" content="hardhat과 typechain을 사용한 이더리움 스마트 컨트랙트 개발, 테스트, 배포, Etherscan 검증"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="33-ai-is-hr" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2022-02-11T15:00:00.000Z"> Feb 12, 2022 </time> </div>
+&bull;
+<div class="font-base text-sm"> 5 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Hardhat Tutorial - 컨트랙트 개발부터 배포까지 </div> </div> <div class="relative"> <article class="animate"> <h1 id="hardhat과-typechain을-사용한-컨트랙트-개발">hardhat과 typechain을 사용한 컨트랙트 개발</h1>
+<p>Truffle의 단점 때문에 hardhat을 많이 사용하는 듯 함.</p>
+<h2 id="truffle의-단점">Truffle의 단점</h2>
+<ol>
+<li>검증과정이 불편함. 컨트랙트 배포 후 검증 과정을 거치지 않으면 컨트랙트의 Read, Write 기능이 활성화되지 않는데, Truffle은 검증을 도와주지 않기 때문에 직접 해야함.</li>
+<li>Typescript 지원 빈약. web3.js, ether.js 같은 자바스크립트 패키지를 쓰는데, bigNumber, unint, keccak256등 타입이 자바스크립트에서 약간 다름.</li>
+</ol>
+<h2 id="hardhat-장점">Hardhat 장점</h2>
+<ol>
+<li>Verify 자동화</li>
+<li>Typechain을 이용해 타입스크립트 사용 가능.
+<ul>
+<li>.sol 파일을 타입스크립트로 된 artifact로 만들어줌.</li>
+</ul>
+</li>
+<li>console.log 사용가능</li>
+<li>Documentation</li>
+<li>다양한 플러그인 제공. upgrade proxy, test coverage, gas report, react hot reloader</li>
+</ol>
+<h1 id="써보기">써보기</h1>
+<h2 id="project-init">Project Init</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> i</span><span style="color:#79B8FF"> --save-dev</span><span style="color:#9ECBFF"> hardhat</span><span style="color:#9ECBFF"> @nomiclabs/hardhat-waffle</span><span style="color:#9ECBFF"> ethereum-waffle</span><span style="color:#9ECBFF"> @nomiclabs/hardhat-ethers</span><span style="color:#9ECBFF"> ethers</span><span style="color:#9ECBFF"> @types/jest</span><span style="color:#9ECBFF"> jest</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> i</span><span style="color:#9ECBFF"> @openzeppelin/contracts</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">npx</span><span style="color:#9ECBFF"> hardhat</span><span style="color:#6A737D"> # basic sample project를 선택</span></span></code></pre>
+<blockquote>
+<p><code>@openzeppelin/contracts</code> 은 secure smart contract 개발을 위한 library.</p>
+</blockquote>
+<p>여기까지 하면 다음과 폴더구조가 다음과 같이 됨</p>
+<p><img src="/_astro/hardhat-folder.BysyFo60_Z1QHVkp.webp" alt="폴더 구조" loading="lazy" decoding="async" fetchpriority="auto" width="430" height="580"></p>
+<h2 id="typechain">Typechain</h2>
+<p>solidity도 type을 갖고 있기때문에 typescript와의 궁합이 아주 좋다. typescript를 사용하기 위해서 typechain을 설치하고 ts 설정을 해줘야하는데 다음과 같다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> i</span><span style="color:#79B8FF"> --save-dev</span><span style="color:#9ECBFF"> @typechain/hardhat</span><span style="color:#9ECBFF"> typechain</span><span style="color:#9ECBFF"> ts-generator</span><span style="color:#9ECBFF"> @typechain/ethers-v5</span><span style="color:#9ECBFF"> typescript</span><span style="color:#9ECBFF"> ts-node</span></span></code></pre>
+<p>hardhat.config.js 를 hardhat.config.ts로 파일이름을 바꾼 후 내용을 아래와 같이 바꾼다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &quot;@nomiclabs/hardhat-waffle&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &quot;@typechain/hardhat&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &quot;@nomiclabs/hardhat-ethers&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &quot;@nomiclabs/hardhat-waffle&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { HardhatUserConfig } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &quot;hardhat/types&quot;</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> config</span><span style="color:#F97583">:</span><span style="color:#B392F0"> HardhatUserConfig</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">  solidity: {</span></span>
+<span class="line"><span style="color:#E1E4E8">    version: </span><span style="color:#9ECBFF">&quot;0.8.11&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#E1E4E8"> config;</span></span></code></pre>
+<p>위와같이 변경 후 <code>npx hardhat compile</code> 명령어를 실행해준다.</p>
+<h1 id="testcode-작성">TestCode 작성</h1>
+<p>다음과 같이 테스트 코드를 작성할 수 있다. integration, e2e 테스트와 비슷한 느낌으로 작동한다. contract를 배포하고 Contract API를 직접 호출하며 동작을 검증하는 방식이다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { waffle } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &#39;hardhat&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> AssetTokenArtifact </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &#39;../artifacts/contracts/asset-token.sol/AssetToken.json&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { AssetToken } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &#39;../typechain-types/AssetToken&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#E1E4E8"> { </span><span style="color:#79B8FF">deployContract</span><span style="color:#E1E4E8"> } </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> waffle</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">describe</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;AssetToken&#39;</span><span style="color:#E1E4E8">, () </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> assetToken</span><span style="color:#F97583">:</span><span style="color:#B392F0"> AssetToken</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> provider</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> waffle.provider</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">admin</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> provider.</span><span style="color:#B392F0">getWallets</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">  beforeEach</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    assetToken </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">await</span><span style="color:#B392F0"> deployContract</span><span style="color:#E1E4E8">(admin, AssetTokenArtifact, [</span></span>
+<span class="line"><span style="color:#79B8FF">      10000</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">      &#39;FirstAssetToken&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">      &#39;FAT&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    ])) </span><span style="color:#F97583">as</span><span style="color:#B392F0"> AssetToken</span></span>
+<span class="line"><span style="color:#E1E4E8">  })</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">  describe</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;new AssetToken&#39;</span><span style="color:#E1E4E8">, () </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#B392F0">    it</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;has given data&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#B392F0">      expect</span><span style="color:#E1E4E8">((</span><span style="color:#F97583">await</span><span style="color:#E1E4E8"> assetToken.</span><span style="color:#B392F0">totalSupply</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toNumber</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toEqual</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10000</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">      expect</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">await</span><span style="color:#E1E4E8"> assetToken.</span><span style="color:#B392F0">name</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toEqual</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;FirstAssetToken&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">      expect</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">await</span><span style="color:#E1E4E8"> assetToken.</span><span style="color:#B392F0">symbol</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toEqual</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;FAT&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">      expect</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">await</span><span style="color:#E1E4E8"> assetToken.</span><span style="color:#B392F0">decimals</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toEqual</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">18</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    })</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">    it</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;increases the deployer balance&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#B392F0">      expect</span><span style="color:#E1E4E8">((</span><span style="color:#F97583">await</span><span style="color:#E1E4E8"> assetToken.</span><span style="color:#B392F0">balanceOf</span><span style="color:#E1E4E8">(admin.address)).</span><span style="color:#B392F0">toNumber</span><span style="color:#E1E4E8">()).</span><span style="color:#B392F0">toEqual</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#79B8FF">        10000</span></span>
+<span class="line"><span style="color:#E1E4E8">      )</span></span>
+<span class="line"><span style="color:#E1E4E8">    })</span></span>
+<span class="line"><span style="color:#E1E4E8">  })</span></span>
+<span class="line"><span style="color:#E1E4E8">})</span></span></code></pre>
+<h2 id="ts-test-code-실행-설정">TS Test code 실행 설정</h2>
+<p>위의 테스트코드가 있다고 해도 바로 실행되진 않는다. tsconfig.json과 jest 설정을 해줘야하기때문</p>
+<ol>
+<li>jsonfile을 바로 임포트해서 사용하기 위해서 <code>resolveJsonModule: true</code> 로 변경한다.</li>
+<li>jest ts 설정도 해줘야하며 아래 package.json 을 참고하면 된다.</li>
+</ol>
+<p>완성된 <a href="https://github.com/moltak/practice-hardhat/blob/main/tsconfig.json">tsconfig.json</a>, <a href="https://github.com/moltak/practice-hardhat/blob/main/package.json">package.json</a></p>
+<p>아래와 같이 test가 실행되는 것을 볼 수 있다.</p>
+<p><img src="/_astro/test-result.Bwlzo4og_1FKSw3.webp" alt="테스트 실행 결과" loading="lazy" decoding="async" fetchpriority="auto" width="2208" height="634"></p>
+<h1 id="배포하기">배포하기</h1>
+<p>이더리움 네트워크와 통신하기 위해선 노드를 운영해야하는데, 어렵다고 한다(잘 모름). infura를 이용하면 노드운영 필요없이 이더리움 네트워크에 직접 접근할 수 있다.</p>
+<p>제작한 컨트랙트를 배포하기 위해 다음 과정이 필요하다.</p>
+<ol>
+<li>infura에서 project id 얻기</li>
+<li>metamask 개인키 복사</li>
+<li>배포 스크립트 작성</li>
+<li>Ropsten Ethereum Faucet 에서 테스트 이더 얻기</li>
+<li>배포</li>
+</ol>
+<h2 id="1-infura에-가입하고-projectid를-복사하자">1. infura에 가입하고 ProjectID를 복사하자.</h2>
+<p><img src="/_astro/infura-project.BKYjqoHg_Z19GfQA.webp" alt="infura project" loading="lazy" decoding="async" fetchpriority="auto" width="1400" height="805"></p>
+<h2 id="2-metamask-개인키-복사">2. metamask 개인키 복사</h2>
+<p>메타마스크 계정 세부정보 → 비공개 키 내보내기</p>
+<p><img src="/_astro/metamask-key.DNWVp3-Z_Z1anUV8.webp" alt="metamask 개인키" loading="lazy" decoding="async" fetchpriority="auto" width="532" height="897"></p>
+<h2 id="3-배포-코드-작성">3. 배포 코드 작성</h2>
+<p>env 설치 후 .env 에 infura project id와 개인키를 넣고 다음과 같은 코드 작성</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#6A737D">// scripts/deploy.ts</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> hardhat </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &#39;hardhat&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> function</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">  console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;deploy start&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> AssetToken</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> hardhat.ethers.</span><span style="color:#B392F0">getContractFactory</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&#39;AssetToken&#39;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> assetToken</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> AssetToken.</span><span style="color:#B392F0">deploy</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#79B8FF">    10000</span><span style="color:#E1E4E8">, </span><span style="color:#6A737D">// totalSupply</span></span>
+<span class="line"><span style="color:#9ECBFF">    &#39;FirstAssetToken&#39;</span><span style="color:#E1E4E8">, </span><span style="color:#6A737D">// Token name</span></span>
+<span class="line"><span style="color:#9ECBFF">    &#39;FAT&#39;</span><span style="color:#6A737D"> // Token symbol</span></span>
+<span class="line"><span style="color:#E1E4E8">  )</span></span>
+<span class="line"><span style="color:#E1E4E8">  console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">`AssetToken address:${</span><span style="color:#E1E4E8">assetToken</span><span style="color:#9ECBFF">.</span><span style="color:#E1E4E8">address</span><span style="color:#9ECBFF">}`</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">main</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">  .</span><span style="color:#B392F0">then</span><span style="color:#E1E4E8">(() </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> process.</span><span style="color:#B392F0">exit</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#E1E4E8">  .</span><span style="color:#B392F0">catch</span><span style="color:#E1E4E8">((</span><span style="color:#FFAB70">error</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=&gt;</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    console.</span><span style="color:#B392F0">error</span><span style="color:#E1E4E8">(error)</span></span>
+<span class="line"><span style="color:#E1E4E8">    process.</span><span style="color:#B392F0">exit</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">  })</span></span></code></pre>
+<h2 id="4-ropsten-ethereum-faucet-에서-테스트-이더-얻기">4. Ropsten Ethereum Faucet 에서 테스트 이더 얻기</h2>
+<p>코드를 배포하려면 가스비를 낼 수 있어야하는데, <a href="https://faucet.dimensions.network/">여기</a>에서 테스트용 이더를 받을 수 있음</p>
+<p><img src="/_astro/ropsten-faucet.CG52Gaj3_2cIJzP.webp" alt="Ropsten Faucet" loading="lazy" decoding="async" fetchpriority="auto" width="959" height="550"></p>
+<h2 id="5-배포">5. 배포</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npx</span><span style="color:#9ECBFF"> hardhat</span><span style="color:#9ECBFF"> run</span><span style="color:#79B8FF"> --network</span><span style="color:#9ECBFF"> ropsten</span><span style="color:#9ECBFF"> scripts/deploy.ts</span></span></code></pre>
+<h1 id="ether-scan과-상호작용하기-verify">Ether Scan과 상호작용하기 (verify)</h1>
+<p>배포를 통해서 이더리움 테스트넷에는 배포가 되었다. 이제 ABI, bytecode를 이용해서 백엔드, 프론트엔드에서 상호작용이 가능하고 dapp을 만들 수 있다.</p>
+<p>우리는 이더스캔을 이용해서도 컨트랙트와 상호작용을 가능하게 하고 싶다. 이것을 하려면 <a href="https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html">hardhat-etherscan</a>을 통해 verify를 해야한다.</p>
+<p>다음과 같은 과정이 필요하다.</p>
+<ol>
+<li>이더스캔 API 키 받기</li>
+<li>hardhat-etherscan 추가</li>
+<li>hardhat.config.ts 수정</li>
+<li>verify 하기</li>
+</ol>
+<h2 id="1-이더스캔-api-키-받기">1. 이더스캔 API 키 받기</h2>
+<p>이더스캔 가입 후 <a href="https://etherscan.io/myapikey">https://etherscan.io/myapikey</a> 여기에서 받을 수 있다.</p>
+<h2 id="2-hardhat-etherscan-추가">2. hardhat-etherscan 추가</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> add</span><span style="color:#79B8FF"> --save-dev</span><span style="color:#9ECBFF"> @nomiclabs/hardhat-etherscan</span></span></code></pre>
+<h2 id="3-hardhatconfigts-수정">3. hardhat.config.ts 수정</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="typescript"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;@nomiclabs/hardhat-waffle&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;@typechain/hardhat&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;@nomiclabs/hardhat-ethers&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;@nomiclabs/hardhat-waffle&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;@nomiclabs/hardhat-etherscan&#39;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> &#39;dotenv/config&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { HardhatUserConfig } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> &#39;hardhat/types&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> config</span><span style="color:#F97583">:</span><span style="color:#B392F0"> HardhatUserConfig</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">  solidity: {</span></span>
+<span class="line"><span style="color:#E1E4E8">    version: </span><span style="color:#9ECBFF">&#39;0.8.11&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">  networks: {</span></span>
+<span class="line"><span style="color:#E1E4E8">    ropsten: {</span></span>
+<span class="line"><span style="color:#E1E4E8">      url: </span><span style="color:#9ECBFF">`https://ropsten.infura.io/v3/${</span><span style="color:#E1E4E8">process</span><span style="color:#9ECBFF">.</span><span style="color:#E1E4E8">env</span><span style="color:#9ECBFF">.</span><span style="color:#79B8FF">INFURA_PROJECT_ID</span><span style="color:#9ECBFF">}`</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      accounts: [process.env.</span><span style="color:#79B8FF">PRIVATE_KEY</span><span style="color:#F97583"> ||</span><span style="color:#9ECBFF"> &#39;&#39;</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">      chainId: </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">  etherscan: {</span></span>
+<span class="line"><span style="color:#E1E4E8">    apiKey: process.env.</span><span style="color:#79B8FF">ETHERSCAN_API_KEY</span><span style="color:#F97583"> ||</span><span style="color:#9ECBFF"> &#39;&#39;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#E1E4E8"> config</span></span></code></pre>
+<h2 id="4-verify-하기">4. verify 하기</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npx</span><span style="color:#9ECBFF"> hardhat</span><span style="color:#9ECBFF"> verify</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#E1E4E8">--network </span><span style="color:#9ECBFF">ropsten</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#E1E4E8">--contract </span><span style="color:#9ECBFF">&quot;contracts/asset-token.sol:AssetToken&quot;</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#9ECBFF">&quot;contract 주소&quot;</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#9ECBFF">&quot;10000&quot;</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#9ECBFF">&quot;FirstAssetToken&quot;</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#9ECBFF">&quot;FAT&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 결과</span></span>
+<span class="line"><span style="color:#B392F0">Successfully</span><span style="color:#9ECBFF"> verified</span><span style="color:#9ECBFF"> contract</span><span style="color:#9ECBFF"> AssetToken</span><span style="color:#9ECBFF"> on</span><span style="color:#9ECBFF"> Etherscan.</span></span>
+<span class="line"><span style="color:#B392F0">https://ropsten.etherscan.io/address/0xEcc5a98fe...#code</span></span></code></pre>
+<p><a href="https://ropsten.etherscan.io/address/0xEcc5a98fe7062dD42Fa3a98CD044980De18d045F#code">https://ropsten.etherscan.io/address/0xEcc5a98fe7062dD42Fa3a98CD044980De18d045F#code</a> 여기에서 이더스캔과 연동된 내용을 볼 수 있음.</p>
+<h1 id="마치며">마치며</h1>
+<p>좀 긴 내용이었지만 위와 같은 내용을 통해 컨트랙트를 만들고, 테스트하고, 배포할 수 있게 되었다. 중간중간 좀 어려운 부분도 있었고 참고했던 블로그와 내용이 좀 달라 헤멨던 부분도 있었다.</p>
+<p><a href="https://ropsten.etherscan.io/address/0xEcc5a98fe7062dD42Fa3a98CD044980De18d045F#code">Ether scan</a></p>
+<p>내가 배포한 컨트랙트를 보면 좀 신기했던게 코드가 모두 노출되는 부분이다. 이더리움의 컨트랙트는 모두 코드가 공개된다더니, 과연.. 누구든지 나의 코드를 보고 어떻게 생겼는지 모두 파악이 가능했다. 우리가 만약 중요한 비즈니스 로직을 만든다면 그것도 모두 공개가 되니깐 사기를 치기도 힘들테지만, 나의 코드 자산이 모두 공개된다는 위험도 함께 있다. 그런 부분들은 좀 다른 방법들을 사용해야할것 같다.</p>
+<p>실제로는 테스트를 열심히 짜보진 않았는데, <a href="https://hardhat.org/guides/typescript.html">이 링크</a>에서 설명하듯 테스트 코드를 더 자세히 짤 수 있게 되어있다. 컨트랙트를 이정도로 안전하게 만들 수 있다는것은 좀 놀라운 부분이다.</p>
+<h1 id="reference">Reference</h1>
+<ul>
+<li><a href="https://tech.elysia.land/hardhat%EA%B3%BC-typechain%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%BB%A8%ED%8A%B8%EB%9E%99%ED%8A%B8-%EA%B0%9C%EB%B0%9C-d7e8fc66d1d2">hardhat과 typechain을 사용한 컨트랙트 개발</a></li>
+<li><a href="https://faucet.dimensions.network/">https://faucet.dimensions.network/</a></li>
+<li><a href="https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html">https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html</a></li>
+</ul>
+<h2 id="결과물">결과물</h2>
+<p><a href="https://ropsten.etherscan.io/address/0xEcc5a98fe7062dD42Fa3a98CD044980De18d045F#code">https://ropsten.etherscan.io/address/0xEcc5a98fe7062dD42Fa3a98CD044980De18d045F#code</a></p> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#hardhat과-typechain을-사용한-컨트랙트-개발" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="hardhat과-typechain을-사용한-컨트랙트-개발"> hardhat과 typechain을 사용한 컨트랙트 개발 </a> </li><li> <a href="#truffle의-단점" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="truffle의-단점"> Truffle의 단점 </a> </li><li> <a href="#hardhat-장점" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="hardhat-장점"> Hardhat 장점 </a> </li><li> <a href="#써보기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="써보기"> 써보기 </a> </li><li> <a href="#project-init" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="project-init"> Project Init </a> </li><li> <a href="#typechain" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="typechain"> Typechain </a> </li><li> <a href="#testcode-작성" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="testcode-작성"> TestCode 작성 </a> </li><li> <a href="#ts-test-code-실행-설정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="ts-test-code-실행-설정"> TS Test code 실행 설정 </a> </li><li> <a href="#배포하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="배포하기"> 배포하기 </a> </li><li> <a href="#1-infura에-가입하고-projectid를-복사하자" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-infura에-가입하고-projectid를-복사하자"> 1. infura에 가입하고 ProjectID를 복사하자. </a> </li><li> <a href="#2-metamask-개인키-복사" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="2-metamask-개인키-복사"> 2. metamask 개인키 복사 </a> </li><li> <a href="#3-배포-코드-작성" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="3-배포-코드-작성"> 3. 배포 코드 작성 </a> </li><li> <a href="#4-ropsten-ethereum-faucet-에서-테스트-이더-얻기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="4-ropsten-ethereum-faucet-에서-테스트-이더-얻기"> 4. Ropsten Ethereum Faucet 에서 테스트 이더 얻기 </a> </li><li> <a href="#5-배포" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="5-배포"> 5. 배포 </a> </li><li> <a href="#ether-scan과-상호작용하기-verify" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="ether-scan과-상호작용하기-verify"> Ether Scan과 상호작용하기 (verify) </a> </li><li> <a href="#1-이더스캔-api-키-받기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="1-이더스캔-api-키-받기"> 1. 이더스캔 API 키 받기 </a> </li><li> <a href="#2-hardhat-etherscan-추가" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="2-hardhat-etherscan-추가"> 2. hardhat-etherscan 추가 </a> </li><li> <a href="#3-hardhatconfigts-수정" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="3-hardhatconfigts-수정"> 3. hardhat.config.ts 수정 </a> </li><li> <a href="#4-verify-하기" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="4-verify-하기"> 4. verify 하기 </a> </li><li> <a href="#마치며" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="마치며"> 마치며 </a> </li><li> <a href="#reference" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3 font-medium" data-slug="reference"> Reference </a> </li><li> <a href="#결과물" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="결과물"> 결과물 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>

@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)"><link rel="icon" type="image/x-icon" href="/favicon-light.svg"><meta name="generator" content="Astro v5.17.1"><!-- Font preloads --><link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-400-normal.DnxXpLNu.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/lora-latin-600-normal.B-3RcLOQ.woff2" as="font" type="font/woff2" crossorigin><!-- Canonical URL --><link rel="canonical" href="https://moltak.github.io/blog/84-cognito-admin-api/"><!-- Primary Meta Tags --><title>Cognito AdminXXX Api를 이용해 서비스 구현하기 | Kh Jung</title><meta name="title" content="Cognito AdminXXX Api를 이용해 서비스 구현하기 | Kh Jung"><meta name="description" content="Amplify 없이 서버에서 Cognito Admin API로 회원가입/로그인 구현하기"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://moltak.github.io/blog/84-cognito-admin-api/"><meta property="og:title" content="Cognito AdminXXX Api를 이용해 서비스 구현하기 | Kh Jung"><meta property="og:description" content="Amplify 없이 서버에서 Cognito Admin API로 회원가입/로그인 구현하기"><meta property="og:image" content="https://moltak.github.io/nano.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://moltak.github.io/blog/84-cognito-admin-api/"><meta property="twitter:title" content="Cognito AdminXXX Api를 이용해 서비스 구현하기 | Kh Jung"><meta property="twitter:description" content="Amplify 없이 서버에서 Cognito Admin API로 회원가입/로그인 구현하기"><meta property="twitter:image" content="https://moltak.github.io/nano.png"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- RSS Link --><link rel="alternate" type="application/rss+xml" title="Kh Jung" href="https://moltak.github.io/rss.xml"><script type="module">document.addEventListener("astro:before-swap",e=>[...e.newDocument.head.querySelectorAll('link[as="font"]')].forEach(o=>o.remove()));</script><script>
+  function init() {
+    preloadTheme();
+    onScroll();
+    animate();
+
+    const backToTop = document.getElementById("back-to-top");
+    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+
+    const backToPrev = document.getElementById("back-to-prev");
+    backToPrev?.addEventListener("click", () => window.history.back());
+
+    const lightThemeButton = document.getElementById("light-theme-button");
+    lightThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "light");
+      toggleTheme(false);
+    });
+
+    const darkThemeButton = document.getElementById("dark-theme-button");
+    darkThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "dark");
+      toggleTheme(true);
+    });
+
+    const systemThemeButton = document.getElementById("system-theme-button");
+    systemThemeButton?.addEventListener("click", () => {
+      localStorage.setItem("theme", "system");
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", event => {
+        if (localStorage.theme === "system" || !localStorage.theme) {
+          toggleTheme(event.matches);
+        }
+      }
+    );
+
+    document.addEventListener("scroll", onScroll);
+  }
+
+  function animate() {
+    const animateElements = document.querySelectorAll(".animate");
+
+    animateElements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add("show");
+      }, index * 150);
+    });
+  }
+
+  function onScroll() {
+    if (window.scrollY > 0) {
+      document.documentElement.classList.add("scrolled");
+    } else {
+      document.documentElement.classList.remove("scrolled");
+    }
+  }
+
+  function scrollToTop(event) {
+    event.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+function toggleTheme(dark) {
+    const css = document.createElement("style");
+
+    css.appendChild(
+      document.createTextNode(
+        `* {
+             -webkit-transition: none !important;
+             -moz-transition: none !important;
+             -o-transition: none !important;
+             -ms-transition: none !important;
+             transition: none !important;
+          }
+        `,
+      )
+    );
+
+    document.head.appendChild(css);
+
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+  window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function preloadTheme() {
+    const userTheme = localStorage.theme;
+
+    if (userTheme === "light" || userTheme === "dark") {
+      toggleTheme(userTheme === "dark");
+    } else {
+      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => init());
+  document.addEventListener("astro:after-swap", () => init());
+  preloadTheme();
+</script><link rel="stylesheet" href="/_astro/_slug_.DDcn1B-x.css"></head> <body> <header> <div class="mx-auto max-w-screen-lg px-5">  <div class="flex flex-wrap gap-y-2 justify-between"> <a href="/" target="_self" class="inline-block decoration-black/15 dark:decoration-white/30 hover:decoration-black/25 hover:dark:decoration-white/50 text-current hover:text-black hover:dark:text-white transition-colors duration-300 ease-in-out">  <div class="font-semibold"> Kh Jung </div>  </a> </div>  </div> </header> <main>  <div class="mx-auto max-w-screen-lg px-5">  <div class="animate flex items-center justify-between"> <a href="/blog" class="relative group w-fit flex pl-7 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm"> 
+Back to blog
+ </div> </a> <a href="103-python-data-library" class="group flex items-center gap-1.5 pl-3 pr-3 py-1.5 rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out text-sm"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 fill-none stroke-current stroke-2 group-hover:rotate-180 transition-transform duration-300 ease-in-out"> <rect x="4" y="4" width="16" height="16" rx="2"></rect> <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle> <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"></circle> </svg>
+Random
+</a> </div> <div class="space-y-1 my-10"> <div class="animate flex items-center gap-1.5"> <div class="font-base text-sm"> <time datetime="2021-08-09T15:00:00.000Z"> Aug 10, 2021 </time> </div>
+&bull;
+<div class="font-base text-sm"> 5 min read </div> </div> <div class="animate text-2xl font-semibold text-black dark:text-white"> Cognito AdminXXX Api를 이용해 서비스 구현하기 </div> </div> <div class="relative"> <article class="animate"> <h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-client-side-authentication-flow">User Pool Authentication Flow</a></li>
+<li><a href="https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html">Overview of User Account Confirmation</a></li>
+<li><a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html#API_AdminCreateUser_RequestSyntax">AdminCreateUser</a></li>
+<li><a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html">AdminInitiateAuth</a></li>
+<li><a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html">AdminRespondToAuthChallenge</a></li>
+</ul>
+<h2 id="개요">개요</h2>
+<p>이 글은 혹시 나처럼 Amplify 나 Cognito Client Library 를 사용하지 않고 서버에서 모든 과정을 다 구현해야하는 경우에 유용하게 사용할 수 있는 방법이다. 사실 Cognito 는 AWS에서 버려진? (좀 2군, 3군 같은 느낌의 서비스)라서 사용하는것을 그다지 추천할 수 없다. 왜냐면 문서는 상대적으로 빈약한데 반해 기능은 꽤 많고 Trigger를 이용해 기능 확장도 가능한데, 이런 많은 것들로 도대체 뭘 하라는건지 너무 헷갈리기 때문이다(내 입장에선 그랬다 이 글을 읽는 다른 분은 다를 수 있음). 암튼 방금까지도 계속 헤메다가 좀 감이 와서 글을 남긴다.</p>
+<p>Cognito 는 내 블로그의 다른 글과는 다르게 좀 배경 설명이 필요하므로 먼저 이 부분을 읽길 바란다.</p>
+<h2 id="배경-설명">배경 설명</h2>
+<h3 id="요약">요약</h3>
+<p>아래 좀 긴 설명이 이어질텐데 미리 요약하면 아래의 Cognito API를 순서대로 호출하면 된다.</p>
+<blockquote>
+<p>회원가입: AdminCreateUser -&gt; AdminInitateAuth -&gt; AdminRespondToAuthChallenge
+로그인: AdminInitateAuth</p>
+</blockquote>
+<h3 id="1-overview-user-pool-authentication-flow-user-account-confirmation">1. Overview (User Pool Authentication Flow, User Account Confirmation)</h3>
+<p>Auth (Authentication, Authorization)을 서버에서 구현하려다 보면 여러가지 기능이 필요하다. 회원가입, 로그인, SMS, Email 인증, Password Reset 등 보통 이정도 기능은 필요하다.</p>
+<p>Cognito는 회원가입 때, SMS, Email 인증 등을 Challenge 로 묶어 관리한다. 미리 정의된 Challenge가 있고 혹은 Custom 도 가능하다. (난 Custom은 구현을 해본적이 없어서 이 글에선 포함하지 않는다.)</p>
+<p><img src="/_astro/auth-flow.6hqnNYsa_ZRjjN4.webp" alt="Authentication Flow" loading="lazy" decoding="async" fetchpriority="auto" width="523" height="395"></p>
+<p>위 이미지를 보면 InitiateAuth 를 Cognito 에 보낸 후 Challenge를 받아 RespondToAuthChallenge 를 다시 전달하는 것을 볼 수 있다. 이전 문장에서 설명했던 것 처럼 Challenge에 대답을 잘 해야 회원가입을 완료할 수 있다. Challenge의 목록은 <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-client-side-authentication-flow">1</a>, <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html#API_AdminInitiateAuth_ResponseSyntax">2</a>에서 찾을 수 있는데, 상당히 많다. 하지만 항상 그렇듯 딱 쓸만한건 잘 눈에 띄지 않는다.</p>
+<p>아무튼 나의 목적은 Admin이 Cognito를 제어해 회원가입 프로세스를 완성하는 것이다. 그걸 달성하기 위해 <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-create-user-accounts.html">이 쪽을</a> 글을 자세히 읽으면 된다. <del>근데 정말 Cognito의 글은 되게 안읽힌다</del></p>
+<p>아래에 위에 언급한 <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/how-to-create-user-accounts.html">링크</a>에 있는 내용중 중요한 부분을 첨부한다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="plaintext"><code><span class="line"><span>Authentication Flow for Users Created by Administrators or Developers</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>The authentication flow for these users includes the extra step to submit</span></span>
+<span class="line"><span>the new password and provide any missing values for required attributes.</span></span>
+<span class="line"><span>The steps are outlined next; steps 5, 6, and 7 are specific to these users.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>1. The user starts to sign in for the first time by submitting the username</span></span>
+<span class="line"><span>   and password provided to him or her.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>2. The SDK calls InitiateAuth(Username, USER_SRP_AUTH).</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>3. Amazon Cognito returns the PASSWORD_VERIFIER challenge with Salt &amp; Secret block.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>4. The SDK performs the SRP calculations and calls</span></span>
+<span class="line"><span>   RespondToAuthChallenge(Username, &lt;SRP variables&gt;, PASSWORD_VERIFIER).</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>5. Amazon Cognito returns the NEW_PASSWORD_REQUIRED challenge along with</span></span>
+<span class="line"><span>   the current and required attributes.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>6. The user is prompted and enters a new password and any missing values</span></span>
+<span class="line"><span>   for required attributes.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>7. The SDK calls RespondToAuthChallenge(Username, &lt;New password&gt;, &lt;User attributes&gt;).</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>8. If the user requires a second factor for MFA, Amazon Cognito returns</span></span>
+<span class="line"><span>   the SMS_MFA challenge and the code is submitted.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>9. After the user has successfully changed his or her password and optionally</span></span>
+<span class="line"><span>   provided attributed values or completed MFA, the user is signed in and</span></span>
+<span class="line"><span>   tokens are issued.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>When the user has satisfied all challenges, the Amazon Cognito service marks</span></span>
+<span class="line"><span>the user as confirmed and issues ID, access, and refresh tokens for the user.</span></span></code></pre>
+<p>위 글을 요약한 내용이 아래 다이어그램이다. Admin이 Cognito에 직접 유저를 생성할 경우 <code>Force Change Password</code> challenge 를 “무조건” 받게 되며 그에 따라 적절하게 RespondToAuthChallenge를 해주면 된다.</p>
+<p><img src="/_astro/admin-signup-flow.BkZPCto9_29i99H.webp" alt="Admin Signup Flow" loading="lazy" decoding="async" fetchpriority="auto" width="652" height="500"></p>
+<p>여기까지가 배경 지식인데 좀 이해가 되려나.. 나는 Cognito 문서를 몇번 읽었으나 (물론 자세히 모든 부분을 읽진 않았음) 여전히 좀 어렵다. 내가 이해한 내용을 자세히 풀어 썼지만 여전히 잘 이해를 못할 것 같다. 사실상 위에 요약 부분의 행동만 정의 하면 되고 이해가 안간다면 일단 구현을 해보고 다시 이 글을 읽어보자.</p>
+<h3 id="2-api-요약">2. API 요약</h3>
+<p><strong>AdminCreateUser</strong>: 유저를 추가하는 API. 이 유저는 <code>FORCE_CHANGE_PASSWORD</code> 상태를 갖게됨.</p>
+<p><strong>AdminInitateAuth</strong>: Authentication flow 를 시작하는 API. SignIn, RefreshToken 을 수행. (<a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-client-side-authentication-flow">Authentication Flow는 여기에서 참고</a>)</p>
+<p><strong>AdminRespondToAuthChallenge</strong>: AdminInitiateAuth에서 시작한 Authentication Flow 에 대한 응답을 제공. 각 Authentication Flow 마다 전달해야하는 파라미터가 달라짐.</p>
+<h2 id="작업-요약">작업 요약</h2>
+<ol>
+<li>Cognito User Pool 생성</li>
+<li>AdminCreateUser API 호출</li>
+<li>AdminInitateAuth API 호출 (강제로 로그인 해서 4번을 API를 호출하기 위함)</li>
+<li>AdminRespondToAuthChallenge 호출
+<ul>
+<li>2,3,4 번을 할 경우 유저는 로그인 가능한 상태로 Cognito User Pool 에 추가된 상태</li>
+</ul>
+</li>
+<li>AdminInitateAuth API 호출 (로그인)
+<ul>
+<li>여기서 accessToken, idToken, refreshToken 을 받을 수 있음</li>
+</ul>
+</li>
+<li>유저에게 5번에서 받은 토큰 반환</li>
+<li>끝</li>
+</ol>
+<h2 id="작업-상세">작업 상세</h2>
+<h2 id="번외">번외</h2>
+<ul>
+<li><a href="https://aws.amazon.com/premiumsupport/knowledge-center/cognito-troubleshoot-mfa-sms-delivery/">Amazon Cognito isn’t delivering MFA text messages to my app’s users. How do I troubleshoot this?</a></li>
+<li><a href="https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/">Implementing passwordless email authentication with Amazon Cognito</a></li>
+</ul> </article> <aside class="hidden xl:block absolute top-0 bottom-0 left-full ml-10 w-56"> <nav class="sticky top-8" id="toc-nav"> <p class="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-white/50 mb-3">
+On this page
+</p> <ul class="space-y-1.5 text-sm border-l border-black/10 dark:border-white/10"> <li> <a href="#참고" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="참고"> 참고 </a> </li><li> <a href="#개요" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="개요"> 개요 </a> </li><li> <a href="#배경-설명" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="배경-설명"> 배경 설명 </a> </li><li> <a href="#요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="요약"> 요약 </a> </li><li> <a href="#1-overview-user-pool-authentication-flow-user-account-confirmation" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="1-overview-user-pool-authentication-flow-user-account-confirmation"> 1. Overview (User Pool Authentication Flow, User Account Confirmation) </a> </li><li> <a href="#2-api-요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-6 text-xs" data-slug="2-api-요약"> 2. API 요약 </a> </li><li> <a href="#작업-요약" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="작업-요약"> 작업 요약 </a> </li><li> <a href="#작업-상세" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="작업-상세"> 작업 상세 </a> </li><li> <a href="#번외" class="toc-link block py-0.5 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors duration-200 border-l-2 border-transparent -ml-px pl-3" data-slug="번외"> 번외 </a> </li> </ul> </nav> </aside> </div>  </div>  </main> <footer class="animate"> <div class="mx-auto max-w-screen-lg px-5">  <div class="relative"> <div class="absolute right-0 -top-20"> <button id="back-to-top" class="relative group w-fit flex pl-8 pr-3 py-1.5 flex-nowrap rounded border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute top-1/2 left-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current rotate-90"> <line x1="5" y1="12" x2="19" y2="12" class="translate-x-2 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></line> <polyline points="12 5 5 12 12 19" class="translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-in-out"></polyline> </svg> <div class="text-sm">
+Back to top
+</div> </button> </div> </div> <div class="flex justify-between items-center"> <div>
+&copy; 2026 | Kh Jung </div> <div class="flex flex-wrap gap-1 items-center"> <button id="light-theme-button" aria-label="Light theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line> </svg> </button> <button id="dark-theme-button" aria-label="Dark theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <button id="system-theme-button" aria-label="System theme" class="group size-8 flex items-center justify-center rounded-full"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black group-hover:dark:stroke-white transition-colors duration-300 ease-in-out"> <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect> <line x1="8" y1="21" x2="16" y2="21"></line> <line x1="12" y1="17" x2="12" y2="21"></line> </svg> </button> </div> </div>  </div> </footer> </body></html> <script type="module">function n(){const r=document.querySelectorAll(".toc-link");if(!r.length)return;const c=new IntersectionObserver(o=>{for(const t of o)if(t.isIntersecting){r.forEach(i=>{i.classList.remove("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")});const e=document.querySelector(`.toc-link[data-slug="${t.target.id}"]`);e&&e.classList.add("!text-black","dark:!text-white","!border-black/60","dark:!border-white/60")}},{rootMargin:"0px 0px -80% 0px",threshold:0});r.forEach(o=>{const t=o.dataset.slug;if(t){const e=document.getElementById(t);e&&c.observe(e)}})}n();document.addEventListener("astro:after-swap",n);</script>
