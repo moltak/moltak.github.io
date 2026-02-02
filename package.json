@@ -11,7 +11,7 @@
     "astro": "astro",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "deploy": "npm run build && gh-pages -d dist -b gh-pages --dotfiles"
+    "deploy": "npm run build && gh-pages -d dist -b gh-pages --nojekyll --dotfiles"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
