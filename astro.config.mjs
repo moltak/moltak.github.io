@@ -5,6 +5,5 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   site: "https://moltak.github.io",
-  base: "/blog",
   integrations: [mdx(), sitemap(), tailwind()],
 });
