@@ -8,7 +8,7 @@ import { BLOG } from "@consts";
 const data = (await getCollection("blog"))
   .filter(post => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-  
+
 type Acc = {
   [year: string]: CollectionEntry<"blog">[];
 }
@@ -22,14 +22,33 @@ const posts = data.reduce((acc: Acc, post) => {
     return acc;
   }, {});
 
-const years = Object.keys(posts).sort((a, b) => parseInt(b) - parseInt(a)); 
+const years = Object.keys(posts).sort((a, b) => parseInt(b) - parseInt(a));
+const featured = data.filter(i => i.data.featured)
 ---
 
 <PageLayout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
   <Container>
     <div class="space-y-10">
       <div class="animate font-semibold text-black dark:text-white">
-        Blog
+        작성한 글
+      </div>
+      <div class="space-y-4">
+        <section class="animate space-y-4">
+          <div class="font-semibold text-black dark:text-white">
+            Featured
+          </div>
+          <div>
+            <ul class="flex flex-col gap-4">
+              {
+                featured.map((post) => (
+                  <li>
+                    <ArrowCard entry={post}/>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </section>
       </div>
       <div class="space-y-4">
         {years.map(year => (
