@@ -59,6 +59,15 @@ Replace npm with your package manager of choice. `npm`, `pnpm`, `yarn`, `bun`, e
 | `npm run lint`            | Run ESLint                                       |
 | `npm run lint:fix`        | Auto-fix ESLint issues                           |
 
+### just commands
+
+| Command                                          | Action                                |
+| :----------------------------------------------- | :------------------------------------ |
+| `just dev`                                       | Start dev server                      |
+| `just build`                                     | Build production site                 |
+| `just deploy`                                    | Deploy site                           |
+| `just new-post <slug> "<title>"`                 | Create a new blog post with draft     |
+
 ## 🏛️ License
 
 MIT
