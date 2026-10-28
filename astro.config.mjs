@@ -4,6 +4,6 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  site: "https://moltak.github.io",
+  site: "https://blog.parsley-bay.com",
   integrations: [mdx(), sitemap(), tailwind()],
 });
