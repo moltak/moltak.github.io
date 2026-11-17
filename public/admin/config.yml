@@ -19,7 +19,16 @@ collections:
     extension: mdx
     create: true
     summary: "{{title}} ({{date | date('YYYY-MM-DD')}})"
-    table_columns: [title, date]
+    # Listing columns: title/date retained; description and body show ~20-char excerpts via
+    # template columns; updated/featured reference their widgets directly and stay blank
+    # when the optional fields are absent from a post.
+    table_columns:
+      - title
+      - date
+      - { field: "{{description | truncate(20, '...')}}", label: 설명 }
+      - { field: "{{body | plainify | truncate(20, '...')}}", label: 본문 }
+      - updated
+      - featured
     sortable_fields:
       fields: [date, title]
       default:
@@ -34,6 +43,8 @@ collections:
       - { name: updated, label: 수정일, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false }
       - { name: draft, label: 임시 글, widget: boolean, default: false, required: false }
       - { name: featured, label: 추천 글, widget: boolean, default: false, required: false }
-      # Raw Markdown/MDX source only. Sveltia's default modes are [rich_text, raw];
-      # rich_text round-trips content through its editor and can corrupt MDX, so it stays disabled.
-      - { name: body, label: 본문 (Markdown/MDX), widget: markdown, modes: [raw] }
+      # Default is the raw Markdown/MDX source editor (first mode wins). rich_text is
+      # opt-in visual editing: convenient for plain Markdown and clipboard paste, but it
+      # re-serializes content through its editor and can corrupt MDX components and JSX
+      # expressions. Only switch modes on posts that use plain Markdown.
+      - { name: body, label: 본문 (Markdown/MDX), widget: markdown, modes: [raw, rich_text] }
