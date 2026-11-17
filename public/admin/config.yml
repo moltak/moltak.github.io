@@ -19,16 +19,16 @@ collections:
     extension: mdx
     create: true
     summary: "{{title}} ({{date | date('YYYY-MM-DD')}})"
-    # Listing columns: title/date retained; description and body show ~20-char excerpts via
-    # template columns; updated/featured reference their widgets directly and stay blank
-    # when the optional fields are absent from a post.
+    # Listing columns: title first, then description and body as template columns showing
+    # ~20-char excerpts, then featured/date/updated referencing their widgets directly;
+    # the optional fields stay blank when absent from a post.
     table_columns:
       - title
-      - date
       - { field: "{{description | truncate(20, '...')}}", label: 설명 }
       - { field: "{{body | plainify | truncate(20, '...')}}", label: 본문 }
-      - updated
       - featured
+      - date
+      - updated
     sortable_fields:
       fields: [date, title]
       default:
