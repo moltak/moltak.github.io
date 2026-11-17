@@ -20,6 +20,11 @@ collections:
     create: true
     summary: "{{title}} ({{date | date('YYYY-MM-DD')}})"
     table_columns: [title, date]
+    sortable_fields:
+      fields: [date, title]
+      default:
+        field: date
+        direction: descending
     media_folder: ""
     public_folder: ""
     fields:
@@ -29,4 +34,6 @@ collections:
       - { name: updated, label: 수정일, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false }
       - { name: draft, label: 임시 글, widget: boolean, default: false, required: false }
       - { name: featured, label: 추천 글, widget: boolean, default: false, required: false }
-      - { name: body, label: 본문 (Markdown/MDX), widget: text }
+      # Raw Markdown/MDX source only. Sveltia's default modes are [rich_text, raw];
+      # rich_text round-trips content through its editor and can corrupt MDX, so it stays disabled.
+      - { name: body, label: 본문 (Markdown/MDX), widget: markdown, modes: [raw] }
