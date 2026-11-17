@@ -1,4 +1,4 @@
-# Astro Nano - Agent Guidelines
+# Astro Nano and Sveltia CMS - Agent Guidelines
 
 This document provides essential information for AI coding agents working in this repository.
 
@@ -9,6 +9,7 @@ This document provides essential information for AI coding agents working in thi
 - **TypeScript** (strict mode) - Type safety
 - **Tailwind CSS** - Utility-first styling
 - **MDX** - Markdown with components
+- **Sveltia CMS** - Browser-based GitHub content management
 
 **Project Structure:**
 ```
@@ -16,14 +17,17 @@ src/
 ├── components/     # Astro components (.astro files)
 ├── content/        # Content collections (blog, work, projects)
 │   ├── blog/       # Blog posts (MDX)
-│   ├── work/       # Work experience
-│   └── projects/   # Projects
+│   ├── work/       # Work collection, if present
+│   └── projects/   # Projects collection, if present
 ├── layouts/        # Page layouts
 ├── lib/           # Utility functions
 ├── pages/         # Routes (file-based routing)
 ├── consts.ts      # Site configuration constants
 ├── types.ts       # TypeScript type definitions
 └── env.d.ts       # Environment type declarations
+public/admin/
+├── index.html     # Loads Sveltia CMS from CDN
+└── config.yml     # GitHub backend and blog collection
 ```
 
 ## Build & Development Commands
@@ -188,10 +192,18 @@ Edit `src/consts.ts` to customize:
 
 ### Adding Blog Posts
 
-1. Create folder: `src/content/blog/post-slug/`
-2. Add `index.mdx` with frontmatter
-3. Include images in same folder
-4. Images auto-optimized by Astro
+1. Create `src/content/blog/post-slug/index.mdx` with the required frontmatter, or use `just new-post <slug> "<title>"`.
+2. Keep post images in the same folder when using relative image paths.
+3. Alternatively, create or edit posts using the CMS at `/admin/`.
+
+### Sveltia CMS
+
+- `public/admin/index.html` loads the CMS from UNPKG; `public/admin/config.yml` defines its settings.
+- The GitHub backend targets `moltak/moltak.github.io`, branch `main`, using token authentication. A fine-grained token needs repository Contents read/write permission. Never commit tokens or request them in chat.
+- The CMS edits the `blog` collection only. It saves MDX posts at `src/content/blog/{{slug}}/index.mdx` and uses entry-relative media folders.
+- The body uses the `text` widget to preserve Markdown/MDX source. Sveltia CMS does not fully support visual editing of MDX components; do not switch to rich text without testing existing MDX content for data loss.
+- Keep CMS fields and optional-field handling aligned with the blog schema in `src/content/config.ts`. Preserve existing post paths, frontmatter and media references.
+- CMS writes go to GitHub even when the admin page is opened locally. Saving a post does not itself guarantee deployment. CMS slugs are not automatically numbered like those from `just new-post`.
 
 ### Frontmatter Requirements
 
@@ -200,6 +212,8 @@ Edit `src/consts.ts` to customize:
 - `description`: string (required)
 - `date`: Date string (required)
 - `draft`: boolean (optional, default false)
+- `featured`: boolean (optional)
+- `updated`: date (optional)
 
 ## Verification Checklist
 
@@ -233,16 +247,10 @@ const published = posts.filter((post) => !post.data.draft);
 
 ## Deployment
 
-Built site is static HTML/CSS/JS in `dist/` directory.
-
-**Deploy to:**
-- Vercel (recommended)
-- Netlify
-- GitHub Pages
-- Any static host
+Built site is static HTML/CSS/JS in `dist/`. `npm run deploy` builds and publishes it to the `gh-pages` branch. Changes saved by the CMS to `main` must be built and deployed before they appear on the site.
 
 **Before deploy:**
-1. Update `site` in `astro.config.mjs` to production URL
+1. Check `site` in `astro.config.mjs` matches the production URL
 2. Run `npm run build` to verify
 3. Deploy `dist/` folder
 
