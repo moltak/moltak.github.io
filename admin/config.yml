@@ -1,0 +1,30 @@
+backend:
+  name: github
+  repo: moltak/moltak.github.io
+  branch: main
+  auth_methods: [token]
+
+media_folder: public/images
+public_folder: /images
+
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: blog
+    label: 블로그
+    label_singular: 글
+    folder: src/content/blog
+    path: "{{slug}}/index"
+    extension: mdx
+    create: true
+    media_folder: ""
+    public_folder: ""
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: description, label: 설명, widget: text }
+      - { name: date, label: 작성일, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { name: updated, label: 수정일, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false }
+      - { name: draft, label: 임시 글, widget: boolean, default: false, required: false }
+      - { name: featured, label: 추천 글, widget: boolean, default: false, required: false }
+      - { name: body, label: 본문 (Markdown/MDX), widget: text }
