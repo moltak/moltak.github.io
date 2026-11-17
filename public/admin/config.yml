@@ -18,6 +18,8 @@ collections:
     path: "{{slug}}/index"
     extension: mdx
     create: true
+    summary: "{{title}} ({{date | date('YYYY-MM-DD')}})"
+    table_columns: [title, date]
     media_folder: ""
     public_folder: ""
     fields:
