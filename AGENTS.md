@@ -201,7 +201,8 @@ Edit `src/consts.ts` to customize:
 - `public/admin/index.html` loads the CMS from UNPKG; `public/admin/config.yml` defines its settings.
 - The GitHub backend targets `moltak/moltak.github.io`, branch `main`, using token authentication. A fine-grained token needs repository Contents read/write permission. Never commit tokens or request them in chat.
 - The CMS edits the `blog` collection only. It saves MDX posts at `src/content/blog/{{slug}}/index.mdx` and uses entry-relative media folders.
-- The body uses the `text` widget to preserve Markdown/MDX source. Sveltia CMS does not fully support visual editing of MDX components; do not switch to rich text without testing existing MDX content for data loss.
+- The body uses the `markdown` widget with `modes: [raw]`: a raw Markdown/MDX source editor (syntax highlighting and toolbar insert Markdown text), never the visual editor. Sveltia defaults the markdown/richtext widget to `modes: [rich_text, raw]`; the `rich_text` mode re-parses and re-serializes content through its Lexical editor and can corrupt MDX components and JSX expressions, so do not add `rich_text` to `modes` without testing existing MDX content for data loss.
+- CMS preview (the read-only rendered view, and the entry preview toggle) renders Markdown as HTML but does not render MDX components or `{expressions}`. Treat CMS preview as indicative for plain Markdown only; verify MDX posts through `npm run build`/the deployed site.
 - Keep CMS fields and optional-field handling aligned with the blog schema in `src/content/config.ts`. Preserve existing post paths, frontmatter and media references.
 - CMS writes go to GitHub even when the admin page is opened locally. Saving a post does not itself guarantee deployment. CMS slugs are not automatically numbered like those from `just new-post`.
 
